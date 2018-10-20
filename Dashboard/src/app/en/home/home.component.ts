@@ -95,7 +95,7 @@ export class HomeComponent implements OnInit {
           top = position.top;
           left = position.left;
 
-          btnBlock.setAttribute('style', `position:absolute;left:${left}px;top:${top}px;z-index:1`);
+          btnBlock.setAttribute('style', `position:absolute;left:${left}px;top:${top}px`);
           btnBlock.setAttribute('class', 'btnBlock');
           $(btnBlock).insertBefore($(this));
         }
@@ -114,7 +114,7 @@ export class HomeComponent implements OnInit {
   }
 
   edit(body){
-    
+    let editorWidth = body.elem.width();
     let _self = this;
 
     let position = $(body.elem).position();
@@ -122,11 +122,9 @@ export class HomeComponent implements OnInit {
 
     let context = $(body.elem);
 
-    var SaveButton = function (context) {
-      var ui = $.summernote.ui;
-    
-      // create button
-      var button = ui.button({
+    let SaveButton = function (context) {
+      let ui = $.summernote.ui;
+      let button = ui.button({
         className: 'saveBtn',
         background: '#337ab7',
         contents: '<i class="fa fa-child"/> Save',
@@ -141,10 +139,11 @@ export class HomeComponent implements OnInit {
         }
       });
     
-      return button.render();   // return button as jquery object
+      return button.render();
     }
 
     $(context).summernote({
+      width: editorWidth,
       toolbar: [
         ['style', ['style']],
         ['font-style', ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'clear']],
@@ -166,13 +165,14 @@ export class HomeComponent implements OnInit {
   }
 
   save(body){
+
     this.currentElem = body.elem;
 
     let markup = $(body.elem).summernote('code');
 
     $(body.elem).summernote('destroy');
   }
-  // on submit method
+
   savePost(event) {
     let text = $('#summernote').summernote('code');
     console.log(text);
@@ -187,6 +187,26 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  editInner(event){
+    // this.save(this.currentElem)
+    let body;
+    let pageTitle = 'home';
+    if(this.template){
+      body= document.querySelector('#body');
+    }else{
+      body= document.querySelector('#default');
+    }
+   
+    this._templatesService.sendTemplate(body.innerHTML, pageTitle).subscribe(
+      (res) => {
+        setTimeout(() => {
+          this.templateSending = false;
+        }, 1000)
+      },
+      (error) => {console.log(error)}
+    )
+  }
+  
   editElement(event, elem){
     if(!this.activeHoverEvent){
       this.activeHoverEvent = true;
@@ -234,24 +254,5 @@ export class HomeComponent implements OnInit {
         // debugger
       }
     }
-  }
-  editInner(event){
-    // this.save(this.currentElem)
-    let body;
-    let pageTitle = 'home';
-    if(this.template){
-      body= document.querySelector('#body');
-    }else{
-      body= document.querySelector('#default');
-    }
-   
-    this._templatesService.sendTemplate(body.innerHTML, pageTitle).subscribe(
-      (res) => {
-        setTimeout(() => {
-          this.templateSending = false;
-        }, 1000)
-      },
-      (error) => {console.log(error)}
-    )
   }
 }
