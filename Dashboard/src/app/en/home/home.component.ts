@@ -190,23 +190,6 @@ export class HomeComponent implements OnInit {
       return button.render();
     }
 
-    let UndoButton = (context) => {
-      let ui = $.summernote.ui;
-      let button = ui.button({
-        className: 'undoBtn',
-        backgroundColor: '#337ab7',
-        contents: '<i class="fa fa-child"/> Undo',
-        // tooltip: 'Save',
-        click: function () {
-          $(body.elem).summernote('undo');
-        }
-      });
-    
-      return button.render();
-    }
-
-
-
     $(context).summernote({
       width: editorWidth,
       toolbar: [
@@ -218,13 +201,11 @@ export class HomeComponent implements OnInit {
         ['para', ['ul', 'ol', 'paragraph']],
         ['table', ['table']],
         ['insert', ['link', 'picture', 'video', 'hr']],
-        ['misc', ['fullscreen', 'codeview', 'help']],
+        ['misc', ['fullscreen', 'codeview', 'redo', 'undo', 'help']],
         ['savebutton', ['save']],
         ['cancelbutton', ['cancel']],
-        ['undobutton', ['undo']],
       ],
       buttons: {
-        undo: UndoButton,
         save: SaveButton,
         cancel: CancelButton
       }
