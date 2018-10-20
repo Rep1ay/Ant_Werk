@@ -1,13 +1,17 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Template } from './template';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
+import {Event} from './event'
 
 @Injectable({
   providedIn: 'root'
 })
 export class TemplatesService {
+private eventValue = new Subject<Event>();
+_event = this.eventValue.asObservable();
+
 template:any;
   
 private _templatesUrl = 'http://localhost:3000/api/templates'
@@ -19,6 +23,11 @@ private _templatesUrl = 'http://localhost:3000/api/templates'
   // .subscribe((res: any) => {
   //   this.persons = res;
   // });
+  editInner(event: Event){
+    // debugger
+    this.eventValue.next(event)
+  }
+
   getTemplate(title): Observable<Template>{
     let templateBody = {
       pageTitle: title

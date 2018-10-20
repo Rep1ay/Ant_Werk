@@ -25,6 +25,7 @@ export class HomeComponent implements OnInit {
   savePostForm: FormGroup;
   activeHoverEvent;
   saveBtnPublic: any;
+  event: any;
 
   constructor(private _templatesService: TemplatesService, formBuilder: FormBuilder) { 
     this._formBuilder = formBuilder;    
@@ -32,6 +33,11 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit() {
+
+    this._templatesService._event.subscribe(
+      event => this.editInner(event)
+    )
+
     $( document ).ready(()=> {
       this.eventBinder();
     });
@@ -51,6 +57,10 @@ export class HomeComponent implements OnInit {
       );
   };
 
+  registerEvent(event){
+    debugger
+  }
+
   eventBinder(){
 
     let _self = this;
@@ -69,21 +79,25 @@ export class HomeComponent implements OnInit {
     btnBlock.appendChild(btnEdit);
     // btnBlock.appendChild(btnSave);
 
+    let position;
+    let top;
     let left;
     
-    $('section.click2edit').hover(function(event){
+    $('.click2edit').hover(function(event){
 
       if(event.relatedTarget){
          if(!event.relatedTarget.classList.contains('saveBtn') && !event.relatedTarget.classList.contains('editBtn')){
           this.lastTarget = $(this);
-          left = this.clientWidth - 100;
-          let position = $(this).position();
-          let top = position.top;
+          // position = event.target.lastTarget.position();
+          
+          // left = this.clientWidth - 100;
+          position = $(this).position();
+          top = position.top;
+          left = position.left;
 
           btnBlock.setAttribute('style', `position:absolute;left:${left}px;top:${top}px;z-index:1`);
           btnBlock.setAttribute('class', 'btnBlock');
           $(btnBlock).insertBefore($(this));
-
         }
       }
 
@@ -102,39 +116,9 @@ export class HomeComponent implements OnInit {
   edit(body){
     
     let _self = this;
-    // let btnSave = document.createElement('button');
-    // let textNodeSave = document.createTextNode('Save');
-
-    // let btnCancel = document.createElement('button');
-    // let textNodeCancel = document.createTextNode('Cancel');
-
-    // body.btnBlock.removeChild(body.btnEdit);
-    // btnCancel.appendChild(textNodeCancel);
-    // btnSave.appendChild(textNodeSave);
-
-    // body.btnBlock.appendChild(btnSave);
-    // body.btnBlock.appendChild(btnCancel);
 
     let position = $(body.elem).position();
     let top = position.top;
-
-    // btnSave.setAttribute('style', `position:absolute;left:${left}px;top:${top + 5}px;z-index:1`);
-    // btnCancel.setAttribute('style', `position:absolute;left:${left + 50}px;top:${top + 5}px;z-index:1`);
-    // $(btnSave).off('click').on('click', (event) =>{
-    //   _self.save($(this));
-    // });
-
-    // $(btnSave).off('click').on('click', (event) =>{
-    //   let send_body = {
-    //     elem: $(body.elem),
-    //     btnCancel: btnCancel,
-    //     btnEdit: body.btnEdit,
-    //     btnBlock:  body.btnBlock
-    //   }
-
-    //   _self.save(send_body);
-
-    // });
 
     let context = $(body.elem);
 
@@ -178,20 +162,11 @@ export class HomeComponent implements OnInit {
       }
     });
 
-    // $(btnCancel).off('click').on('click', (event) =>{
-    //   console.log('canceled');
-    //   // _self.save($(elem));
-    // });
-
     $(body.elem).summernote();
   }
 
   save(body){
     this.currentElem = body.elem;
-
-    // body.btnBlock.removeChild(body.btnCancel);
-    // body.btnBlock.removeChild(body.btnSave);
-    // body.btnBlock.appendChild(body.btnEdit);
 
     let markup = $(body.elem).summernote('code');
 
@@ -226,48 +201,42 @@ export class HomeComponent implements OnInit {
     if($(event.fromElement).parents('.click2edit')){
 
       let classList2 = $(event.fromElement).parents();
-      
 
     }
-    // if(this.currentTargetParents !== targetParents){
-      if(!target.classList.contains('body_container')){
-        // this.currentTarget = $(target).parents();
-        // this.currentTargetParents = targetParents;
-        let targContext = $(target).parents('.click2edit');
+    if(!target.classList.contains('body_container')){
+      let targContext = $(target).parents('.click2edit');
 
-        if(targContext[0]){
-          if(targContext[0].classList.contains('click2edit')){
-            // debugger
-            if (!this.btnExist){
-                this.btnExist = true;
-                let btnEdit = document.createElement('button');
-                let textNode = document.createTextNode('Edit');
-                let parentBlock = targContext[0];
-                $(btnEdit).on('click', (event) =>{
-                  debugger
-                  // this.edit(targContext[0]);
-                })
-
-                btnEdit.appendChild(textNode);
-
-                parentBlock.append(btnEdit)
-            
-                // let left = parentBlock.width() - 100;
-                // let top = parentBlock.height() - 100;
-                let left = parentBlock.offsetWidth - 100;
-                let top = parentBlock.offsetHeight - 100;
-                btnEdit.setAttribute('style', `position:absolute;left:${left}px;top:${top}px`);
-              }
-            // }
-          }
-        } else if(targContext["context"].classList.contains('click2edit')){
+      if(targContext[0]){
+        if(targContext[0].classList.contains('click2edit')){
           // debugger
+          if (!this.btnExist){
+              this.btnExist = true;
+              let btnEdit = document.createElement('button');
+              let textNode = document.createTextNode('Edit');
+              let parentBlock = targContext[0];
+              $(btnEdit).on('click', (event) =>{
+                debugger
+              })
+
+              btnEdit.appendChild(textNode);
+
+              parentBlock.append(btnEdit)
+          
+              // let left = parentBlock.width() - 100;
+              // let top = parentBlock.height() - 100;
+              let left = parentBlock.offsetWidth - 100;
+              let top = parentBlock.offsetHeight - 100;
+              btnEdit.setAttribute('style', `position:absolute;left:${left}px;top:${top}px`);
+            }
+          // }
         }
+      } else if(targContext["context"].classList.contains('click2edit')){
+        // debugger
       }
-   
+    }
   }
-  editInner(){
-    this.save(this.currentElem)
+  editInner(event){
+    // this.save(this.currentElem)
     let body;
     let pageTitle = 'home';
     if(this.template){

@@ -15,12 +15,8 @@
 <!-- <h4>Posted below: </h4> -->
 <!-- <p [innerHTML]="postText | escapeHtml"></p> -->
 
-<br>
-<br>
-
-
 <div class="container-fluid">
-	<div class="row">
+	<!-- <div class="row">
 		<div class="col-md-12">
 			<nav style="position: fixed;right: 0px;" class="navbar navbar-expand-lg navbar-light bg-light navbar-dark bg-dark">
 				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -35,7 +31,7 @@
 				</div>
       		</nav>
     	</div>
-  </div>
+  </div> -->
   <!-- (mouseover)='editElement($event, editBlock)' -->
 	<div  *ngIf="template" id="body"  class="container-fluid body_container">
 		<div [innerHTML]='template'></div>
@@ -47,16 +43,6 @@
 	<div  *ngIf="!template" id="default" class="container-fluid body_container">
       <!-- <button id="edit" class="btn btn-primary" (click)="edit(editBlock)" type="button">Edit 1</button>
       <button id="save" class="btn btn-primary" (click)="save(editBlock)" type="button">Save 2</button> -->
-      <section #editBlock class="click2edit">
-        <div>
-            <p>awfawfafaf<span>awfawfaff</span></p>
-        </div>
-        <div>
-          <h1>awfawfafw</h1>
-            <p>awfawfafaf<span>awfawfaff</span></p>
-        </div>
-      </section>
-
 			<!-- <div [innerHTML]='template'></div> -->
 	<section  class="jumbotron click2edit" >
 			<h2  id="hello">
@@ -91,7 +77,7 @@
 			</section>
 		</div>
 		<div class="row">
-			<div class="col-md-4 ">
+			<div class="col-md-4 click2edit">
 				<div class="card">
 					<img class="card-img-top" alt="Bootstrap Thumbnail First" src="https://www.layoutit.com/img/people-q-c-600-200-1.jpg" />
 					<div class="card-block">
@@ -107,7 +93,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-md-4 ">
+			<div class="col-md-4 click2edit">
 				<div class="card">
 					<img class="card-img-top" alt="Bootstrap Thumbnail Second" src="https://www.layoutit.com/img/city-q-c-600-200-1.jpg" />
 					<div class="card-block">
@@ -123,7 +109,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-md-4 ">
+			<div class="col-md-4 click2edit">
 				<div class="card">
 					<img class="card-img-top" alt="Bootstrap Thumbnail Third" src="https://www.layoutit.com/img/sports-q-c-600-200-1.jpg" />
 					<div class="card-block">
@@ -144,7 +130,42 @@
 	<br>
   </div>
   <div class="row">
-		<div class="jumbotron">
+	<div class="col-md-4 click2edit">
+		<h2>
+			Heading
+		</h2>
+		<p>
+			Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
+		</p>
+		<p>
+			<a class="btn" href="#">View details »</a>
+		</p>
+	</div>
+	<div class="col-md-4 click2edit">
+		<h2>
+			Heading
+		</h2>
+		<p>
+			Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
+		</p>
+		<p>
+			<a class="btn" href="#">View details »</a>
+		</p>
+	</div>
+	<div class="col-md-4 click2edit">
+		<h2>
+			Heading
+		</h2>
+		<p>
+			Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
+		</p>
+		<p>
+			<a class="btn" href="#">View details »</a>
+		</p>
+	</div>
+</div>
+  <div class="row">
+		<div class="jumbotron click2edit">
 			<h2>
 				Hello, world!
 			</h2>
