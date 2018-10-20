@@ -1,0 +1,21 @@
+.createAccBtn{
+    background: #5c75e4;
+    color: #fff;
+    border-radius: 7px;
+    border: none;
+    height: 40px;
+    font-size: 17px;
+    margin-top: 20px;
+    box-shadow: 1px 1px 1px 1px #c5c2c2;
+    transition: all 0.3s ease-out;
+}
+.createAccBtn:hover{
+    background: #5c75e4;
+    box-shadow: 3px 2px 8px 1px #d4d1d1;
+    transition: all 0.3s ease-in;
+    cursor: pointer;
+}
+.registerBlock{
+    display: flex;
+    align-items: center;
+}

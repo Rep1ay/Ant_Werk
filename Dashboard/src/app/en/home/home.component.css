@@ -1,0 +1,20 @@
+.active{
+    background:lightgreen;
+    border: 1px solid #777;
+}
+.sectionBlock{
+    /* display: flex; */
+    flex-direction: column;
+}
+.block{
+    padding: 20px;
+}
+
+.click2edit{
+    position: relative;
+}
+
+.note-btn .saveBtn{
+    background: #337ab7;
+    color: #fff;
+}
