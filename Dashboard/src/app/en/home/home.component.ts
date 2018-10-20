@@ -47,9 +47,7 @@ export class HomeComponent implements OnInit {
     this._templatesService.getTemplate(this.title)
       .subscribe(
         (res) => {
-          if(res){
-            this.template = res.template;
-          }
+          if(res){this.template = res.template;}
         },
         (err) => {
           console.log(err);
@@ -57,40 +55,45 @@ export class HomeComponent implements OnInit {
       );
   };
 
-  registerEvent(event){
-    debugger
-  }
-
   eventBinder(){
 
-    let _self = this;
-    this.btnExist = true;
-
+    let blockAddBlock = document.createElement('div');
+    let btnAddBlock = document.createElement('button');
+    let btnAddTextNode = document.createTextNode('+');
+    let areaBeforeBlock = $('.areaBeforeBlock');
     let btnEdit = document.createElement('button');
     let textNodeEdit = document.createTextNode('Edit');
-
-    
     let btnBlock = document.createElement('div');
-
-    btnEdit.appendChild(textNodeEdit);
-   
-
-
-    btnBlock.appendChild(btnEdit);
-    // btnBlock.appendChild(btnSave);
-
+    let clientWidth = $(document).width();
+    let _self = this;
+    this.btnExist = true;
     let position;
     let top;
     let left;
-    
+   
+    btnEdit.appendChild(textNodeEdit);
+    btnBlock.appendChild(btnEdit);
+    btnAddBlock.setAttribute('class', 'btnAddBlock');
+    btnAddBlock.setAttribute('style', `position:relative; left:${clientWidth/2}px`)
+    btnAddBlock.appendChild(btnAddTextNode);
+    blockAddBlock.appendChild(btnAddBlock);
+
+    $(blockAddBlock).insertBefore(areaBeforeBlock);
+  
+    $('.btnAddBlock').off('click').on('click', (event) =>{
+      this.addNewBlock(event);
+    });
+  
     $('.click2edit').hover(function(event){
 
       if(event.relatedTarget){
-         if(!event.relatedTarget.classList.contains('saveBtn') && !event.relatedTarget.classList.contains('editBtn')){
+
+        let RTClass = event.relatedTarget.classList;
+
+        if(!RTClass.contains('saveBtn') && !RTClass.contains('editBtn')){
+
           this.lastTarget = $(this);
-          // position = event.target.lastTarget.position();
-          
-          // left = this.clientWidth - 100;
+
           position = $(this).position();
           top = position.top;
           left = position.left;
@@ -113,6 +116,28 @@ export class HomeComponent implements OnInit {
       });
   }
 
+  addNewBlock(event){
+    debugger
+
+    let sectionBlock = document.createElement('section');
+    let edit2clickBlock = document.createElement('div');
+    let editorWidth = $(document).width();
+    sectionBlock.setAttribute('class', 'areaBeforeBlock');
+    edit2clickBlock.setAttribute('class', 'click2edit');
+    edit2clickBlock.setAttribute('style', `width:${editorWidth}`);
+
+    sectionBlock.appendChild(edit2clickBlock);
+    $(sectionBlock).insertBefore(event.target);
+
+    let body = {
+      elem: $(edit2clickBlock)
+    }
+
+    this.eventBinder();
+    this.edit(body)
+
+   }
+
   edit(body){
     let editorWidth = body.elem.width();
     let _self = this;
@@ -121,8 +146,9 @@ export class HomeComponent implements OnInit {
     let top = position.top;
 
     let context = $(body.elem);
+    // let renge = $(body.elem).summernote('saveRange');
 
-    let SaveButton = function (context) {
+    let SaveButton = (context) => {
       let ui = $.summernote.ui;
       let button = ui.button({
         className: 'saveBtn',
@@ -141,6 +167,45 @@ export class HomeComponent implements OnInit {
     
       return button.render();
     }
+     // let initialText = $(body.elem).summernote('code');
+
+    let CancelButton = (context) => {
+      let ui = $.summernote.ui;
+      let button = ui.button({
+        className: 'cancelBtn',
+        backgroundColor: '#337ab7',
+        contents: '<i class="fa fa-child"/> Cancel',
+        // tooltip: 'Save',
+        click: function () {
+
+          let send_body = {
+            elem: $(body.elem),
+            initialText: $(body.elem).summernote('code')
+          }
+
+      _self.cancel(send_body);
+        }
+      });
+    
+      return button.render();
+    }
+
+    let UndoButton = (context) => {
+      let ui = $.summernote.ui;
+      let button = ui.button({
+        className: 'undoBtn',
+        backgroundColor: '#337ab7',
+        contents: '<i class="fa fa-child"/> Undo',
+        // tooltip: 'Save',
+        click: function () {
+          $(body.elem).summernote('undo');
+        }
+      });
+    
+      return button.render();
+    }
+
+
 
     $(context).summernote({
       width: editorWidth,
@@ -154,10 +219,14 @@ export class HomeComponent implements OnInit {
         ['table', ['table']],
         ['insert', ['link', 'picture', 'video', 'hr']],
         ['misc', ['fullscreen', 'codeview', 'help']],
-        ['savebutton', ['save']]
+        ['savebutton', ['save']],
+        ['cancelbutton', ['cancel']],
+        ['undobutton', ['undo']],
       ],
       buttons: {
-        save: SaveButton
+        undo: UndoButton,
+        save: SaveButton,
+        cancel: CancelButton
       }
     });
 
@@ -170,6 +239,13 @@ export class HomeComponent implements OnInit {
 
     let markup = $(body.elem).summernote('code');
 
+    $(body.elem).summernote('destroy');
+  }
+
+  cancel(body){
+    debugger
+    $(body.elem).summernote('reset');
+    $(body.elem).summernote('insertCode', body.initialText);
     $(body.elem).summernote('destroy');
   }
 
@@ -205,54 +281,5 @@ export class HomeComponent implements OnInit {
       },
       (error) => {console.log(error)}
     )
-  }
-  
-  editElement(event, elem){
-    if(!this.activeHoverEvent){
-      this.activeHoverEvent = true;
-    }
-
-    let target = event.target
-    let targetParents = $(target).parents();
-    if(event.toElement.classList.contains('click2edit')){
-      let classList = event.toElement.classList;
-    }
-   
-    if($(event.fromElement).parents('.click2edit')){
-
-      let classList2 = $(event.fromElement).parents();
-
-    }
-    if(!target.classList.contains('body_container')){
-      let targContext = $(target).parents('.click2edit');
-
-      if(targContext[0]){
-        if(targContext[0].classList.contains('click2edit')){
-          // debugger
-          if (!this.btnExist){
-              this.btnExist = true;
-              let btnEdit = document.createElement('button');
-              let textNode = document.createTextNode('Edit');
-              let parentBlock = targContext[0];
-              $(btnEdit).on('click', (event) =>{
-                debugger
-              })
-
-              btnEdit.appendChild(textNode);
-
-              parentBlock.append(btnEdit)
-          
-              // let left = parentBlock.width() - 100;
-              // let top = parentBlock.height() - 100;
-              let left = parentBlock.offsetWidth - 100;
-              let top = parentBlock.offsetHeight - 100;
-              btnEdit.setAttribute('style', `position:absolute;left:${left}px;top:${top}px`);
-            }
-          // }
-        }
-      } else if(targContext["context"].classList.contains('click2edit')){
-        // debugger
-      }
-    }
   }
 }
