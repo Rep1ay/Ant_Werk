@@ -20,7 +20,6 @@ export class HomeComponent implements OnInit {
   postSaved : boolean = false;
   currentElem: any;
   currentTarget: any;
-  btnExist = false;
   private _formBuilder: FormBuilder;
   savePostForm: FormGroup;
   activeHoverEvent;
@@ -39,7 +38,7 @@ export class HomeComponent implements OnInit {
     )
 
     $( document ).ready(()=> {
-      this.eventBinder();
+      this.addButtons();
     });
 
     this.activeHoverEvent = false;
@@ -55,7 +54,7 @@ export class HomeComponent implements OnInit {
       );
   };
 
-  eventBinder(){
+  addButtons(){
 
     let blockAddBlock = document.createElement('div');
     let btnAddBlock = document.createElement('button');
@@ -65,12 +64,14 @@ export class HomeComponent implements OnInit {
     let textNodeEdit = document.createTextNode('Edit');
     let btnBlock = document.createElement('div');
     let clientWidth = $(document).width();
-    let _self = this;
-    this.btnExist = true;
-    let position;
-    let top;
-    let left;
-   
+
+    let body = {
+      btnEdit: btnEdit,
+      btnBlock: btnBlock,
+      btnAddBlock : btnAddBlock,
+      blockAddBlock: blockAddBlock
+    }
+
     btnEdit.appendChild(textNodeEdit);
     btnBlock.appendChild(btnEdit);
     btnAddBlock.setAttribute('class', 'btnAddBlock');
@@ -79,6 +80,17 @@ export class HomeComponent implements OnInit {
     blockAddBlock.appendChild(btnAddBlock);
 
     $(blockAddBlock).insertBefore(areaBeforeBlock);
+
+    this.eventBinder(body);
+  }
+
+  eventBinder(body){
+    let _self = this;
+    let position = body.position;
+    let top;
+    let left;
+   
+
   
     $('.btnAddBlock').off('click').on('click', (event) =>{
       this.addNewBlock(event);
@@ -98,18 +110,18 @@ export class HomeComponent implements OnInit {
           top = position.top;
           left = position.left;
 
-          btnBlock.setAttribute('style', `position:absolute;left:${left}px;top:${top}px`);
-          btnBlock.setAttribute('class', 'btnBlock');
-          $(btnBlock).insertBefore($(this));
+          body.btnBlock.setAttribute('style', `position:absolute;left:${left}px;top:${top}px`);
+          body.btnBlock.setAttribute('class', 'btnBlock');
+          $(body.btnBlock).insertBefore($(this));
         }
       }
 
-      $(btnEdit).off('click').on('click', (event) =>{
+      $(body.btnEdit).off('click').on('click', (event) =>{
         let send_body = {
           elem: $(this),
           position: left,
-          btnBlock: btnBlock,
-          btnEdit: btnEdit
+          btnBlock: body.btnBlock,
+          btnEdit: body.btnEdit
         }
           _self.edit(send_body);
         });
@@ -133,7 +145,7 @@ export class HomeComponent implements OnInit {
       elem: $(edit2clickBlock)
     }
 
-    this.eventBinder();
+    this.addButtons();
     this.edit(body)
 
    }
