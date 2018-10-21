@@ -201,7 +201,7 @@ export class HomeComponent implements OnInit {
         ['para', ['ul', 'ol', 'paragraph']],
         ['table', ['table']],
         ['insert', ['link', 'picture', 'video', 'hr']],
-        ['misc', ['fullscreen', 'codeview', 'redo', 'undo', 'help']],
+        ['misc', ['fullscreen', 'codeview', 'undo', 'redo', 'help']],
         ['savebutton', ['save']],
         ['cancelbutton', ['cancel']],
       ],
@@ -224,7 +224,11 @@ export class HomeComponent implements OnInit {
   }
 
   cancel(body){
+    let markup = $(body.elem).summernote('code');
     debugger
+    if(markup === "<p><br></p>"){
+      body.elem.context.parentElement.remove();
+    }
     $(body.elem).summernote('reset');
     $(body.elem).summernote('insertCode', body.initialText);
     $(body.elem).summernote('destroy');
