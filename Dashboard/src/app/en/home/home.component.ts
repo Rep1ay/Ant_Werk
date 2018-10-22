@@ -142,7 +142,6 @@ export class HomeComponent implements OnInit {
   }
 
   addNewBlock(event){
-    debugger
 
     let sectionBlock = document.createElement('section');
     let edit2clickBlock = document.createElement('div');
@@ -250,7 +249,6 @@ export class HomeComponent implements OnInit {
 
   cancel(body){
     let markup = $(body.elem).summernote('code');
-    debugger
     if(markup === "<p><br></p>"){
       body.elem.context.parentElement.remove();
     }
