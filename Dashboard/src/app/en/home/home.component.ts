@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { TemplatesService } from '../../templates.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { AuthService } from 'src/app/auth.service';
 // Jquery declaration
 declare var $: any;
 
@@ -11,6 +12,7 @@ declare var $: any;
 })
 
 export class HomeComponent implements OnInit {
+  loggedIn: boolean;
   lastTarget: any;
   title = 'home';
   template: any;
@@ -22,76 +24,56 @@ export class HomeComponent implements OnInit {
   currentTarget: any;
   private _formBuilder: FormBuilder;
   savePostForm: FormGroup;
-  activeHoverEvent;
   saveBtnPublic: any;
   event: any;
 
-  constructor(private _templatesService: TemplatesService, formBuilder: FormBuilder) { 
-    this._formBuilder = formBuilder;    
-    this.savePostForm = this._formBuilder.group({ })
-  }
+  constructor(private _templatesService: TemplatesService, 
+            formBuilder: FormBuilder,
+            private _auth: AuthService
+            ) { 
+            this._formBuilder = formBuilder;    
+            this.savePostForm = this._formBuilder.group({ })
+          }
 
   ngOnInit() {
-
+    this.loggedIn = this._auth.loggedIn();
     this._templatesService._event.subscribe(
       event => this.editInner(event)
     )
-
+  if(this.loggedIn){
     $( document ).ready(()=> {
       let event, body = null;
       this.addAppendButtons(event, body)
       this.addButtons(event, body);
     });
+  }
 
-    this.activeHoverEvent = false;
-
-    this._templatesService.getTemplate(this.title)
-      .subscribe(
-        (res) => {
-          if(res){this.template = res.template;}
-        },
-        (err) => {
-          console.log(err);
-        }
-      );
+   this._templatesService.getTemplate(this.title)
+    .subscribe(
+      (res) => {
+        if(res){this.template = res.template;}
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
   };
 
   addButtons(event, body){
-
-    // let blockAddBlock = document.createElement('div');
-    // let btnAddBlock = document.createElement('button');
-    // let btnAddTextNode = document.createTextNode('+');
-    // let areaBeforeBlock;
-
     let btnEdit = document.createElement('button');
     let textNodeEdit = document.createTextNode('Edit');
     let btnEditBlock = document.createElement('div');
     btnEditBlock.setAttribute('class', 'btnEditBlock');
     let clientWidth = $(document).width();
 
-
-    // if(event){ 
-    //   areaBeforeBlock = $(body.elem);
-    // }else{
-    //    areaBeforeBlock = $('.areaBeforeBlock');
-    // }
-
     let body_send = {
       btnEdit: btnEdit,
       btnEditBlock: btnEditBlock,
-      // btnAddBlock : btnAddBlock,
-      // blockAddBlock: blockAddBlock,
       
     }
 
     btnEdit.appendChild(textNodeEdit);
     btnEditBlock.appendChild(btnEdit);
-    // btnAddBlock.setAttribute('class', 'btnAddBlock');
-    // btnAddBlock.setAttribute('style', `position:relative; left:${clientWidth/2}px`)
-    // btnAddBlock.appendChild(btnAddTextNode);
-    // blockAddBlock.appendChild(btnAddBlock);
-
-    // $(blockAddBlock).insertBefore(areaBeforeBlock);
 
     this.eventBinder(body_send);
     if(body){
@@ -156,12 +138,6 @@ export class HomeComponent implements OnInit {
     let position = body.position;
     let top;
     let left;
-   
-
-  
-    // $('.btnAddBlock').off('click').on('click', (event) =>{
-    //   this.addNewBlock(event);
-    // });
   
     $('.click2edit').on('mouseover', function(event){
       let isExist = false;
