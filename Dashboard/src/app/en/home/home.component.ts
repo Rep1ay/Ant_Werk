@@ -66,6 +66,7 @@ export class HomeComponent implements OnInit {
     let btnEdit = document.createElement('button');
     let textNodeEdit = document.createTextNode('Edit');
     let btnEditBlock = document.createElement('div');
+    btnEditBlock.setAttribute('class', 'btnEditBlock');
     let clientWidth = $(document).width();
 
 
@@ -93,6 +94,12 @@ export class HomeComponent implements OnInit {
     // $(blockAddBlock).insertBefore(areaBeforeBlock);
 
     this.eventBinder(body_send);
+    if(body){
+       if(body.addNewBlock){
+      this.addAppendButtons(event, body);
+      }
+    }
+   
   }
 
   addAppendButtons(event, body){
@@ -135,9 +142,10 @@ export class HomeComponent implements OnInit {
     $(sectionBlock).insertBefore(event.target);
 
     let body = {
-      elem: $(edit2clickBlock)
+      elem: $(edit2clickBlock),
+      addNewBlock: true
     }
-    this.addAppendButtons(event, body);
+    
     this.addButtons(event, body);
     this.edit(body)
 
@@ -155,16 +163,17 @@ export class HomeComponent implements OnInit {
     //   this.addNewBlock(event);
     // });
   
-    $('.click2edit').hover(function(event){
-
-      if(event.relatedTarget){
-
+    $('.click2edit').on('mouseover', function(event){
+      let isExist = false;
+      // let target;
+      // if(target !== event.currentTarget){
+      //   target = event.currentTarget
         // let RTClass = event.relatedTarget.classList;
         let currentTargetCl = event.currentTarget.classList;
 
         // if(!RTClass.contains('saveBtn') && !RTClass.contains('editBtn')){
           if(currentTargetCl.contains('click2edit')){
-
+            $('.btnBlock').hide();
           this.lastTarget = $(this);
 
           position = $(this).position();
@@ -173,7 +182,10 @@ export class HomeComponent implements OnInit {
 
           body.btnEditBlock.setAttribute('style', `position:absolute;left:${left}px;top:${top}px`);
           body.btnEditBlock.setAttribute('class', 'btnBlock');
-          $(body.btnEditBlock).insertBefore($(this));
+          if(!isExist){
+            isExist = true;
+            $(body.btnEditBlock).insertBefore($(this));
+          }
         }
  
 
@@ -186,7 +198,7 @@ export class HomeComponent implements OnInit {
         }
           _self.edit(send_body);
         });
-      }
+      // }
       });
   }
 
@@ -264,7 +276,7 @@ export class HomeComponent implements OnInit {
         cancel: CancelButton
       }
     });
-
+    $('.btnBlock').hide();
     $(body.elem).summernote();
   }
 
