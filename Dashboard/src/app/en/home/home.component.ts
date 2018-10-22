@@ -38,7 +38,9 @@ export class HomeComponent implements OnInit {
     )
 
     $( document ).ready(()=> {
-      this.addButtons();
+      let event, body = null;
+      
+      this.addButtons(event, body);
     });
 
     this.activeHoverEvent = false;
@@ -54,22 +56,30 @@ export class HomeComponent implements OnInit {
       );
   };
 
-  addButtons(){
+  addButtons(event, body){
 
     let blockAddBlock = document.createElement('div');
     let btnAddBlock = document.createElement('button');
     let btnAddTextNode = document.createTextNode('+');
-    let areaBeforeBlock = $('.areaBeforeBlock');
+    let areaBeforeBlock;
     let btnEdit = document.createElement('button');
     let textNodeEdit = document.createTextNode('Edit');
     let btnBlock = document.createElement('div');
     let clientWidth = $(document).width();
 
-    let body = {
+
+    if(event){ 
+      areaBeforeBlock = $(body.elem);
+    }else{
+       areaBeforeBlock = $('.areaBeforeBlock');
+    }
+
+    let body_send = {
       btnEdit: btnEdit,
       btnBlock: btnBlock,
       btnAddBlock : btnAddBlock,
-      blockAddBlock: blockAddBlock
+      blockAddBlock: blockAddBlock,
+      
     }
 
     btnEdit.appendChild(textNodeEdit);
@@ -81,7 +91,7 @@ export class HomeComponent implements OnInit {
 
     $(blockAddBlock).insertBefore(areaBeforeBlock);
 
-    this.eventBinder(body);
+    this.eventBinder(body_send);
   }
 
   eventBinder(body){
@@ -100,9 +110,11 @@ export class HomeComponent implements OnInit {
 
       if(event.relatedTarget){
 
-        let RTClass = event.relatedTarget.classList;
+        // let RTClass = event.relatedTarget.classList;
+        let currentTargetCl = event.currentTarget.classList;
 
-        if(!RTClass.contains('saveBtn') && !RTClass.contains('editBtn')){
+        // if(!RTClass.contains('saveBtn') && !RTClass.contains('editBtn')){
+          if(currentTargetCl.contains('click2edit')){
 
           this.lastTarget = $(this);
 
@@ -114,7 +126,7 @@ export class HomeComponent implements OnInit {
           body.btnBlock.setAttribute('class', 'btnBlock');
           $(body.btnBlock).insertBefore($(this));
         }
-      }
+ 
 
       $(body.btnEdit).off('click').on('click', (event) =>{
         let send_body = {
@@ -125,6 +137,7 @@ export class HomeComponent implements OnInit {
         }
           _self.edit(send_body);
         });
+      }
       });
   }
 
@@ -145,7 +158,7 @@ export class HomeComponent implements OnInit {
       elem: $(edit2clickBlock)
     }
 
-    this.addButtons();
+    this.addButtons(event, body);
     this.edit(body)
 
    }
