@@ -39,7 +39,7 @@ export class HomeComponent implements OnInit {
 
     $( document ).ready(()=> {
       let event, body = null;
-      
+      this.addAppendButtons(event, body)
       this.addButtons(event, body);
     });
 
@@ -58,15 +58,50 @@ export class HomeComponent implements OnInit {
 
   addButtons(event, body){
 
+    // let blockAddBlock = document.createElement('div');
+    // let btnAddBlock = document.createElement('button');
+    // let btnAddTextNode = document.createTextNode('+');
+    // let areaBeforeBlock;
+
+    let btnEdit = document.createElement('button');
+    let textNodeEdit = document.createTextNode('Edit');
+    let btnEditBlock = document.createElement('div');
+    let clientWidth = $(document).width();
+
+
+    // if(event){ 
+    //   areaBeforeBlock = $(body.elem);
+    // }else{
+    //    areaBeforeBlock = $('.areaBeforeBlock');
+    // }
+
+    let body_send = {
+      btnEdit: btnEdit,
+      btnEditBlock: btnEditBlock,
+      // btnAddBlock : btnAddBlock,
+      // blockAddBlock: blockAddBlock,
+      
+    }
+
+    btnEdit.appendChild(textNodeEdit);
+    btnEditBlock.appendChild(btnEdit);
+    // btnAddBlock.setAttribute('class', 'btnAddBlock');
+    // btnAddBlock.setAttribute('style', `position:relative; left:${clientWidth/2}px`)
+    // btnAddBlock.appendChild(btnAddTextNode);
+    // blockAddBlock.appendChild(btnAddBlock);
+
+    // $(blockAddBlock).insertBefore(areaBeforeBlock);
+
+    this.eventBinder(body_send);
+  }
+
+  addAppendButtons(event, body){
+
     let blockAddBlock = document.createElement('div');
     let btnAddBlock = document.createElement('button');
     let btnAddTextNode = document.createTextNode('+');
-    let areaBeforeBlock;
-    let btnEdit = document.createElement('button');
-    let textNodeEdit = document.createTextNode('Edit');
-    let btnBlock = document.createElement('div');
     let clientWidth = $(document).width();
-
+    let areaBeforeBlock;
 
     if(event){ 
       areaBeforeBlock = $(body.elem);
@@ -74,16 +109,6 @@ export class HomeComponent implements OnInit {
        areaBeforeBlock = $('.areaBeforeBlock');
     }
 
-    let body_send = {
-      btnEdit: btnEdit,
-      btnBlock: btnBlock,
-      btnAddBlock : btnAddBlock,
-      blockAddBlock: blockAddBlock,
-      
-    }
-
-    btnEdit.appendChild(textNodeEdit);
-    btnBlock.appendChild(btnEdit);
     btnAddBlock.setAttribute('class', 'btnAddBlock');
     btnAddBlock.setAttribute('style', `position:relative; left:${clientWidth/2}px`)
     btnAddBlock.appendChild(btnAddTextNode);
@@ -91,54 +116,10 @@ export class HomeComponent implements OnInit {
 
     $(blockAddBlock).insertBefore(areaBeforeBlock);
 
-    this.eventBinder(body_send);
-  }
-
-  eventBinder(body){
-    let _self = this;
-    let position = body.position;
-    let top;
-    let left;
-   
-
-  
     $('.btnAddBlock').off('click').on('click', (event) =>{
       this.addNewBlock(event);
     });
-  
-    $('.click2edit').hover(function(event){
 
-      if(event.relatedTarget){
-
-        // let RTClass = event.relatedTarget.classList;
-        let currentTargetCl = event.currentTarget.classList;
-
-        // if(!RTClass.contains('saveBtn') && !RTClass.contains('editBtn')){
-          if(currentTargetCl.contains('click2edit')){
-
-          this.lastTarget = $(this);
-
-          position = $(this).position();
-          top = position.top;
-          left = position.left;
-
-          body.btnBlock.setAttribute('style', `position:absolute;left:${left}px;top:${top}px`);
-          body.btnBlock.setAttribute('class', 'btnBlock');
-          $(body.btnBlock).insertBefore($(this));
-        }
- 
-
-      $(body.btnEdit).off('click').on('click', (event) =>{
-        let send_body = {
-          elem: $(this),
-          position: left,
-          btnBlock: body.btnBlock,
-          btnEdit: body.btnEdit
-        }
-          _self.edit(send_body);
-        });
-      }
-      });
   }
 
   addNewBlock(event){
@@ -156,11 +137,60 @@ export class HomeComponent implements OnInit {
     let body = {
       elem: $(edit2clickBlock)
     }
-
+    this.addAppendButtons(event, body);
     this.addButtons(event, body);
     this.edit(body)
 
    }
+
+  eventBinder(body){
+    let _self = this;
+    let position = body.position;
+    let top;
+    let left;
+   
+
+  
+    // $('.btnAddBlock').off('click').on('click', (event) =>{
+    //   this.addNewBlock(event);
+    // });
+  
+    $('.click2edit').hover(function(event){
+
+      if(event.relatedTarget){
+
+        // let RTClass = event.relatedTarget.classList;
+        let currentTargetCl = event.currentTarget.classList;
+
+        // if(!RTClass.contains('saveBtn') && !RTClass.contains('editBtn')){
+          if(currentTargetCl.contains('click2edit')){
+
+          this.lastTarget = $(this);
+
+          position = $(this).position();
+          top = position.top;
+          left = position.left;
+
+          body.btnEditBlock.setAttribute('style', `position:absolute;left:${left}px;top:${top}px`);
+          body.btnEditBlock.setAttribute('class', 'btnBlock');
+          $(body.btnEditBlock).insertBefore($(this));
+        }
+ 
+
+      $(body.btnEdit).off('click').on('click', (event) =>{
+        let send_body = {
+          elem: $(this),
+          position: left,
+          btnEditBlock: body.btnEditBlock,
+          btnEdit: body.btnEdit
+        }
+          _self.edit(send_body);
+        });
+      }
+      });
+  }
+
+  
 
   edit(body){
     let editorWidth = body.elem.width();
