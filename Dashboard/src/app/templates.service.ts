@@ -28,7 +28,7 @@ private _templatesUrl = 'http://localhost:3000/api/templates'
     this.eventValue.next(event)
   }
 
-  getTemplate(title): Observable<Template>{
+  getTemplate(title, prefix): Observable<Template>{
     let templateBody = {
       pageTitle: title
     }
@@ -39,17 +39,18 @@ private _templatesUrl = 'http://localhost:3000/api/templates'
       'pageTitle': 'home'
     }
     const headers = new HttpHeaders(headerJson);
-
-    return this._http.get(this._templatesUrl, {headers}).pipe(map((response: any) => response));
+debugger
+    return this._http.get(this._templatesUrl + '_' + prefix, {headers}).pipe(map((response: any) => response));
 
   }
 
-  sendTemplate(template, title){
+  sendTemplate(template, title, prefix){
+    debugger
     let  templateBody: Template = {
       pageTitle: title,
       template: template
     } 
-    return this._http.put<any>(this._templatesUrl, templateBody);
+    return this._http.put<any>(this._templatesUrl + '_' + prefix, templateBody);
   
   }
 

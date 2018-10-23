@@ -4,21 +4,29 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HomeComponent } from './en/home/home.component';
+
+import { EnHomeComponent } from './en/home/home.component';
+import { EnLoginComponent } from './en/login/login.component';
+import { EnNavbarComponent } from './en/navbar/navbar.component';
+import { EnRegisterComponent } from './en/register/register.component';
+
+import { RuHomeComponent } from './ru/home/home.component';
+import { RuLoginComponent } from './ru/login/login.component';
+import { RuRegisterComponent } from './ru/register/register.component';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { LoginComponent } from './en/login/login.component';
-import { RegisterComponent } from './en/register/register.component';
-import { NavbarComponent } from './en/navbar/navbar.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent,
-    LoginComponent,
-    RegisterComponent,
-    NavbarComponent
+    EnHomeComponent,
+    EnLoginComponent,
+    EnRegisterComponent,
+    EnNavbarComponent,
+    RuHomeComponent,
+    RuLoginComponent,
+    RuRegisterComponent
   ],
   imports: [
     BrowserModule,

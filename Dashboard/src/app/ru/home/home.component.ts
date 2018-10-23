@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { TemplatesService } from '../../templates.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { AuthService } from 'src/app/en/auth.service';
+import { AuthService } from 'src/app/ru/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
+
+
 // Jquery declaration
 declare var $: any;
 
@@ -12,7 +14,7 @@ declare var $: any;
   styleUrls: ['./home.component.css']
 })
 
-export class EnHomeComponent implements OnInit {
+export class RuHomeComponent implements OnInit {
   loggedIn: boolean;
   lastTarget: any;
   title: string;
@@ -40,6 +42,7 @@ export class EnHomeComponent implements OnInit {
           }
 
   ngOnInit() {
+    debugger
     this.title = this._activeRoute.snapshot.url[1].path;
     this.prefix = this._activeRoute.snapshot.url[0].path;
     this.loggedIn = this._auth.loggedIn();

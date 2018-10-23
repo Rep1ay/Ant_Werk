@@ -7,7 +7,7 @@ import { NgForm } from '@angular/forms';
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css']
 })
-export class EnRegisterComponent implements OnInit {
+export class RuRegisterComponent implements OnInit {
 
   // registerUserData: any;
   constructor( private _auth: AuthService,
@@ -23,7 +23,7 @@ export class EnRegisterComponent implements OnInit {
       (res) => {
         debugger
         localStorage.setItem('token', res.token);
-        this.router.navigate(['/en/home']);
+        this.router.navigate(['/ru/home']);
         window.location.reload();
       },
       (error) => console.error(error)

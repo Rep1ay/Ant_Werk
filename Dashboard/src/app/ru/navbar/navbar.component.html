@@ -1,0 +1,53 @@
+<nav class="main_navbar">
+  <ul class="navbar_container">
+      
+    <button class="navbar-toggler" type="button" 
+        data-toggle="collapse" data-target="#navbarSupportedContent" 
+        aria-controls="navbarSupportedContent" aria-expanded="false" 
+        aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <!-- <form class="form-inline col-md-4 my-3 my-lg-0">
+      <input #formInput class="form-control col-md-8 mr-sm-2" type="search" 
+              placeholder="Type title, brand or categorie" 
+              aria-label="Search">
+      <button (click)='routeToSearch(formInput)' class="btn my-2 my-sm-0 searchBtn" type="submit">Search</button>
+    </form> -->
+    <li routerLinkActive="active"  routerLink="/">Home</li>
+    <!-- <li routerLinkActive="active"  class="menu_toggle" (click)="showProductsCollection(productCollection)">Products</li> -->
+    <li routerLinkActive="active" >Contact</li>
+    <li routerLinkActive="active" >Services</li>
+
+    
+    <li *ngIf='!loggedUser' routerLinkActive="active"  routerLink="/ru/login">Login</li>
+    
+    <!-- <li *ngIf='loggedUser' routerLinkActive="active"  routerLink="/adminPanel"><fa-icon [icon]="faUser"></fa-icon></li> -->
+   
+    <li (click)="logoutUser()" *ngIf='loggedUser' routerLinkActive="active"  routerLink="/register">Logout</li>
+
+    <ul class="navbar-nav">
+      <button *ngIf="!templateSending" (click)='editInner($event);templateSending = !templateSending' class="btn btn-primary my-2 my-sm-0"  type="button">
+        Save
+      </button>
+      <button *ngIf="templateSending" class="btn btn-info my-2 my-sm-0"  type="button">
+        Saving
+      </button>
+    </ul>
+  </ul>
+</nav>
+<div class="products_collections">
+    <ul class="fade_out_navbar">
+      <li routerLink="/">Home</li>
+      <li class="menu_toggle">Products</li>
+      <li>Contact</li>
+      <li>Services</li>
+      <li routerLink="/">Home</li>
+      <li class="menu_toggle">Products</li>
+      <li>Contact</li>
+      <li>Services</li>
+    </ul>
+</div>
+
+<nav>
+  
+</nav>

@@ -9,7 +9,7 @@ import { NgForm } from '@angular/forms';
   styleUrls: ['./login.component.css'],
   providers: [AuthService]
 })
-export class EnLoginComponent implements OnInit {
+export class RuLoginComponent implements OnInit {
 loginUserData = {};
   constructor( private _auth: AuthService,
                 private router: Router) { }
@@ -22,7 +22,7 @@ loginUserData = {};
     .subscribe(
       (res) => {
         localStorage.setItem('token', res.token);
-        this.router.navigate(['/en/home']);
+        this.router.navigate(['/ru/home']);
         window.location.reload();
       },
       (error) => console.log(error)
