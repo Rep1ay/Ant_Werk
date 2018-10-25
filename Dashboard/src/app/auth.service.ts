@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { User } from '../user.model';
+import { User } from './user.model';
 import { Subject } from 'rxjs';
 
 @Injectable({
@@ -25,11 +25,12 @@ export class AuthService {
     this.stateSource.next(state);
   }
 
-  registerNewUser(user) {
-    return this.http.post<any>(this._registerUrl, this.selectedUser);
+  registerNewUser(user: User) {
+    return this.http.post<any>(this._registerUrl, user);
   }
-  loginUser(user) {
-    return this.http.post<any>(this._loginUrl, this.selectedUser);
+  loginUser(user: User) {
+    debugger
+    return this.http.post<any>(this._loginUrl,user);
   }
 
   checkDiscount(promoCode) {

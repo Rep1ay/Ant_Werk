@@ -7,7 +7,6 @@ import { AppComponent } from './app.component';
 
 import { EnHomeComponent } from './en/home/home.component';
 import { EnLoginComponent } from './en/login/login.component';
-import { EnNavbarComponent } from './en/navbar/navbar.component';
 import { EnRegisterComponent } from './en/register/register.component';
 
 import { RuHomeComponent } from './ru/home/home.component';
@@ -15,6 +14,7 @@ import { RuLoginComponent } from './ru/login/login.component';
 import { RuRegisterComponent } from './ru/register/register.component';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NavbarComponent } from './navbar/navbar.component';
 
 
 @NgModule({
@@ -23,7 +23,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     EnHomeComponent,
     EnLoginComponent,
     EnRegisterComponent,
-    EnNavbarComponent,
+    NavbarComponent,
     RuHomeComponent,
     RuLoginComponent,
     RuRegisterComponent

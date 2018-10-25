@@ -11,11 +11,12 @@ import { TemplatesService } from 'src/app/templates.service';
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css']
 })
-export class EnNavbarComponent implements OnInit {
+export class NavbarComponent implements OnInit {
   productCollection: any;
   // faUser  = faUser;
   formInput: string;
   loggedUser: boolean;
+  templateSending:any;
   constructor(
     private _templatesService: TemplatesService,
               private _authService: AuthService,

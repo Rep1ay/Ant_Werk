@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from './../auth.service';
+import { AuthService } from './../../auth.service';
 import { Router } from '@angular/router';
 
 import { NgForm } from '@angular/forms';
@@ -11,13 +11,16 @@ import { NgForm } from '@angular/forms';
 })
 export class EnLoginComponent implements OnInit {
 loginUserData = {};
+
   constructor( private _auth: AuthService,
                 private router: Router) { }
 
   ngOnInit() {
+
   }
 
   loginUser( form: NgForm) {
+    debugger
     this._auth.loginUser(form.value)
     .subscribe(
       (res) => {
@@ -28,4 +31,6 @@ loginUserData = {};
       (error) => console.log(error)
     );
   }
+
+
 }

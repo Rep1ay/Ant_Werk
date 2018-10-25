@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { TemplatesService } from '../../templates.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { AuthService } from 'src/app/en/auth.service';
+import { AuthService } from './../../auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
 // Jquery declaration
 declare var $: any;
