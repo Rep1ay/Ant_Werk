@@ -15,6 +15,8 @@ _event = this.eventValue.asObservable();
 template:any;
   
 private _templatesUrl = 'http://localhost:3000/api/templates'
+// private _templatesUrl = 'http://68.183.30.119/api/templates'
+
   constructor(private _http: HttpClient) { 
    
   }
