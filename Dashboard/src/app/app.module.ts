@@ -5,28 +5,27 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
-import { EnHomeComponent } from './en/home/home.component';
-import { EnLoginComponent } from './en/login/login.component';
-import { EnRegisterComponent } from './en/register/register.component';
-
-import { RuHomeComponent } from './ru/home/home.component';
-import { RuLoginComponent } from './ru/login/login.component';
-import { RuRegisterComponent } from './ru/register/register.component';
+import { EnModuleModule } from './en/en-module.module';
+import { RuModuleModule } from './ru/ru-module.module';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NavbarComponent } from './navbar/navbar.component';
+// import { PreloaderComponent } from './en/preloader/preloader.component';
+// import { ContactsComponent } from './en/contacts/contacts.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    EnHomeComponent,
-    EnLoginComponent,
-    EnRegisterComponent,
+    // EnHomeComponent,
+    // EnLoginComponent,
+    // EnRegisterComponent,
     NavbarComponent,
-    RuHomeComponent,
-    RuLoginComponent,
-    RuRegisterComponent
+    // PreloaderComponent,
+    // RuHomeComponent,
+    // RuLoginComponent,
+    // RuRegisterComponent,
+    // ContactsComponent
   ],
   imports: [
     BrowserModule,
@@ -34,6 +33,8 @@ import { NavbarComponent } from './navbar/navbar.component';
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
+    EnModuleModule,
+    RuModuleModule
     // NgbModule
   ],
   providers: [],

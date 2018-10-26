@@ -3,8 +3,10 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from './../auth.service';
 // import { AngularFontAwesomeModule } from 'angular-font-awesome';
 // import { faUser, faDeaf  } from '@fortawesome/free-solid-svg-icons';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { TemplatesService } from 'src/app/templates.service';
+
+declare var $: any;
 
 @Component({
   selector: 'app-navbar',
@@ -14,16 +16,35 @@ import { TemplatesService } from 'src/app/templates.service';
 export class NavbarComponent implements OnInit {
   productCollection: any;
   // faUser  = faUser;
+  home = 'Home';
+  contacts = 'Contacts';
+  services = 'Services';
+
   formInput: string;
   loggedUser: boolean;
   templateSending:any;
   constructor(
     private _templatesService: TemplatesService,
               private _authService: AuthService,
-              private route: Router) { }
+              private _router: Router,
+              private _activatedRoute: ActivatedRoute) { }
 
   ngOnInit() {
-    // debugger
+    let lang = localStorage.language;
+
+    switch( lang ){
+      case 'ru' :
+        this.home = 'Главная',
+        this.contacts = 'Контакты',
+        this.services = 'Услуги'
+        break;
+      case 'en' : 
+        this.home = 'Home',
+        this.contacts = 'Contacts',
+        this.services = 'Services'
+        break;
+    }
+
     // this._authService._state.subscribe(
     //   state => this.isLoggedIn(state));
 
@@ -40,6 +61,63 @@ export class NavbarComponent implements OnInit {
     this.loggedUser = state;
   }
 
+  followLink(path){
+    debugger
+    let lang = localStorage.language;
+    let snapshot = this._activatedRoute.snapshot;
+    let routerPath = snapshot.children[0].url[1].path
+    this._router.navigate(['/' + lang + `/${path}`]);
+    routerPath = path;
+  }
+
+  chageLanguage(event, lang){
+    if(event.target.dataset.disabled === 'false'){
+      let snapshot = this._activatedRoute.snapshot;
+      let path = snapshot.children[0].url[1].path;
+      localStorage.setItem('language', lang);
+      this._router.navigate(['/' + lang + `/${path}`]);
+
+      switch( lang ){
+        case 'ru' :
+          this.home = 'Главная',
+          this.contacts = 'Контакты',
+          this.services = 'Услуги'
+          break;
+        case 'en' : 
+          this.home = 'Home',
+          this.contacts = 'Contacts',
+          this.services = 'Services'
+          break;
+      }
+
+      window.location.reload();
+    }else{
+      // let alertBlock = document.createElement('div');
+      let alertNodeElem = document.createTextNode('Language does not exist');
+      let paragraf = document.createElement('p');
+     
+      paragraf.appendChild(alertNodeElem);
+      // alertBlock.appendChild(paragraf);
+
+      document.body.appendChild(paragraf);
+      $(paragraf).css({ 'position':'absolute', 
+                        'top': '220px', 
+                        'right': '-200px', 
+                        'background': 'yellowgreen', 
+                        'font-size': '20px',
+                        'color': '#fff',
+                        'padding': '12px'});
+
+      setTimeout(()=>{
+        $(paragraf).css({'right': '70px'});
+      },100);
+     
+      setTimeout(()=>{
+        $(paragraf).css({'right': '-500px'});
+      },3000);
+    } 
+  }
+
   editInner(event){
     // debugger
     this._templatesService.editInner(event);
@@ -50,7 +128,7 @@ export class NavbarComponent implements OnInit {
 
       const scrollY = window.scrollY;
       const navbar = document.querySelector('.navbar_container');
-      const products_collections = document.querySelector('.products_collections ul');
+      // const products_collections = document.querySelector('.products_collections ul');
 
       class NavbarBehavior {
         constructor() {}
@@ -75,7 +153,7 @@ export class NavbarComponent implements OnInit {
       } else {
         navbarBehavior.show(navbar);
       }
-      navbarBehavior.toggle(products_collections, 'fade_out_navbar', 'fade_in_navbar');
+      // navbarBehavior.toggle(products_collections, 'fade_out_navbar', 'fade_in_navbar');
   });
   }
 
@@ -95,7 +173,7 @@ export class NavbarComponent implements OnInit {
 
   routeToSearch(input) {
     if (input.value.length >= 2) {
-        this.route.navigate(['/search'], {queryParams: {value: input.value}});
+        this._router.navigate(['/search'], {queryParams: {value: input.value}});
         window.location.reload();
     } else {
       input.classList.add('notValid');

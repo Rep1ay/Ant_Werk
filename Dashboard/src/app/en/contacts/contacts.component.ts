@@ -3,16 +3,15 @@ import { TemplatesService } from '../../templates.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { AuthService } from './../../auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
-// Jquery declaration
-declare var $: any;
-
+  // Jquery declaration
+  declare var $: any;
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  selector: 'app-contacts',
+  templateUrl: './contacts.component.html',
+  styleUrls: ['./contacts.component.css']
 })
+export class EnContactsComponent implements OnInit {
 
-export class RuHomeComponent implements OnInit {
   loggedIn: boolean;
   lastTarget: any;
   title: string;
@@ -29,7 +28,6 @@ export class RuHomeComponent implements OnInit {
   saveBtnPublic: any;
   event: any;
   savedContent: string;
-  showPreloader = true;
 
   constructor(private _templatesService: TemplatesService, 
             formBuilder: FormBuilder,
@@ -42,12 +40,6 @@ export class RuHomeComponent implements OnInit {
           }
 
   ngOnInit() {
-
-    // let urlCollect = this._activeRoute.snapshot.url;
-    // urlCollect.forEach( url => {
-    //   debugger
-    // });
-
     this.title = this._activeRoute.snapshot.url[1].path;
     this.prefix = this._activeRoute.snapshot.url[0].path;
     this.loggedIn = this._auth.loggedIn();
@@ -56,7 +48,6 @@ export class RuHomeComponent implements OnInit {
     )
   // if(this.loggedIn){
     $( document ).ready(()=> {
-
       let event, body = null;
       this.addEditButton(event, body);
     });
@@ -65,15 +56,9 @@ export class RuHomeComponent implements OnInit {
    this._templatesService.getTemplate(this.title, this.prefix)
     .subscribe(
       (res) => {
-        if(res){
-          this.template = res.template;
-          setTimeout(() => {
-            this.showPreloader = false;
-          }, 3000);
-        }
+        if(res){this.template = res.template;}
       },
       (err) => {
-        // this.showPreloader = true;
         console.log(err);
       }
     );
@@ -83,9 +68,6 @@ export class RuHomeComponent implements OnInit {
   };
 
   addEditButton(event, body){
-      setTimeout(() => {
-        this.showPreloader = false;
-      }, 1500);
 
       $('.click2edit').off('mouseover').on('mouseover', function(event){
       // let savedContent;

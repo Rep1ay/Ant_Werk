@@ -1,14 +1,5 @@
-<!-- <div class="well off-top">
-  <div class="alert alert-success" *ngIf="postSaved">Post added.</div>
-  <h4>Post something with Summernote:</h4>
-  <form role="form" [formGroup]="savePostForm" (ngSubmit)="savePost($event)">    
-    <div class="form-group">
-      <label>Post</label>
-      <textarea id="summernote" class="form-control" rows="3"></textarea>
-    </div>
-    <button type="submit" class="btn btn-primary" >Submit</button>
-  </form>
-</div> -->
+<app-preloader *ngIf="showPreloader"></app-preloader>
+
 
 
 
@@ -16,23 +7,7 @@
 <!-- <p [innerHTML]="postText | escapeHtml"></p> -->
 
 <div class="container-fluid">
-	<!-- <div class="row">
-		<div class="col-md-12">
-			<nav style="position: fixed;right: 0px;" class="navbar navbar-expand-lg navbar-light bg-light navbar-dark bg-dark">
-				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-					<ul class="navbar-nav">
-						<button *ngIf="!templateSending" (click)='editInner($event);templateSending = !templateSending' class="btn btn-primary my-2 my-sm-0"  type="button">
-							Save
-						</button>
-						<button *ngIf="templateSending" class="btn btn-primary my-2 my-sm-0" style="background: rgb(176, 179, 17)"  type="button">
-							Saving
-						</button>
-					</ul>
-				</div>
-      		</nav>
-    	</div>
-  </div> -->
-  <!-- (mouseover)='editElement($event, editBlock)' -->
+
 	<div  *ngIf="template" id="body"  class="container-fluid body_container">
 		<div [innerHTML]='template'></div>
 	</div>

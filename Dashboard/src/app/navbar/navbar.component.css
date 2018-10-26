@@ -20,6 +20,41 @@
     }
 }
 
+@keyframes slideIn {
+    from {
+        right: -200px;
+    }
+    to {
+        right: 20px;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        right: 20px;
+    }
+    to {
+        right: -200px;
+    }
+}
+
+.slideIn{
+    right: 20px;
+    animation-name: slideIn;
+    animation-duration: 2s;
+}
+
+.slideOut{
+    right: -200px;
+    animation-name: slideOut;
+    animation-duration: 1s;
+}
+
+/* .fadeOutAlert{
+    right: 200px;
+    position: absolute;
+} */
+
 .fixed_to_top{
     animation-name: fadeIn;
     animation-duration: 1s;
@@ -136,6 +171,31 @@
     box-shadow: inset 0px 0px 7px 0px #f54949;
     transition: all 0.5s ease-in-out;
 }
+
+#rightsidebar_main_block{
+    flex-flow: column;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    position: fixed;
+    right: 0px;
+    top: 220px;
+    z-index: 20;
+    opacity: 0.5;
+    transition: opacity 0.3s ease-out
+}
+
+#rightsidebar_main_block:hover{
+    opacity: 1;
+    transition: opacity 0.3s ease-in;
+}
+
+#right_sidebar{
+    flex-flow: column;
+    align-items: center;
+    width: 100%;
+}
+
 @media all and (max-width: 800px) {
     .main_navbar ul {
       justify-content: space-around;

@@ -41,13 +41,13 @@ private _templatesUrl = 'http://localhost:3000/api/templates'
       'pageTitle': 'home'
     }
     const headers = new HttpHeaders(headerJson);
-debugger
+// debugger
     return this._http.get(this._templatesUrl + '_' + prefix, {headers}).pipe(map((response: any) => response));
 
   }
 
   sendTemplate(template, title, prefix){
-    debugger
+    // debugger
     let  templateBody: Template = {
       pageTitle: title,
       template: template
