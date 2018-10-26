@@ -56,7 +56,10 @@ export class EnContactsComponent implements OnInit {
    this._templatesService.getTemplate(this.title, this.prefix)
     .subscribe(
       (res) => {
-        if(res){this.template = res.template;}
+        if(res){
+          let prefix = this.prefix;
+          this.template = res.body.template
+        }
       },
       (err) => {
         console.log(err);

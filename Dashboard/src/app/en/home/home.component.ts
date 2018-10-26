@@ -66,7 +66,8 @@ export class EnHomeComponent implements OnInit {
     .subscribe(
       (res) => {
         if(res){
-          this.template = res.template;
+          let prefix = this.prefix;
+          this.template = res['template'];
           setTimeout(() => {
             this.showPreloader = false;
           }, 3000);

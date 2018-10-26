@@ -56,7 +56,7 @@ export class RuContactsComponent implements OnInit {
    this._templatesService.getTemplate(this.title, this.prefix)
     .subscribe(
       (res) => {
-        if(res){this.template = res.template;}
+        if(res){this.template = res['template']}
       },
       (err) => {
         console.log(err);

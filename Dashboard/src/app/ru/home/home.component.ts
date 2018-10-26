@@ -66,7 +66,7 @@ export class RuHomeComponent implements OnInit {
     .subscribe(
       (res) => {
         if(res){
-          this.template = res.template;
+          this.template = res['template']
           setTimeout(() => {
             this.showPreloader = false;
           }, 3000);

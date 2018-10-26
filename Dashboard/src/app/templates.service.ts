@@ -38,21 +38,26 @@ private _templatesUrl = 'http://localhost:3000/api/templates'
     let headerJson = {
       'Content-Type': 'application/json',
       'Accept' : 'application/json',
+      'prefix': prefix,
       'pageTitle': 'home'
     }
     const headers = new HttpHeaders(headerJson);
 // debugger
-    return this._http.get(this._templatesUrl + '_' + prefix, {headers}).pipe(map((response: any) => response));
+    return this._http.get(this._templatesUrl, {headers}).pipe(map((response: any) => response));
 
   }
 
   sendTemplate(template, title, prefix){
-    // debugger
+    debugger
     let  templateBody: Template = {
-      pageTitle: title,
-      template: template
+      body: {
+        'prefix': prefix,
+        'pageTitle': title,
+        'template': template
+      }
+    
     } 
-    return this._http.put<any>(this._templatesUrl + '_' + prefix, templateBody);
+    return this._http.put<any>(this._templatesUrl, templateBody);
   
   }
 

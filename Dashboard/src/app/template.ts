@@ -1,4 +1,7 @@
 export interface Template {
-    pageTitle: String,
-    template: String
+    body: {
+        prefix: string,
+        pageTitle: String,
+        template: String
+    }
 }
