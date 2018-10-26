@@ -42,7 +42,7 @@ export class RuHomeComponent implements OnInit {
           }
 
   ngOnInit() {
-
+// debugger
     // let urlCollect = this._activeRoute.snapshot.url;
     // urlCollect.forEach( url => {
     //   debugger
