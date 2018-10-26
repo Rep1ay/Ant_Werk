@@ -28,6 +28,7 @@ export class EnHomeComponent implements OnInit {
   savePostForm: FormGroup;
   saveBtnPublic: any;
   event: any;
+  savedContent: string;
 
   constructor(private _templatesService: TemplatesService, 
             formBuilder: FormBuilder,
@@ -91,11 +92,11 @@ export class EnHomeComponent implements OnInit {
 
       // Cancel button
       
-      // let btnCancel = document.createElement('button');
-      // let textNodeCancel = document.createTextNode('Cancel');
-      // btnCancel.setAttribute('class', 'btn btn-danger btn-large btnCancel');
-      // let blockForBtnCancel = document.createElement('div');
-      // btnCancel.appendChild(textNodeCancel);
+      let btnCancel = document.createElement('button');
+      let textNodeCancel = document.createTextNode('Cancel');
+      btnCancel.setAttribute('class', 'btn btn-danger btn-large btnCancel');
+      let blockForBtnCancel = document.createElement('div');
+      btnCancel.appendChild(textNodeCancel);
 
 
       btnEdit.appendChild(textNodeEdit);
@@ -120,7 +121,7 @@ export class EnHomeComponent implements OnInit {
 
       $(btnEdit).off('click').on('click', (event) =>{
 
-        // savedContent = target.innerText;
+        this.savedContent = target.innerText;
         target.setAttribute('contenteditable', 'true');
         target.focus();
         $(btnEdit).remove();
@@ -137,15 +138,15 @@ export class EnHomeComponent implements OnInit {
 
         // cancel button
 
-        // blockForBtnCancel.appendChild(btnCancel);
-        // $(blockForBtnCancel).insertBefore(target)
-        // $(blockForBtnCancel).css({'left': `${left + 70}px`, 
-        //                   'top': `${top - 70}px`, 
-        //                   'position': 'absolute',
-        //                   'font-size':'16px',
-        //                   'z-index': '1'
-        //                   });
-        // blockForBtnCancel.setAttribute('class', 'blockForBtnCancel');
+        blockForBtnCancel.appendChild(btnCancel);
+        $(blockForBtnCancel).insertBefore(target)
+        $(blockForBtnCancel).css({'left': `${left + 70}px`, 
+                          'top': `${top - 70}px`, 
+                          'position': 'absolute',
+                          'font-size':'16px',
+                          'z-index': '1'
+                          });
+        blockForBtnCancel.setAttribute('class', 'blockForBtnCancel');
        
 
       });
@@ -156,9 +157,11 @@ export class EnHomeComponent implements OnInit {
         $('.blockForBtnSave').remove();
         $('.blockForBtnCancel').remove();
 
-        // if(event.relatedTarget.classList.contains('btnCancel')){
-        //   // target.innerText = savedContent;
-        // }
+        if(event.relatedTarget){
+          if(event.relatedTarget.classList.contains('btnCancel')){
+            target.innerText = this.savedContent;
+          }
+        }
       })
       });
      
