@@ -1,17 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { TemplatesService } from '../../templates.service';
+import { TemplatesService } from '../templates.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { AuthService } from './../../auth.service';
+import { AuthService } from '../auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
-  // Jquery declaration
-  declare var $: any;
-@Component({
-  selector: 'app-contacts',
-  templateUrl: './contacts.component.html',
-  styleUrls: ['./contacts.component.css']
-})
-export class EnContactsComponent implements OnInit {
+// Jquery declaration
+declare var $: any;
 
+@Component({
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css']
+})
+
+export class HomeComponent implements OnInit {
   loggedIn: boolean;
   lastTarget: any;
   title: string;
@@ -28,6 +29,7 @@ export class EnContactsComponent implements OnInit {
   saveBtnPublic: any;
   event: any;
   savedContent: string;
+  showPreloader = true;
 
   constructor(private _templatesService: TemplatesService, 
             formBuilder: FormBuilder,
@@ -40,14 +42,22 @@ export class EnContactsComponent implements OnInit {
           }
 
   ngOnInit() {
-    this.title = this._activeRoute.snapshot.url[1].path;
-    this.prefix = this._activeRoute.snapshot.url[0].path;
+// debugger
+    // let urlCollect = this._activeRoute.snapshot.url;
+    // urlCollect.forEach( url => {
+    //   debugger
+    // });
+    localStorage.location = this._activeRoute.snapshot.url[0].path;
+    this.title = this._activeRoute.snapshot.url[0].path;
+    this._activeRoute.snapshot.url[0].path;
+    this.prefix = localStorage.language;
     this.loggedIn = this._auth.loggedIn();
     this._templatesService._event.subscribe(
       event => this.editInner(event)
     )
   // if(this.loggedIn){
     $( document ).ready(()=> {
+
       let event, body = null;
       this.addEditButton(event, body);
     });
@@ -58,10 +68,14 @@ export class EnContactsComponent implements OnInit {
       (res) => {
         if(res){
           let prefix = this.prefix;
-          this.template = res.body.template
+          this.template = res['template'];
+          setTimeout(() => {
+            this.showPreloader = false;
+          }, 3000);
         }
       },
       (err) => {
+        // this.showPreloader = true;
         console.log(err);
       }
     );
@@ -71,6 +85,9 @@ export class EnContactsComponent implements OnInit {
   };
 
   addEditButton(event, body){
+      setTimeout(() => {
+        this.showPreloader = false;
+      }, 1500);
 
       $('.click2edit').off('mouseover').on('mouseover', function(event){
       // let savedContent;
@@ -178,10 +195,16 @@ export class EnContactsComponent implements OnInit {
     }else{
       body= document.querySelector('#default');
     }
-   
-    this._templatesService.sendTemplate(body.innerHTML, pageTitle, this.prefix).subscribe(
+    let send_prefix;
+    if(localStorage.addNewLang){
+      send_prefix = localStorage.addNewLang;
+    }else{
+      send_prefix = this.prefix;
+    }
+    this._templatesService.sendTemplate(body.innerHTML, pageTitle, send_prefix).subscribe(
       (res) => {
         setTimeout(() => {
+          localStorage.removeItem('addNewLang');
           this.templateSending = false;
         }, 1000)
       },

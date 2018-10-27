@@ -20,6 +20,8 @@ export class NavbarComponent implements OnInit {
   contacts = 'Contacts';
   services = 'Services';
 
+  template: any;
+
   formInput: string;
   loggedUser: boolean;
   templateSending:any;
@@ -30,20 +32,7 @@ export class NavbarComponent implements OnInit {
               private _activatedRoute: ActivatedRoute) { }
 
   ngOnInit() {
-    let lang = localStorage.language;
 
-    switch( lang ){
-      case 'ru' :
-        this.home = 'Главная',
-        this.contacts = 'Контакты',
-        this.services = 'Услуги'
-        break;
-      case 'en' : 
-        this.home = 'Home',
-        this.contacts = 'Contacts',
-        this.services = 'Services'
-        break;
-    }
 
     // this._authService._state.subscribe(
     //   state => this.isLoggedIn(state));
@@ -62,64 +51,168 @@ export class NavbarComponent implements OnInit {
   }
 
   followLink(path){
-    debugger
+
     let lang = localStorage.language;
     let snapshot = this._activatedRoute.snapshot;
-    let routerPath = snapshot.children[0].url[1].path
-    this._router.navigate(['/' + lang + `/${path}`]);
+    let routerPath = snapshot.children[0].url[0].path
+    this._router.navigate([`/${path}`]);
     routerPath = path;
   }
 
   chageLanguage(event, lang){
-    if(event.target.dataset.disabled === 'false'){
-      let snapshot = this._activatedRoute.snapshot;
-      let path = snapshot.children[0].url[1].path;
-      localStorage.setItem('language', lang);
-      this._router.navigate(['/' + lang + `/${path}`]);
+    let title = localStorage.location;
+    // let prefix = localStorage.language;
+    this._templatesService.getTemplate(title, lang)
+    .subscribe(
+      (res) => {
+        if(res){
+          localStorage.language = lang;
+          // let prefix = localStorage.language;
+          this.template = res['template'];
+          window.location.reload();
 
-      switch( lang ){
-        case 'ru' :
-          this.home = 'Главная',
-          this.contacts = 'Контакты',
-          this.services = 'Услуги'
-          break;
-        case 'en' : 
-          this.home = 'Home',
-          this.contacts = 'Contacts',
-          this.services = 'Services'
-          break;
-      }
+        }else{
+          console.log('tamplate dosen exist');
+          let alertNodeElem = document.createTextNode(` ${(lang).toUpperCase()} language does not exist`);
+          let paragraf = document.createElement('p');
 
-      window.location.reload();
-    }else{
-      // let alertBlock = document.createElement('div');
-      let alertNodeElem = document.createTextNode('Language does not exist');
-      let paragraf = document.createElement('p');
+          let blockForAddBtn = document.createElement('div')
+          let paragrafNewLang = document.createElement('p');
+          let paragrafNewLangTaxt = document.createTextNode(`Add ${(lang).toUpperCase()} language for this page?`);
+          
+          let btnAddNewLang = document.createElement('button');
+          let btnAddNodeTxt = document.createTextNode('+ Add');
+
+          let btnCancelNewLang = document.createElement('button');
+          let btnCancelNodeTxt = document.createTextNode('Cancel');
+
+
+          paragrafNewLang.appendChild(paragrafNewLangTaxt);
+          blockForAddBtn.appendChild(paragrafNewLang);
+
+          btnAddNewLang.appendChild(btnAddNodeTxt);
+          blockForAddBtn.appendChild(paragrafNewLang);
+          blockForAddBtn.appendChild(btnAddNewLang);
      
-      paragraf.appendChild(alertNodeElem);
-      // alertBlock.appendChild(paragraf);
+          btnCancelNewLang.appendChild(btnCancelNodeTxt);
+          blockForAddBtn.appendChild(btnCancelNewLang);
 
-      document.body.appendChild(paragraf);
-      $(paragraf).css({ 'position':'absolute', 
-                        'top': '220px', 
-                        'right': '-200px', 
-                        'background': 'yellowgreen', 
-                        'font-size': '20px',
-                        'color': '#fff',
-                        'padding': '12px'});
+          paragraf.appendChild(alertNodeElem);
+          // alertBlock.appendChild(paragraf);
 
-      setTimeout(()=>{
-        $(paragraf).css({'right': '70px'});
-      },100);
+          document.body.appendChild(paragraf);
+          document.body.appendChild(blockForAddBtn);
+          // document.body.appendChild(btnCancelNewLang);
+          
+          btnAddNewLang.setAttribute('class','btn btn-warning');
+
+          $(btnAddNewLang).off().on('click', (event) => {
+            localStorage.addNewLang = lang;
+            $('.navbar_container').addClass('editing');
+            $('.rightsidebar_main_block').addClass('editing');
+
+          });
+
+          $(btnCancelNewLang).off().on('click', (event) => {
+            $(blockForAddBtn).css('right', '-1000px');
+          });
+
+          btnCancelNewLang.setAttribute('class','btn btn-danger');
+          $(btnCancelNewLang).css('margin-left', '10px');
+
+          $(paragraf).css({ 'position':'absolute', 
+                            'top': '220px', 
+                            'right': '-200px', 
+                            'background': 'yellowgreen', 
+                            'font-size': '20px',
+                            'color': '#fff',
+                            'padding': '12px'
+                          });
+
+          $(blockForAddBtn).css({ 'position':'fixed', 
+                                  'top': '300px', 
+                                  'right': '-1000px', 
+                                  'background': 'yellowgreen', 
+                                  'font-size': '20px',
+                                  'color': '#fff',
+                                  'padding': '12px'
+                                });
+
+          setTimeout(()=>{
+            $(blockForAddBtn).css({'right': '70px'});
+          },1000);
+        
+          setTimeout(()=>{
+            $(paragraf).css({'right': '70px'});
+          },100);
+
+          setTimeout(()=>{
+            $(paragraf).css({'right': '-500px'});
+          },3000);
+            }
+          },
+          (err) => {
+            // this.showPreloader = true;
+            console.log(err);
+          }
+        );
+
+      
+    // if(event.target.dataset.disabled === 'false'){
+    //   let snapshot = this._activatedRoute.snapshot;
+    //   let path = snapshot.children[0].url[0].path;
+    //   localStorage.setItem('language', lang);
+    //   this._router.navigate([`/${path}`]);
+
+    //   // switch( lang ){
+    //   //   case 'ru' :
+    //   //     this.home = 'Главная',
+    //   //     this.contacts = 'Контакты',
+    //   //     this.services = 'Услуги'
+    //   //     break;
+    //   //   case 'en' : 
+    //   //     this.home = 'Home',
+    //   //     this.contacts = 'Contacts',
+    //   //     this.services = 'Services'
+    //   //     break;
+    //   // }
+
+    //   // window.location.reload();
+    // }else{
+    //   // let alertBlock = document.createElement('div');
+    //   let alertNodeElem = document.createTextNode('Language does not exist');
+    //   let paragraf = document.createElement('p');
      
-      setTimeout(()=>{
-        $(paragraf).css({'right': '-500px'});
-      },3000);
-    } 
+    //   paragraf.appendChild(alertNodeElem);
+    //   // alertBlock.appendChild(paragraf);
+
+    //   document.body.appendChild(paragraf);
+    //   $(paragraf).css({ 'position':'absolute', 
+    //                     'top': '220px', 
+    //                     'right': '-200px', 
+    //                     'background': 'yellowgreen', 
+    //                     'font-size': '20px',
+    //                     'color': '#fff',
+    //                     'padding': '12px'});
+
+    //   setTimeout(()=>{
+    //     $(paragraf).css({'right': '70px'});
+    //   },100);
+     
+    //   setTimeout(()=>{
+    //     $(paragraf).css({'right': '-500px'});
+    //   },3000);
+    // } 
   }
 
   editInner(event){
-    // debugger
+    $('.blockForBtnEdit').remove();
+    this.templateSending = !this.templateSending;
+    setTimeout(() => {
+      this.templateSending = !this.templateSending;
+      $('.main_navbar').removeClass('editing');
+      $('.rightsidebar_main_block').removeClass('editing');
+    }, 2000);
     this._templatesService.editInner(event);
   }
 

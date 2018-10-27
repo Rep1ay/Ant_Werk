@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { TemplatesService } from '../../templates.service';
+import { TemplatesService } from './../templates.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { AuthService } from './../../auth.service';
+import { AuthService } from './../auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
   // Jquery declaration
   declare var $: any;
@@ -10,7 +10,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   templateUrl: './contacts.component.html',
   styleUrls: ['./contacts.component.css']
 })
-export class RuContactsComponent implements OnInit {
+export class ContactsComponent implements OnInit {
 
   loggedIn: boolean;
   lastTarget: any;
@@ -40,8 +40,8 @@ export class RuContactsComponent implements OnInit {
           }
 
   ngOnInit() {
-    this.title = this._activeRoute.snapshot.url[1].path;
-    this.prefix = this._activeRoute.snapshot.url[0].path;
+    this.title = this._activeRoute.snapshot.url[0].path;
+    this.prefix = localStorage.language;
     this.loggedIn = this._auth.loggedIn();
     this._templatesService._event.subscribe(
       event => this.editInner(event)
@@ -56,7 +56,10 @@ export class RuContactsComponent implements OnInit {
    this._templatesService.getTemplate(this.title, this.prefix)
     .subscribe(
       (res) => {
-        if(res){this.template = res['template']}
+        if(res){
+          let prefix = this.prefix;
+          this.template = res.body.template
+        }
       },
       (err) => {
         console.log(err);

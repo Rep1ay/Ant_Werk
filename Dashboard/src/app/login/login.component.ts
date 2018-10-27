@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from './../../auth.service';
+import { AuthService } from './../auth.service';
 import { Router } from '@angular/router';
 
 import { NgForm } from '@angular/forms';
@@ -9,23 +9,28 @@ import { NgForm } from '@angular/forms';
   styleUrls: ['./login.component.css'],
   providers: [AuthService]
 })
-export class RuLoginComponent implements OnInit {
+export class LoginComponent implements OnInit {
 loginUserData = {};
+
   constructor( private _auth: AuthService,
                 private router: Router) { }
 
   ngOnInit() {
+
   }
 
   loginUser( form: NgForm) {
+    debugger
     this._auth.loginUser(form.value)
     .subscribe(
       (res) => {
         localStorage.setItem('token', res.token);
-        this.router.navigate(['/ru/home']);
+        this.router.navigate(['/en/home']);
         window.location.reload();
       },
       (error) => console.log(error)
     );
   }
+
+
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from './../../auth.service';
+import { AuthService } from './../auth.service';
 import { Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
 @Component({
@@ -7,7 +7,7 @@ import { NgForm } from '@angular/forms';
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css']
 })
-export class EnRegisterComponent implements OnInit {
+export class RegisterComponent implements OnInit {
 
   // registerUserData: any;
   constructor( private _auth: AuthService,

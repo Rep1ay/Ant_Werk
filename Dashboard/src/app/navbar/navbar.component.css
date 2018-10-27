@@ -60,6 +60,9 @@
     animation-duration: 1s;
     position: fixed;
 }
+.editing{
+    background: #f54949!important;
+}
 
 .fade_out_navbar{
     margin-top: -200px;
@@ -73,7 +76,7 @@
     animation-duration: 0.5s;
 }
 
-.main_navbar{
+.main_navbar, .rightsidebar_main_block {
     font-size: 25px;
     color: #e6cff1;
 }
@@ -81,7 +84,7 @@
     color: #fff;
 }
 
-.main_navbar ul{
+.main_navbar ul , .rightsidebar_main_block ul{
     list-style-type: none;
     display: flex;
     width: 100%;
@@ -94,7 +97,7 @@
     display: flex;
     flex-flow: row;
 }
-.main_navbar ul li{
+.main_navbar ul li , .rightsidebar_main_block  ul li{
     cursor: pointer;
     padding: 0.5rem;
     font-weight: 100;
@@ -103,11 +106,11 @@
     transition: all 0.3s ease-out;
 }
 
-.main_navbar ul li:hover{
+.main_navbar ul li:hover , .rightsidebar_main_block  ul li:hover{
     color: #fff;
     transition: all 0.3s ease;
 }
-.main_navbar ul li:focus{
+.main_navbar ul li:focus, .rightsidebar_main_block  ul li:focus{
     outline: none;
 }
 
@@ -197,13 +200,13 @@
 }
 
 @media all and (max-width: 800px) {
-    .main_navbar ul {
+    .main_navbar ul, .rightsidebar_main_block ul {
       justify-content: space-around;
     }
   }
   
 @media all and (max-width: 500px) {
-    .main_navbar ul {
+    .main_navbar ul, .rightsidebar_main_block ul {
       flex-direction: column;
     }
   }
