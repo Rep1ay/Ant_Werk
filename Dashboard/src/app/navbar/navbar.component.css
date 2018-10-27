@@ -1,5 +1,5 @@
 .navbar_container{
-    padding: 10px 0px;
+    padding: 0px;
     transition: all 0.5s ease-out;
 }
 @keyframes fadeIn {
@@ -193,10 +193,14 @@
     transition: opacity 0.3s ease-in;
 }
 
-#right_sidebar{
+#language_panel{
     flex-flow: column;
     align-items: center;
     width: 100%;
+}
+
+.lang_menu_item:hover{
+    cursor: pointer;
 }
 
 @media all and (max-width: 800px) {

@@ -33,7 +33,9 @@ export class NavbarComponent implements OnInit {
 
   ngOnInit() {
 
-
+    $( document ).ready(()=> {
+      this.chageLanguage();
+    });
     // this._authService._state.subscribe(
     //   state => this.isLoggedIn(state));
 
@@ -59,103 +61,129 @@ export class NavbarComponent implements OnInit {
     routerPath = path;
   }
 
-  chageLanguage(event, lang){
-    let title = localStorage.location;
-    // let prefix = localStorage.language;
-    this._templatesService.getTemplate(title, lang)
-    .subscribe(
-      (res) => {
-        if(res){
-          localStorage.language = lang;
-          // let prefix = localStorage.language;
-          this.template = res['template'];
-          window.location.reload();
-
-        }else{
-          console.log('tamplate dosen exist');
-          let alertNodeElem = document.createTextNode(` ${(lang).toUpperCase()} language does not exist`);
-          let paragraf = document.createElement('p');
-
-          let blockForAddBtn = document.createElement('div')
-          let paragrafNewLang = document.createElement('p');
-          let paragrafNewLangTaxt = document.createTextNode(`Add ${(lang).toUpperCase()} language for this page?`);
-          
-          let btnAddNewLang = document.createElement('button');
-          let btnAddNodeTxt = document.createTextNode('+ Add');
-
-          let btnCancelNewLang = document.createElement('button');
-          let btnCancelNodeTxt = document.createTextNode('Cancel');
-
-
-          paragrafNewLang.appendChild(paragrafNewLangTaxt);
-          blockForAddBtn.appendChild(paragrafNewLang);
-
-          btnAddNewLang.appendChild(btnAddNodeTxt);
-          blockForAddBtn.appendChild(paragrafNewLang);
-          blockForAddBtn.appendChild(btnAddNewLang);
-     
-          btnCancelNewLang.appendChild(btnCancelNodeTxt);
-          blockForAddBtn.appendChild(btnCancelNewLang);
-
-          paragraf.appendChild(alertNodeElem);
-          // alertBlock.appendChild(paragraf);
-
-          document.body.appendChild(paragraf);
-          document.body.appendChild(blockForAddBtn);
-          // document.body.appendChild(btnCancelNewLang);
-          
-          btnAddNewLang.setAttribute('class','btn btn-warning');
-
-          $(btnAddNewLang).off().on('click', (event) => {
-            localStorage.addNewLang = lang;
-            $('.navbar_container').addClass('editing');
-            $('.rightsidebar_main_block').addClass('editing');
-
-          });
-
-          $(btnCancelNewLang).off().on('click', (event) => {
-            $(blockForAddBtn).css('right', '-1000px');
-          });
-
-          btnCancelNewLang.setAttribute('class','btn btn-danger');
-          $(btnCancelNewLang).css('margin-left', '10px');
-
-          $(paragraf).css({ 'position':'absolute', 
-                            'top': '220px', 
-                            'right': '-200px', 
-                            'background': 'yellowgreen', 
-                            'font-size': '20px',
-                            'color': '#fff',
-                            'padding': '12px'
-                          });
-
-          $(blockForAddBtn).css({ 'position':'fixed', 
-                                  'top': '300px', 
-                                  'right': '-1000px', 
-                                  'background': 'yellowgreen', 
-                                  'font-size': '20px',
-                                  'color': '#fff',
-                                  'padding': '12px'
-                                });
-
-          setTimeout(()=>{
-            $(blockForAddBtn).css({'right': '70px'});
-          },1000);
-        
-          setTimeout(()=>{
-            $(paragraf).css({'right': '70px'});
-          },100);
-
-          setTimeout(()=>{
-            $(paragraf).css({'right': '-500px'});
-          },3000);
+  chageLanguage(){
+    let _self = this;
+    $('.lang_menu_item').off().on('click', (event) => {
+      if(event.target.dataset.lang !== 'add') {
+        let lang = event.target.dataset.lang;
+        let title = localStorage.location;
+        // let prefix = localStorage.language;
+        this._templatesService.getTemplate(title, lang)
+        .subscribe(
+          (res) => {
+            if(res){
+              localStorage.language = lang;
+              // let prefix = localStorage.language;
+              this.template = res['template'];
+              window.location.reload();
+    
+            }else{
+              this.createNewLanguage(lang);
             }
-          },
-          (err) => {
-            // this.showPreloader = true;
-            console.log(err);
-          }
-        );
+              },
+              (err) => {
+                // this.showPreloader = true;
+                console.log(err);
+              }
+            );
+        }else{
+          // debugger
+          let blockForShortcut = document.createElement('div');
+          let inputForShortcut = document.createElement('input');
+          let paragraf_for_shortcut = document.createElement('p');
+          let paragraf_shortcut_text = document.createTextNode('Type shortcut ');
+
+          let btnCancelShortcut = document.createElement('button');
+          let btnCancelShortcutNodeTxt = document.createTextNode('Cancel');
+          
+          let btn_ok_for_shortcut = document.createElement('button');
+          let btn_shortcut_text = document.createTextNode('OK');
+
+          $(paragraf_for_shortcut).css({'padding': '5px','margin': '0px'});
+
+          inputForShortcut.setAttribute('class', 'form-control');
+          btn_ok_for_shortcut.setAttribute('class', 'btn btn-success');
+          btnCancelShortcut.setAttribute('class','btn btn-warning');
+
+          btnCancelShortcut.appendChild(btnCancelShortcutNodeTxt);
+          paragraf_for_shortcut.appendChild(paragraf_shortcut_text);
+          blockForShortcut.appendChild(paragraf_for_shortcut);
+          blockForShortcut.appendChild(inputForShortcut);
+          blockForShortcut.appendChild(btn_ok_for_shortcut);
+          blockForShortcut.appendChild(btnCancelShortcut);
+          btn_ok_for_shortcut.appendChild(btn_shortcut_text);
+
+          document.body.appendChild(blockForShortcut);
+
+          $(btnCancelShortcut).off().on('click', () => {
+            $(blockForShortcut).css({ 'right':'-1000px'})
+          });
+
+          $(btn_ok_for_shortcut).off().on('click', (event) => {
+           
+            let lang = inputForShortcut.value;
+            $(`<li>${lang}</li>`).addClass( "lang_menu_item" ).data('lang', 'KL')
+            .on({
+              'click': ( event ) => {
+                debugger
+                let title = localStorage.location;
+                _self._templatesService.getTemplate(title, lang)
+                .subscribe(
+                  (res) => {
+                    if(res){
+                      localStorage.language = lang;
+                      // let prefix = localStorage.language;
+                      this.template = res['template'];
+                      window.location.reload();
+            
+                    }else{
+                      _self.createNewLanguage(lang);
+                    }
+                      },
+                      (err) => {
+                        // this.showPreloader = true;
+                        console.log(err);
+                      }
+                    );
+              }
+            })
+          .appendTo( '#language_panel' );
+
+          $('.lang_menu_item').css('cursor', 'pointer');
+
+          setTimeout(() => {
+            $(blockForShortcut).css({ 'right':'-1000px'})
+          }, 500);
+
+          })
+
+          $(inputForShortcut).css({
+            'width': '55px',
+            'font-size': '25px',
+            'color': '#222'
+          })
+          
+          $(blockForShortcut).css({ 'position':'fixed', 
+                                      'top': '220px', 
+                                      'display': 'flex',
+                                      'right': '50px', 
+                                      'background': '#2e8dc5', 
+                                      'font-size': '17px',
+                                      'color': '#fff',
+                                      'padding': '12px'
+                                    });
+        
+
+        // end of else
+        }
+
+        
+
+
+
+        // end of lang_menu_item click event 
+    })
+   
 
       
     // if(event.target.dataset.disabled === 'false'){
@@ -204,14 +232,132 @@ export class NavbarComponent implements OnInit {
     //   },3000);
     // } 
   }
+  
+  createNewLanguage(lang){
+
+    console.log('tamplate dosen exist');
+    let alertNodeElem = document.createTextNode(` ${(lang).toUpperCase()} language does not exist`);
+    let paragraf = document.createElement('p');
+
+    let blockForAddBtn = document.createElement('div')
+    let paragrafNewLang = document.createElement('p');
+    let paragrafNewLangTaxt = document.createTextNode(`Add ${(lang).toUpperCase()} language for this page?`);
+    
+    let btnAddNewLang = document.createElement('button');
+    let btnAddNodeTxt = document.createTextNode('+ Add');
+
+    let btnCancelNewLang = document.createElement('button');
+    let btnCancelNodeTxt = document.createTextNode('Cancel');
+
+    let blockForEditLang = document.createElement('div')
+    // let btnSaveChanges = document.createElement('button');
+    // let btnSaveChangesText = document.createTextNode('Save');
+    let paragrafEditLang = document.createElement('p');
+    let paragrafEditLangText = document.createTextNode(`Adding ${(lang).toUpperCase()} language, dont forget save changes`);
+
+    blockForEditLang.setAttribute('class', 'blockForEditLang');
+    $(blockForEditLang).on('mouseover', (event) => {
+      $(blockForEditLang).css('right', '-1000px');
+      setTimeout(()=> {
+        $(blockForEditLang).css('right', '0px');
+      }, 2000)
+    })
+    // btnSaveChanges.appendChild(btnSaveChangesText);
+    paragrafEditLang.appendChild(paragrafEditLangText);
+    blockForEditLang.appendChild(paragrafEditLang);
+    // blockForEditLang.appendChild(btnSaveChanges);
+
+    blockForAddBtn.appendChild(btnAddNewLang);
+
+    paragrafNewLang.appendChild(paragrafNewLangTaxt);
+    blockForAddBtn.appendChild(paragrafNewLang);
+
+    btnAddNewLang.appendChild(btnAddNodeTxt);
+    blockForAddBtn.appendChild(paragrafNewLang);
+    blockForAddBtn.appendChild(btnAddNewLang);
+
+    btnAddNewLang.appendChild(btnAddNodeTxt);
+    blockForAddBtn.appendChild(paragrafNewLang);
+    blockForAddBtn.appendChild(btnAddNewLang);
+
+    btnCancelNewLang.appendChild(btnCancelNodeTxt);
+    blockForAddBtn.appendChild(btnCancelNewLang);
+
+    paragraf.appendChild(alertNodeElem);
+    // alertBlock.appendChild(paragraf);
+
+    document.body.appendChild(paragraf);
+    document.body.appendChild(blockForAddBtn);
+    document.body.appendChild(blockForEditLang);
+    // document.body.appendChild(btnCancelNewLang);
+    
+    btnAddNewLang.setAttribute('class','btn btn-warning');
+    // btnSaveChanges.setAttribute('class','btn btn-primary');
+
+
+    $(btnAddNewLang).off().on('click', (event) => {
+      localStorage.addNewLang = lang;
+      $('.navbar_container').addClass('editing');
+      $('.rightsidebar_main_block').addClass('editing');
+      $(blockForAddBtn).css('right', '-1000px');
+      $(blockForEditLang).css('right', '0px');
+    });
+
+    $(btnCancelNewLang).off().on('click', (event) => {
+      $(blockForAddBtn).css('right', '-1000px');
+    });
+
+    btnCancelNewLang.setAttribute('class','btn btn-danger');
+    $(btnCancelNewLang).css('margin-left', '10px');
+
+    $(paragraf).css({ 'position':'absolute', 
+                      'top': '220px', 
+                      'right': '-200px', 
+                      'background': 'yellowgreen', 
+                      'font-size': '20px',
+                      'color': '#fff',
+                      'padding': '12px'
+                    });
+
+    $(blockForAddBtn).css({ 'position':'fixed', 
+                            'top': '300px', 
+                            'right': '-1000px', 
+                            'background': 'yellowgreen', 
+                            'font-size': '20px',
+                            'color': '#fff',
+                            'padding': '12px'
+                          });
+
+    $(blockForEditLang).css({ 'position':'fixed', 
+                            'top': '120px', 
+                            'right': '-1000px', 
+                            'background': '#f5494978', 
+                            'font-size': '20px',
+                            'color': '#fff',
+                            'padding': '12px'
+                          });
+
+    setTimeout(()=>{
+      $(blockForAddBtn).css({'right': '70px'});
+    },1000);
+  
+    setTimeout(()=>{
+      $(paragraf).css({'right': '70px'});
+    },100);
+
+    setTimeout(()=>{
+      $(paragraf).css({'right': '-500px'});
+    },3000);
+  }
 
   editInner(event){
     $('.blockForBtnEdit').remove();
     this.templateSending = !this.templateSending;
     setTimeout(() => {
       this.templateSending = !this.templateSending;
-      $('.main_navbar').removeClass('editing');
-      $('.rightsidebar_main_block').removeClass('editing');
+      $('.navbar_container ').removeClass('editing');
+      $('.blockForEditLang').css('right', '-1000px');
+      // $('.rightsidebar_main_block').removeClass('editing');
     }, 2000);
     this._templatesService.editInner(event);
   }

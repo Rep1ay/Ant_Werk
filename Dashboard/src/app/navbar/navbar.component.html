@@ -37,11 +37,23 @@
 </nav>
 
 <nav id="rightsidebar_main_block" class="main_navbar ">
-  <ul id="right_sidebar" class="navbar_container ">
-    <li routerLinkActive="active" (click)="chageLanguage($event, 'en')" >EN</li>
-    <li routerLinkActive="active" (click)="chageLanguage($event, 'pl')">PL</li>
-    <li routerLinkActive="active" (click)="chageLanguage($event, 'ru')">RU</li>
-    <li routerLinkActive="active" (click)="chageLanguage($event, 'ua')">UA</li>  
+  <ul id="language_panel" class="navbar_container ">
+      <li class="lang_menu_item"
+      style="
+        color: #fff;
+        font-size: 30px;
+        border: 1px solid #2ec52e;
+        background: #10b510;
+        padding: 2px 15px;" 
+
+      data-lang="add" routerLinkActive="active">
+      +
+    </li>
+      
+    <li class="lang_menu_item" data-lang="en" routerLinkActive="active"  >EN</li>
+    <li class="lang_menu_item" data-lang="pl" routerLinkActive="active" >PL</li>
+    <li class="lang_menu_item" data-lang="ru" routerLinkActive="active" >RU</li>
+    
     </ul>
 </nav>
 <!-- <div class="products_collections">
