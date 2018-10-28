@@ -37,7 +37,8 @@
 </nav>
 
 <nav id="rightsidebar_main_block" class="main_navbar ">
-  <ul id="language_panel" class="navbar_container ">
+  <ul id="language_panel" class="navbar_container "> 
+   
       <li class="lang_menu_item"
       style="
         color: #fff;
@@ -46,13 +47,12 @@
         background: #10b510;
         padding: 2px 15px;" 
 
-      data-lang="add" routerLinkActive="active">
+      data-lang="add" routerLinkActive="active" (click)="add_new_lang_to_panel()">
       +
     </li>
-      
-    <li class="lang_menu_item" data-lang="en" routerLinkActive="active"  >EN</li>
-    <li class="lang_menu_item" data-lang="pl" routerLinkActive="active" >PL</li>
-    <li class="lang_menu_item" data-lang="ru" routerLinkActive="active" >RU</li>
+       <li [attr.data-lang]="lang.prefix" *ngFor="let lang of lang_items" (click)="changeLanguage(lang.prefix)">{{lang.prefix}}</li>
+      <!-- <li class="lang_menu_item" data-lang="en" routerLinkActive="active"  >EN</li> -->
+
     
     </ul>
 </nav>

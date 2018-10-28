@@ -50,7 +50,14 @@ export class HomeComponent implements OnInit {
     localStorage.location = this._activeRoute.snapshot.url[0].path;
     this.title = this._activeRoute.snapshot.url[0].path;
     this._activeRoute.snapshot.url[0].path;
-    this.prefix = localStorage.language;
+
+    if(!localStorage.language){
+      localStorage.language = 'EN';
+      this.prefix = localStorage.language;
+    }else{
+      this.prefix = localStorage.language;
+    }
+
     this.loggedIn = this._auth.loggedIn();
     this._templatesService._event.subscribe(
       event => this.editInner(event)
@@ -72,6 +79,9 @@ export class HomeComponent implements OnInit {
           setTimeout(() => {
             this.showPreloader = false;
           }, 3000);
+        }else{
+          localStorage.language = 'EN'
+          this.template = null;
         }
       },
       (err) => {
@@ -203,6 +213,15 @@ export class HomeComponent implements OnInit {
     }
     this._templatesService.sendTemplate(body.innerHTML, pageTitle, send_prefix).subscribe(
       (res) => {
+        this._templatesService.add_new_lang_panel(send_prefix).subscribe(
+          (res) => {
+            debugger
+            alert('added new lang');
+          },
+          (err) => {
+            console.log(err);
+          }
+        );
         setTimeout(() => {
           localStorage.removeItem('addNewLang');
           this.templateSending = false;
