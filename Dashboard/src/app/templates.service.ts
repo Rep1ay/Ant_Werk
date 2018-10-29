@@ -28,12 +28,12 @@ private _lang_panelURL = 'http://localhost:3000/api/lang_panel'
   //   this.persons = res;
   // });
   editInner(event: Event){
-    // //debugger
+    
     this.eventValue.next(event)
   }
 
   getTemplate(title, prefix): Observable<Template>{
-    //debugger
+    //
     let pageTitle = localStorage.location;
     // let titleId = 'home';
     let headerJson = {
@@ -43,13 +43,13 @@ private _lang_panelURL = 'http://localhost:3000/api/lang_panel'
       'pageTitle': title
     }
     const headers = new HttpHeaders(headerJson);
-// //debugger
+// //
     return this._http.get(this._templatesUrl, {headers}).pipe(map((response: any) => response));
 
   }
 
   sendTemplate(template, title, prefix){
-    //debugger
+    //
     // this.add_new_lang_panel(prefix);
     let  templateBody: Template = {
       body: {
@@ -64,7 +64,7 @@ private _lang_panelURL = 'http://localhost:3000/api/lang_panel'
   }
 
   add_new_lang_panel(prefix){
-    debugger
+    
     let body: LangPanel = {
       prefix: (prefix).toUpperCase()
     }

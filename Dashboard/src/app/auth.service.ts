@@ -29,6 +29,7 @@ export class AuthService {
   }
 
   isLoggedIn(state) {
+    debugger
     this.stateSource.next(state);
   }
 
@@ -36,15 +37,16 @@ export class AuthService {
     return this.http.post<any>(this._registerUrl, user);
   }
   loginUser(user: User) {
-    // //debugger
+    debugger
     return this.http.post<any>(this._loginUrl,user);
   }
 
   checkDiscount(promoCode) {
-    //debugger
+    //
   }
 
   loggedIn() {
+    debugger
     return !!localStorage.getItem('token');
   }
 
@@ -55,7 +57,7 @@ export class AuthService {
   logoutUser() {
     localStorage.removeItem('token');
     localStorage.removeItem('promoCode');
-    this.router.navigate(['en/login']);
+    this.router.navigate([`${localStorage.lang}/login`]);
   }
 
   getToken() {

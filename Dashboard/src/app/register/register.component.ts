@@ -18,12 +18,11 @@ export class RegisterComponent implements OnInit {
 
   registerUser(form: NgForm) {
     // this.registerUserData
-
     this._auth.registerNewUser(form.value).subscribe(
       (res) => {
-        //debugger
+        //
         localStorage.setItem('token', res.token);
-        this.router.navigate(['/en/home']);
+        this.router.navigate([`${localStorage.language}/home`]);
         window.location.reload();
       },
       (error) => console.error(error)

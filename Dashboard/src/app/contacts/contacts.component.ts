@@ -40,7 +40,9 @@ export class ContactsComponent implements OnInit {
           }
 
   ngOnInit() {
-    this.title = this._activeRoute.snapshot.url[0].path;
+    
+    this.title = this._activeRoute.snapshot.url[1].path;
+    localStorage.location = this._activeRoute.snapshot.url[1].path;
     this.prefix = localStorage.language;
     this.loggedIn = this._auth.loggedIn();
     this._templatesService._event.subscribe(

@@ -42,35 +42,35 @@ export class HomeComponent implements OnInit {
 
             //   _router.events.subscribe((val) => {
             //     // see also 
-            //     debugger
+            //     
             //     console.log(val instanceof NavigationEnd) 
             // });
-            let loc =_location.path().replace('/', '');
-            let windPath = window.location.pathname.split('/')[1];
-            let routConf = _router.config[1].path.split('/')[0];
-            let empty = '';
-            if(!localStorage.language){
-              if(loc !== empty){
-                localStorage.language = loc.split('/')[0];
-                _router.config[1].path = loc;
-              }
-            }else{
-              _router.config[1].path = `${localStorage.language}/${loc.split('/')[1]}`
-            }
+          //   let loc =_location.path().replace('/', '');
+          //   let windPath = window.location.pathname.split('/')[1];
+          //   let routConf = _router.config[1].path.split('/')[0];
+          //   let empty = '';
+          //   if(!localStorage.language){
+          //     if(loc !== empty){
+          //       localStorage.language = loc.split('/')[0];
+          //       _router.config[1].path = loc;
+          //     }
+          //   }else{
+          //     _router.config[1].path = `${localStorage.language}/${loc.split('/')[1]}`
+          //   }
 
 
-            // window.location.pathname = _router.config[1].path
+          //   // window.location.pathname = _router.config[1].path
 
-          //   if(localStorage.language !== locPath){
-          //     routConf = locPath;
-          //  }
-          // if( _router.config[1].path.split('/')[0] === "undefined"){
-            // _router.config[1].path = loc;
-          // }
+          // //   if(localStorage.language !== locPath){
+          // //     routConf = locPath;
+          // //  }
+          // // if( _router.config[1].path.split('/')[0] === "undefined"){
+          //   // _router.config[1].path = loc;
+          // // }
          
 
 
-          this._location.go(_router.config[1].path);
+          // this._location.go(_router.config[1].path);
             // window.location.pathname = _router.config[1].path
           //   if(localStorage.language !== locPath){
           //     routConf = locPath;
@@ -83,17 +83,17 @@ export class HomeComponent implements OnInit {
 
     // let urlCollect = this._activeRoute.snapshot.url;
     // urlCollect.forEach( url => {
-    //   //debugger
+    //   //
     // });
 
     localStorage.location = this._activeRoute.snapshot.url[1].path;
     
     localStorage.language =  this._activeRoute.snapshot.url[0].path;
-    debugger
+    
     this.title = this._activeRoute.snapshot.url[1].path;
 
     if(!localStorage.language){
-      debugger
+      
       localStorage.language = 'EN';
       this.prefix = localStorage.language;
     }else{
@@ -101,16 +101,19 @@ export class HomeComponent implements OnInit {
     }
 
     this.loggedIn = this._auth.loggedIn();
+    
     this._templatesService._event.subscribe(
-      event => this.editInner(event)
+      event => {
+        debugger
+        this.editInner(event);}
     )
-  // if(this.loggedIn){
+  if(this.loggedIn){
     $( document ).ready(()=> {
 
       let event, body = null;
       this.addEditButton(event, body);
     });
-  // }
+  }
 
    this._templatesService.getTemplate(this.title, this.prefix)
     .subscribe(
@@ -122,7 +125,7 @@ export class HomeComponent implements OnInit {
             this.showPreloader = false;
           }, 3000);
         }else{
-          debugger
+          
           localStorage.language = 'EN'
           this.template = null;
         }
@@ -281,7 +284,7 @@ export class HomeComponent implements OnInit {
     )
     this._templatesService.add_new_lang_panel(send_prefix).subscribe(
       (res) => {
-        //debugger
+        //
         alert('added new lang');
       },
       (err) => {
@@ -309,7 +312,7 @@ export class HomeComponent implements OnInit {
       (res) => {
         this._templatesService.add_new_lang_panel(send_prefix).subscribe(
           (res) => {
-            //debugger
+            //
             alert('added new lang');
           },
           (err) => {

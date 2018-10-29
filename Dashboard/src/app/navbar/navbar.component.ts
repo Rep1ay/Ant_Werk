@@ -40,35 +40,49 @@ export class NavbarComponent implements OnInit {
 
               //   _router.events.subscribe((val) => {
               //     // see also 
-              //     debugger
+              //     
               //     console.log(val instanceof NavigationEnd) 
               // });
-              let loc =_location.path().replace('/', '');
-              let windPath = window.location.pathname.split('/')[1];
-              let routConf = _router.config[1].path.split('/')[0];
-              let empty = '';
-              if(!localStorage.language){
-                if(loc !== empty){
-                  localStorage.language = loc.split('/')[0];
-                  _router.config[1].path = loc;
-                }
-              }else{
-                _router.config[1].path = `${localStorage.language}/${loc.split('/')[1]}`
-              }
+//               
+//               let windPath = window.location.pathname.split('/')[1];
+//               _router.config.forEach(rout => {
+//                 
+//                 let pageRout = rout.path.split('/')[1];
+//                 if(pageRout.length > 2){
+//                    pageRout 
+//                 }
+               
+//               })
 
+//               let loc =_location.path().replace('/', '');
+           
+//               let routConf = _router.config[1].path.split('/')[0];
+//               let empty = '';
+//               if(!localStorage.language){
+//                 if(loc !== empty){
+//                   localStorage.language = loc.split('/')[0];
+//                   _router.config[1].path = loc;
+//                 }
+//               }else{
+//                 _router.config[1].path = `${localStorage.language}/${loc.split('/')[1]}`
+//               }
 
-              // window.location.pathname = _router.config[1].path
+//               // _router.config[0].path = _location.path().replace('/','');
+//               // _router.config[0].children[0].path = _location.path().replace('/', '');
+// 
 
-            //   if(localStorage.language !== locPath){
-            //     routConf = locPath;
-            //  }
-            // if( _router.config[1].path.split('/')[0] === "undefined"){
+//               // window.location.pathname = _router.config[1].path
+
+//             //   if(localStorage.language !== locPath){
+//             //     routConf = locPath;
+//             //  }
+//             // if( _router.config[1].path.split('/')[0] === "undefined"){
              
-            // }
+//             // }
            
 
 
-            this._location.go(_router.config[1].path);
+//             this._location.go(_router.config[1].path);
             // _router.config[1].path = loc;
             }
 
@@ -81,14 +95,11 @@ export class NavbarComponent implements OnInit {
     // $( document ).ready(()=> {
     //   this.chageLanguage();
     // });
-    // this._authService._state.subscribe(
-    //   state => this.isLoggedIn(state));
+    this._authService._state.subscribe(
+      state => {debugger;this.isLoggedIn(state)});
 
-    // this.loggedUser = this._authService.loggedIn();
+    this.loggedUser = this._authService.loggedIn();
     this.loggedUser = !!localStorage.getItem('token');
-    // this.productService.getProductParams().subscribe(
-    //   (res) => this.renderNavBar(res)
-    // );
     this.navbarBehavior();   
 
    this._templatesService.get_lang_panel().subscribe(
@@ -113,15 +124,15 @@ export class NavbarComponent implements OnInit {
 
   }
   isLoggedIn(state) {
-    //debugger
+    debugger
     this.loggedUser = state;
   }
 
   followLink(path){
-
+// 
     let lang = localStorage.language;
     let snapshot = this._activatedRoute.snapshot;
-    this._router.navigate([`/${path}`]);
+    this._router.navigate([`${lang}/${path}`]);
   }
 
   add_new_lang_to_panel(){
@@ -215,7 +226,7 @@ export class NavbarComponent implements OnInit {
           (res) => {
 
             if(res){
-              debugger
+              
               localStorage.language = lang;
               // let prefix = localStorage.language;
               this.template = res['template'];
@@ -385,6 +396,7 @@ export class NavbarComponent implements OnInit {
   logoutUser() {
     this.loggedUser = false;
     this._authService.logoutUser();
+    window.location.reload();
     // this.loggedUser = this._authService.loggedIn();
     // this.loggedUser = localStorage.getItem('token');
   }
