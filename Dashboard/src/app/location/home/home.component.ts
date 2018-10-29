@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { TemplatesService } from '../templates.service';
+import { TemplatesService } from '../../templates.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { AuthService } from '../auth.service';
+import { AuthService } from '../../auth.service';
 import { ActivatedRoute, Router, UrlTree, UrlSegmentGroup, UrlSegment, NavigationEnd } from '@angular/router';
 import { Location } from '@angular/common';
 // Jquery declaration
@@ -45,18 +45,18 @@ export class HomeComponent implements OnInit {
             //     debugger
             //     console.log(val instanceof NavigationEnd) 
             // });
-            let loc =_location.path().replace('/', '');
-            let windPath = window.location.pathname.split('/')[1];
-            let routConf = _router.config[1].path.split('/')[0];
-            let empty = '';
-            if(!localStorage.language){
-              if(loc !== empty){
-                localStorage.language = loc.split('/')[0];
-                _router.config[1].path = loc;
-              }
-            }else{
-              _router.config[1].path = `${localStorage.language}/${loc.split('/')[1]}`
-            }
+            // let loc =_location.path().replace('/', '');
+            // let windPath = window.location.pathname.split('/')[1];
+            // let routConf = _router.config[1].path.split('/')[0];
+            // let empty = '';
+            // if(!localStorage.language){
+            //   if(loc !== empty){
+            //     localStorage.language = loc.split('/')[0];
+            //     _router.config[1].path = loc;
+            //   }
+            // }else{
+            //   _router.config[1].path = `${localStorage.language}/${loc.split('/')[1]}`
+            // }
 
 
             // window.location.pathname = _router.config[1].path
@@ -70,7 +70,7 @@ export class HomeComponent implements OnInit {
          
 
 
-          this._location.go(_router.config[1].path);
+          // this._location.go(_router.config[1].path);
             // window.location.pathname = _router.config[1].path
           //   if(localStorage.language !== locPath){
           //     routConf = locPath;
@@ -86,11 +86,11 @@ export class HomeComponent implements OnInit {
     //   //debugger
     // });
 
-    localStorage.location = this._activeRoute.snapshot.url[1].path;
+    // localStorage.location = this._activeRoute.snapshot.url[1].path;
     
-    localStorage.language =  this._activeRoute.snapshot.url[0].path;
+    // localStorage.language =  this._activeRoute.snapshot.url[0].path;
     debugger
-    this.title = this._activeRoute.snapshot.url[1].path;
+    // this.title = this._activeRoute.snapshot.url[1].path;
 
     if(!localStorage.language){
       debugger
@@ -129,7 +129,7 @@ export class HomeComponent implements OnInit {
       },
       (err) => {
         // this.showPreloader = true;
-        console.log(err);
+        // console.log(err);
       }
     );
 

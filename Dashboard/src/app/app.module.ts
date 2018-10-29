@@ -6,12 +6,13 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NavbarComponent } from './navbar/navbar.component';
+import { NavbarComponent } from './location/navbar/navbar.component';
 import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
-import { HomeComponent } from './home/home.component';
+import { HomeComponent } from './location/home/home.component';
 // import { PreloaderComponent } from './en/preloader/preloader.component';
 import { ContactsComponent } from './contacts/contacts.component';
+import { LocationComponent } from './location/location.component';
 
 
 @NgModule({
@@ -21,7 +22,8 @@ import { ContactsComponent } from './contacts/contacts.component';
     LoginComponent,
     RegisterComponent,
     NavbarComponent,
-    ContactsComponent
+    ContactsComponent,
+    LocationComponent
 
   ],
   imports: [

@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 // import {ProductsService} from '../products.service';
-import { AuthService } from './../auth.service';
+import { AuthService } from './../../auth.service';
 // import { AngularFontAwesomeModule } from 'angular-font-awesome';
 // import { faUser, faDeaf  } from '@fortawesome/free-solid-svg-icons';
 import { Router, ActivatedRoute, UrlTree, UrlSegmentGroup, UrlSegment, ActivatedRouteSnapshot, NavigationEnd } from '@angular/router';
 import { TemplatesService } from 'src/app/templates.service';
-import { LangPanel } from '../lang-panel';
+import { LangPanel } from '../../lang-panel';
 import { Location } from '@angular/common';
 
 declare var $: any;
@@ -43,18 +43,18 @@ export class NavbarComponent implements OnInit {
               //     debugger
               //     console.log(val instanceof NavigationEnd) 
               // });
-              let loc =_location.path().replace('/', '');
-              let windPath = window.location.pathname.split('/')[1];
-              let routConf = _router.config[1].path.split('/')[0];
-              let empty = '';
-              if(!localStorage.language){
-                if(loc !== empty){
-                  localStorage.language = loc.split('/')[0];
-                  _router.config[1].path = loc;
-                }
-              }else{
-                _router.config[1].path = `${localStorage.language}/${loc.split('/')[1]}`
-              }
+              // let loc =_location.path().replace('/', '');
+              // let windPath = window.location.pathname.split('/')[1];
+              // let routConf = _router.config[1].path.split('/')[0];
+              // let empty = '';
+              // if(!localStorage.language){
+              //   if(loc !== empty){
+              //     localStorage.language = loc.split('/')[0];
+              //     _router.config[1].path = loc;
+              //   }
+              // }else{
+              //   _router.config[1].path = `${localStorage.language}/${loc.split('/')[1]}`
+              // }
 
 
               // window.location.pathname = _router.config[1].path
@@ -68,7 +68,7 @@ export class NavbarComponent implements OnInit {
            
 
 
-            this._location.go(_router.config[1].path);
+            // this._location.go(_router.config[1].path);
             // _router.config[1].path = loc;
             }
 
