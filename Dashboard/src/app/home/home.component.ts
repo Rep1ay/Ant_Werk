@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { TemplatesService } from '../templates.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { AuthService } from '../auth.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, UrlTree, UrlSegmentGroup, UrlSegment, NavigationEnd } from '@angular/router';
+import { Location } from '@angular/common';
 // Jquery declaration
 declare var $: any;
 
@@ -35,23 +36,64 @@ export class HomeComponent implements OnInit {
             formBuilder: FormBuilder,
             private _auth: AuthService,
             private _activeRoute: ActivatedRoute,
-            private _router: Router
+            private _router: Router,
+            private _location: Location
             ) { 
-            this._formBuilder = formBuilder;    
-            this.savePostForm = this._formBuilder.group({ })
+
+            //   _router.events.subscribe((val) => {
+            //     // see also 
+            //     debugger
+            //     console.log(val instanceof NavigationEnd) 
+            // });
+            let loc =_location.path().replace('/', '');
+            let windPath = window.location.pathname.split('/')[1];
+            let routConf = _router.config[1].path.split('/')[0];
+            let empty = '';
+            if(!localStorage.language){
+              if(loc !== empty){
+                localStorage.language = loc.split('/')[0];
+                _router.config[1].path = loc;
+              }
+            }else{
+              _router.config[1].path = `${localStorage.language}/${loc.split('/')[1]}`
+            }
+
+
+            // window.location.pathname = _router.config[1].path
+
+          //   if(localStorage.language !== locPath){
+          //     routConf = locPath;
+          //  }
+          // if( _router.config[1].path.split('/')[0] === "undefined"){
+            // _router.config[1].path = loc;
+          // }
+         
+
+
+          this._location.go(_router.config[1].path);
+            // window.location.pathname = _router.config[1].path
+          //   if(localStorage.language !== locPath){
+          //     routConf = locPath;
+          //  }
+
+          //  this._location.go(_router.config[1].path);
           }
 
   ngOnInit() {
-// debugger
+
     // let urlCollect = this._activeRoute.snapshot.url;
     // urlCollect.forEach( url => {
-    //   debugger
+    //   //debugger
     // });
-    localStorage.location = this._activeRoute.snapshot.url[0].path;
-    this.title = this._activeRoute.snapshot.url[0].path;
-    this._activeRoute.snapshot.url[0].path;
+
+    localStorage.location = this._activeRoute.snapshot.url[1].path;
+    
+    localStorage.language =  this._activeRoute.snapshot.url[0].path;
+    debugger
+    this.title = this._activeRoute.snapshot.url[1].path;
 
     if(!localStorage.language){
+      debugger
       localStorage.language = 'EN';
       this.prefix = localStorage.language;
     }else{
@@ -80,6 +122,7 @@ export class HomeComponent implements OnInit {
             this.showPreloader = false;
           }, 3000);
         }else{
+          debugger
           localStorage.language = 'EN'
           this.template = null;
         }
@@ -95,6 +138,7 @@ export class HomeComponent implements OnInit {
   };
 
   addEditButton(event, body){
+    let _self = this;
       setTimeout(() => {
         this.showPreloader = false;
       }, 1500);
@@ -127,6 +171,12 @@ export class HomeComponent implements OnInit {
       let blockForBtnCancel = document.createElement('div');
       btnCancel.appendChild(textNodeCancel);
 
+      btnCancel.onclick = function(){
+        $('.blockForBtnSave').remove();
+        $('.blockForBtnCancel').remove();
+        // target.innerText = _self.savedContent;
+      }
+
 
       btnEdit.appendChild(textNodeEdit);
       blockForBtnEdit.appendChild(btnEdit);
@@ -155,7 +205,20 @@ export class HomeComponent implements OnInit {
         target.focus();
         $(btnEdit).remove();
 
+        $('.blockForBtnSave').remove();
+        $('.blockForBtnCancel').remove();
+
         blockForBtnSave.appendChild(btnSave);
+
+
+        btnSave.onclick = function(){
+          $('.blockForBtnEdit').remove();
+          $('.blockForBtnSave').remove();
+          $('.blockForBtnCancel').remove();
+          _self.saveChangies();
+        }
+        
+
         $(blockForBtnSave).insertBefore(target)
         $(blockForBtnSave).css({'left': `${left}px`, 
                           'top': `${top - 70}px`, 
@@ -183,8 +246,10 @@ export class HomeComponent implements OnInit {
       $(event.target).off('blur').on('blur', (event) => {
         
         target.setAttribute('contenteditable', 'false');
-        $('.blockForBtnSave').remove();
-        $('.blockForBtnCancel').remove();
+        setTimeout(() =>{
+          $('.blockForBtnSave').remove();
+          $('.blockForBtnCancel').remove();
+        }, 100)
 
         if(event.relatedTarget){
           if(event.relatedTarget.classList.contains('btnCancel')){
@@ -196,10 +261,39 @@ export class HomeComponent implements OnInit {
      
   }
 
+  saveChangies(){
+    let body;
+    let pageTitle = localStorage.location;
+
+    let send_prefix;
+    if(localStorage.addNewLang){
+      send_prefix = localStorage.addNewLang;
+    }else{
+      send_prefix = this.prefix;
+    }
+
+    if(this.template){
+      body= document.querySelector('#body');
+    }else{
+      body= document.querySelector('#default');
+    }
+    this._templatesService.sendTemplate(body.innerHTML, pageTitle, send_prefix).subscribe((error) => {console.log(error)}
+    )
+    this._templatesService.add_new_lang_panel(send_prefix).subscribe(
+      (res) => {
+        //debugger
+        alert('added new lang');
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
+  }
+
   editInner(event){
 
     let body;
-    let pageTitle = 'home';
+    let pageTitle = localStorage.location;
     if(this.template){
       body= document.querySelector('#body');
     }else{
@@ -215,7 +309,7 @@ export class HomeComponent implements OnInit {
       (res) => {
         this._templatesService.add_new_lang_panel(send_prefix).subscribe(
           (res) => {
-            debugger
+            //debugger
             alert('added new lang');
           },
           (err) => {

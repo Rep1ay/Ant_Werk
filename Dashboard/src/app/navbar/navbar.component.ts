@@ -3,9 +3,10 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from './../auth.service';
 // import { AngularFontAwesomeModule } from 'angular-font-awesome';
 // import { faUser, faDeaf  } from '@fortawesome/free-solid-svg-icons';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, UrlTree, UrlSegmentGroup, UrlSegment, ActivatedRouteSnapshot, NavigationEnd } from '@angular/router';
 import { TemplatesService } from 'src/app/templates.service';
 import { LangPanel } from '../lang-panel';
+import { Location } from '@angular/common';
 
 declare var $: any;
 
@@ -22,17 +23,60 @@ export class NavbarComponent implements OnInit {
   services = 'Services';
   lang_items: LangPanel[] = [];
   template: any;
-
   formInput: string;
   loggedUser: boolean;
   templateSending:any;
   constructor(
+
+
+    
     private _templatesService: TemplatesService,
               private _authService: AuthService,
               private _router: Router,
-              private _activatedRoute: ActivatedRoute) { }
+              private _activatedRoute: ActivatedRoute,
+              private _location : Location,
+              )
+               { 
+
+              //   _router.events.subscribe((val) => {
+              //     // see also 
+              //     debugger
+              //     console.log(val instanceof NavigationEnd) 
+              // });
+              let loc =_location.path().replace('/', '');
+              let windPath = window.location.pathname.split('/')[1];
+              let routConf = _router.config[1].path.split('/')[0];
+              let empty = '';
+              if(!localStorage.language){
+                if(loc !== empty){
+                  localStorage.language = loc.split('/')[0];
+                  _router.config[1].path = loc;
+                }
+              }else{
+                _router.config[1].path = `${localStorage.language}/${loc.split('/')[1]}`
+              }
+
+
+              // window.location.pathname = _router.config[1].path
+
+            //   if(localStorage.language !== locPath){
+            //     routConf = locPath;
+            //  }
+            // if( _router.config[1].path.split('/')[0] === "undefined"){
+             
+            // }
+           
+
+
+            this._location.go(_router.config[1].path);
+            // _router.config[1].path = loc;
+            }
+
+
 
   ngOnInit() {
+
+
 
     // $( document ).ready(()=> {
     //   this.chageLanguage();
@@ -45,12 +89,7 @@ export class NavbarComponent implements OnInit {
     // this.productService.getProductParams().subscribe(
     //   (res) => this.renderNavBar(res)
     // );
-    this.navbarBehavior();
-
-    let lang = {
-      prefix: 'EN'
-    }
-   
+    this.navbarBehavior();   
 
    this._templatesService.get_lang_panel().subscribe(
       (res) => {
@@ -74,7 +113,7 @@ export class NavbarComponent implements OnInit {
 
   }
   isLoggedIn(state) {
-    debugger
+    //debugger
     this.loggedUser = state;
   }
 
@@ -82,9 +121,7 @@ export class NavbarComponent implements OnInit {
 
     let lang = localStorage.language;
     let snapshot = this._activatedRoute.snapshot;
-    let routerPath = snapshot.children[0].url[0].path
     this._router.navigate([`/${path}`]);
-    routerPath = path;
   }
 
   add_new_lang_to_panel(){
@@ -178,6 +215,7 @@ export class NavbarComponent implements OnInit {
           (res) => {
 
             if(res){
+              debugger
               localStorage.language = lang;
               // let prefix = localStorage.language;
               this.template = res['template'];
@@ -192,159 +230,13 @@ export class NavbarComponent implements OnInit {
               console.log(err);
             }
             )
-        }
-        // }else{
-        //   // debugger
-        //   let blockForShortcut = document.createElement('div');
-        //   let inputForShortcut = document.createElement('input');
-        //   let paragraf_for_shortcut = document.createElement('p');
-        //   let paragraf_shortcut_text = document.createTextNode('Type shortcut ');
+  }
 
-        //   let btnCancelShortcut = document.createElement('button');
-        //   let btnCancelShortcutNodeTxt = document.createTextNode('Cancel');
-          
-        //   let btn_ok_for_shortcut = document.createElement('button');
-        //   let btn_shortcut_text = document.createTextNode('OK');
-
-        //   $(paragraf_for_shortcut).css({'padding': '5px','margin': '0px'});
-
-        //   inputForShortcut.setAttribute('class', 'form-control');
-        //   btn_ok_for_shortcut.setAttribute('class', 'btn btn-success');
-        //   btnCancelShortcut.setAttribute('class','btn btn-warning');
-
-        //   btnCancelShortcut.appendChild(btnCancelShortcutNodeTxt);
-        //   paragraf_for_shortcut.appendChild(paragraf_shortcut_text);
-        //   blockForShortcut.appendChild(paragraf_for_shortcut);
-        //   blockForShortcut.appendChild(inputForShortcut);
-        //   blockForShortcut.appendChild(btn_ok_for_shortcut);
-        //   blockForShortcut.appendChild(btnCancelShortcut);
-        //   btn_ok_for_shortcut.appendChild(btn_shortcut_text);
-
-        //   document.body.appendChild(blockForShortcut);
-
-        //   $(btnCancelShortcut).off().on('click', () => {
-        //     $(blockForShortcut).css({ 'right':'-1000px'})
-        //   });
-
-        //   $(btn_ok_for_shortcut).off().on('click', (event) => {
-           
-        //     let lang = inputForShortcut.value;
-        //     $(`<li>${lang}</li>`).addClass( "lang_menu_item" ).data('lang', lang)
-        //     .on({
-        //       'click': ( event ) => {
-        //         debugger
-        //         let title = localStorage.location;
-        //         _self._templatesService.getTemplate(title, lang)
-        //         .subscribe(
-        //           (res) => {
-        //             if(res){
-        //               localStorage.language = lang;
-        //               // let prefix = localStorage.language;
-        //               this.template = res['template'];
-        //               window.location.reload();
-            
-        //             }else{
-        //               _self.createNewLanguage(lang);
-        //             }
-        //               },
-        //               (err) => {
-        //                 // this.showPreloader = true;
-        //                 console.log(err);
-        //               }
-        //             );
-        //       }
-        //     })
-        //   .appendTo( '#language_panel' );
-
-        //   $('.lang_menu_item').css('cursor', 'pointer');
-
-        //   setTimeout(() => {
-        //     $(blockForShortcut).css({ 'right':'-1000px'})
-        //   }, 500);
-
-        //   })
-
-        //   $(inputForShortcut).css({
-        //     'width': '55px',
-        //     'font-size': '25px',
-        //     'color': '#222'
-        //   })
-          
-        //   $(blockForShortcut).css({ 'position':'fixed', 
-        //                               'top': '220px', 
-        //                               'display': 'flex',
-        //                               'right': '50px', 
-        //                               'background': '#2e8dc5', 
-        //                               'font-size': '17px',
-        //                               'color': '#fff',
-        //                               'padding': '12px'
-        //                             });
-        
-
-        // // end of else
-        // }
-
-        
-
-
-
-        // end of lang_menu_item click event 
-
-   
-
-      
-    // if(event.target.dataset.disabled === 'false'){
-    //   let snapshot = this._activatedRoute.snapshot;
-    //   let path = snapshot.children[0].url[0].path;
-    //   localStorage.setItem('language', lang);
-    //   this._router.navigate([`/${path}`]);
-
-    //   // switch( lang ){
-    //   //   case 'ru' :
-    //   //     this.home = 'Главная',
-    //   //     this.contacts = 'Контакты',
-    //   //     this.services = 'Услуги'
-    //   //     break;
-    //   //   case 'en' : 
-    //   //     this.home = 'Home',
-    //   //     this.contacts = 'Contacts',
-    //   //     this.services = 'Services'
-    //   //     break;
-    //   // }
-
-    //   // window.location.reload();
-    // }else{
-    //   // let alertBlock = document.createElement('div');
-    //   let alertNodeElem = document.createTextNode('Language does not exist');
-    //   let paragraf = document.createElement('p');
-     
-    //   paragraf.appendChild(alertNodeElem);
-    //   // alertBlock.appendChild(paragraf);
-
-    //   document.body.appendChild(paragraf);
-    //   $(paragraf).css({ 'position':'absolute', 
-    //                     'top': '220px', 
-    //                     'right': '-200px', 
-    //                     'background': 'yellowgreen', 
-    //                     'font-size': '20px',
-    //                     'color': '#fff',
-    //                     'padding': '12px'});
-
-    //   setTimeout(()=>{
-    //     $(paragraf).css({'right': '70px'});
-    //   },100);
-     
-    //   setTimeout(()=>{
-    //     $(paragraf).css({'right': '-500px'});
-    //   },3000);
-    // } 
-
-  
   createNewLanguage(lang){
 
     console.log('tamplate dosen exist');
     let alertNodeElem = document.createTextNode(` ${(lang).toUpperCase()} language does not exist`);
-    let paragraf = document.createElement('p');
+    // let paragraf = document.createElement('p');
 
     let blockForAddBtn = document.createElement('div')
     let paragrafNewLang = document.createElement('p');
@@ -357,22 +249,23 @@ export class NavbarComponent implements OnInit {
     let btnCancelNodeTxt = document.createTextNode('Cancel');
 
     let blockForEditLang = document.createElement('div')
-    // let btnSaveChanges = document.createElement('button');
-    // let btnSaveChangesText = document.createTextNode('Save');
+    let btGotIt = document.createElement('button');
+    let btnGotItText = document.createTextNode(`Ok,I've got it!`);
     let paragrafEditLang = document.createElement('p');
     let paragrafEditLangText = document.createTextNode(`Adding ${(lang).toUpperCase()} language, dont forget save changes`);
 
+
     blockForEditLang.setAttribute('class', 'blockForEditLang');
-    $(blockForEditLang).on('mouseover', (event) => {
-      $(blockForEditLang).css('right', '-1000px');
-      setTimeout(()=> {
-        $(blockForEditLang).css('right', '0px');
-      }, 2000)
-    })
-    // btnSaveChanges.appendChild(btnSaveChangesText);
+
+    
+    btGotIt.appendChild(btnGotItText);
     paragrafEditLang.appendChild(paragrafEditLangText);
     blockForEditLang.appendChild(paragrafEditLang);
-    // blockForEditLang.appendChild(btnSaveChanges);
+    blockForEditLang.appendChild(btGotIt);
+    btGotIt.setAttribute('class','btn btn-primary');
+    btGotIt.onclick = function(){
+      $(blockForEditLang).css('right', '-1000px');
+    }
 
     blockForAddBtn.appendChild(btnAddNewLang);
 
@@ -390,10 +283,10 @@ export class NavbarComponent implements OnInit {
     btnCancelNewLang.appendChild(btnCancelNodeTxt);
     blockForAddBtn.appendChild(btnCancelNewLang);
 
-    paragraf.appendChild(alertNodeElem);
+    // paragraf.appendChild(alertNodeElem);
     // alertBlock.appendChild(paragraf);
 
-    document.body.appendChild(paragraf);
+    // document.body.appendChild(paragraf);
     document.body.appendChild(blockForAddBtn);
     document.body.appendChild(blockForEditLang);
     // document.body.appendChild(btnCancelNewLang);
@@ -404,8 +297,8 @@ export class NavbarComponent implements OnInit {
 
     $(btnAddNewLang).off().on('click', (event) => {
       localStorage.addNewLang = lang;
-      $('.navbar_container').addClass('editing');
-      $('.rightsidebar_main_block').addClass('editing');
+      // $('.navbar_container').addClass('editing');
+      // $('.rightsidebar_main_block').addClass('editing');
       $(blockForAddBtn).css('right', '-1000px');
       $(blockForEditLang).css('right', '0px');
     });
@@ -417,14 +310,14 @@ export class NavbarComponent implements OnInit {
     btnCancelNewLang.setAttribute('class','btn btn-danger');
     $(btnCancelNewLang).css('margin-left', '10px');
 
-    $(paragraf).css({ 'position':'absolute', 
-                      'top': '220px', 
-                      'right': '-200px', 
-                      'background': 'yellowgreen', 
-                      'font-size': '20px',
-                      'color': '#fff',
-                      'padding': '12px'
-                    });
+    // $(paragraf).css({ 'position':'absolute', 
+    //                   'top': '220px', 
+    //                   'right': '-200px', 
+    //                   'background': 'yellowgreen', 
+    //                   'font-size': '20px',
+    //                   'color': '#fff',
+    //                   'padding': '12px'
+    //                 });
 
     $(blockForAddBtn).css({ 'position':'fixed', 
                             'top': '300px', 
@@ -448,25 +341,13 @@ export class NavbarComponent implements OnInit {
       $(blockForAddBtn).css({'right': '70px'});
     },1000);
   
-    setTimeout(()=>{
-      $(paragraf).css({'right': '70px'});
-    },100);
+    // setTimeout(()=>{
+    //   $(paragraf).css({'right': '70px'});
+    // },100);
 
-    setTimeout(()=>{
-      $(paragraf).css({'right': '-500px'});
-    },3000);
-  }
-
-  editInner(event){
-    $('.blockForBtnEdit').remove();
-    this.templateSending = !this.templateSending;
-    setTimeout(() => {
-      this.templateSending = !this.templateSending;
-      $('.navbar_container ').removeClass('editing');
-      $('.blockForEditLang').css('right', '-1000px');
-      // $('.rightsidebar_main_block').removeClass('editing');
-    }, 2000);
-    this._templatesService.editInner(event);
+    // setTimeout(()=>{
+    //   $(paragraf).css({'right': '-500px'});
+    // },3000);
   }
 
   navbarBehavior() {
@@ -474,7 +355,6 @@ export class NavbarComponent implements OnInit {
 
       const scrollY = window.scrollY;
       const navbar = document.querySelector('.navbar_container');
-      // const products_collections = document.querySelector('.products_collections ul');
 
       class NavbarBehavior {
         constructor() {}
@@ -499,34 +379,7 @@ export class NavbarComponent implements OnInit {
       } else {
         navbarBehavior.show(navbar);
       }
-      // navbarBehavior.toggle(products_collections, 'fade_out_navbar', 'fade_in_navbar');
   });
-  }
-
-  renderNavBar(responce) {
-    const res = responce;
-  }
-  
-  showProductsCollection(collection) {
-    const scrolled = document.querySelector('.navbar_container').classList.contains('fixed_to_top');
-    if (scrolled) {
-      collection.setAttribute('style', 'top: 56px');
-    } else {
-      collection.setAttribute('style', 'top: 76px');
-    }
-    collection.classList.toggle('fade_in_navbar');
-  }
-
-  routeToSearch(input) {
-    if (input.value.length >= 2) {
-        this._router.navigate(['/search'], {queryParams: {value: input.value}});
-        window.location.reload();
-    } else {
-      input.classList.add('notValid');
-      setTimeout(() => {
-        input.classList.remove('notValid');
-      }, 1000 );
-    }
   }
 
   logoutUser() {

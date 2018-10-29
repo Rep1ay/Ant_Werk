@@ -36,12 +36,12 @@ export class AuthService {
     return this.http.post<any>(this._registerUrl, user);
   }
   loginUser(user: User) {
-    // debugger
+    // //debugger
     return this.http.post<any>(this._loginUrl,user);
   }
 
   checkDiscount(promoCode) {
-    debugger
+    //debugger
   }
 
   loggedIn() {

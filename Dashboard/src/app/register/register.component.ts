@@ -21,7 +21,7 @@ export class RegisterComponent implements OnInit {
 
     this._auth.registerNewUser(form.value).subscribe(
       (res) => {
-        debugger
+        //debugger
         localStorage.setItem('token', res.token);
         this.router.navigate(['/en/home']);
         window.location.reload();

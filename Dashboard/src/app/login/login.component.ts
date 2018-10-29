@@ -20,7 +20,7 @@ loginUserData = {};
   }
 
   loginUser( form: NgForm) {
-    debugger
+    //debugger
     this._auth.loginUser(form.value)
     .subscribe(
       (res) => {
