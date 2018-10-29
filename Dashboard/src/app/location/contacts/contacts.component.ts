@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { TemplatesService } from './../templates.service';
+import { TemplatesService } from './../../templates.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { AuthService } from './../auth.service';
+import { AuthService } from './../../auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
   // Jquery declaration
   declare var $: any;
@@ -40,18 +40,23 @@ export class ContactsComponent implements OnInit {
           }
 
   ngOnInit() {
-    this.title = this._activeRoute.snapshot.url[0].path;
+    
+    let snapshotURL = this._activeRoute.snapshot.url;
+    localStorage.location = this.title = snapshotURL[0].path;
     this.prefix = localStorage.language;
+
     this.loggedIn = this._auth.loggedIn();
+
     this._templatesService._event.subscribe(
       event => this.editInner(event)
     )
-  // if(this.loggedIn){
+
+  if(this.loggedIn){
     $( document ).ready(()=> {
       let event, body = null;
       this.addEditButton(event, body);
     });
-  // }
+  }
 
    this._templatesService.getTemplate(this.title, this.prefix)
     .subscribe(

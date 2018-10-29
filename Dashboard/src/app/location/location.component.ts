@@ -2,13 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 
+
 @Component({
   template: '<router-outlet></router-outlet>',
 })
 export class LocationComponent implements OnInit {
 
-  constructor( _activatedRoute: ActivatedRoute, _router: Router, _location: Location) { 
-    debugger
+  constructor( private _activatedRoute: ActivatedRoute, private _router: Router,private _location: Location) { 
+    // debugger
     // let redirectURL;
     // let lang = localStorage.language;
     // let winPath = window.location.pathname;
@@ -53,23 +54,27 @@ export class LocationComponent implements OnInit {
     // _location.go(winPath);
     // debugger
     
-    let loc =_location.path().replace('/', '');
-    let windPath = window.location.pathname.split('/')[1];
-    let routConf = _router.config[0].path;
-    let empty = '';
-    if(!localStorage.language){
-      if(loc !== empty){
-        localStorage.language = loc.split('/')[0];
-        _router.config[1].path = loc;
-      }
-    }else{
-      _router.config[0].path = `${localStorage.language}/${loc.split('/')[1]}`
-    }
+    // let loc =_location.path().replace('/', '');
+    // let windPath = window.location.pathname.split('/')[1];
+    // let routConf = _router.config[0].path;
+    // let empty = '';
+    // if(!localStorage.language){
+    //   if(loc !== empty){
+    //     localStorage.language = loc.split('/')[0];
+    //     _router.config[1].path = loc;
+    //   }
+    // }else{
+    //   _router.config[0].path = `${localStorage.language}/${loc.split('/')[1]}`
+    // }
 
   }
 
   ngOnInit() {
-    debugger
+    // this._activatedRoute.queryParamMap.subscribe(params => {
+    //   debugger
+    //   localStorage.language = params.get('prefix')
+    // });
+    // window.location.reload();
   }
 
 }

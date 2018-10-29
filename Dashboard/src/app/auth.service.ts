@@ -55,7 +55,7 @@ export class AuthService {
   logoutUser() {
     localStorage.removeItem('token');
     localStorage.removeItem('promoCode');
-    this.router.navigate(['en/login']);
+    this.router.navigate([`${localStorage.lang}/login`]);
   }
 
   getToken() {

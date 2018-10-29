@@ -7,11 +7,11 @@ import { AppComponent } from './app.component';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NavbarComponent } from './location/navbar/navbar.component';
-import { RegisterComponent } from './register/register.component';
-import { LoginComponent } from './login/login.component';
+import { RegisterComponent } from './location/register/register.component';
+import { LoginComponent } from './location/login/login.component';
 import { HomeComponent } from './location/home/home.component';
 // import { PreloaderComponent } from './en/preloader/preloader.component';
-import { ContactsComponent } from './contacts/contacts.component';
+import { ContactsComponent } from './location/contacts/contacts.component';
 import { LocationComponent } from './location/location.component';
 
 

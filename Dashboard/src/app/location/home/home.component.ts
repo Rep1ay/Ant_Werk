@@ -86,12 +86,7 @@ export class HomeComponent implements OnInit {
     //   //debugger
     // });
 
-    // localStorage.location = this._activeRoute.snapshot.url[1].path;
     
-    // localStorage.language =  this._activeRoute.snapshot.url[0].path;
-    debugger
-    // this.title = this._activeRoute.snapshot.url[1].path;
-
     if(!localStorage.language){
       debugger
       localStorage.language = 'EN';
@@ -100,17 +95,26 @@ export class HomeComponent implements OnInit {
       this.prefix = localStorage.language;
     }
 
+    let snapshotURL = this._activeRoute.snapshot.url;
+    localStorage.location = this.title = snapshotURL[0].path;
+    localStorage.language = snapshotURL[0].path;
+
+
+
+
     this.loggedIn = this._auth.loggedIn();
+
     this._templatesService._event.subscribe(
       event => this.editInner(event)
     )
-  // if(this.loggedIn){
+
+  if(this.loggedIn){
     $( document ).ready(()=> {
 
       let event, body = null;
       this.addEditButton(event, body);
     });
-  // }
+  }
 
    this._templatesService.getTemplate(this.title, this.prefix)
     .subscribe(
@@ -122,9 +126,12 @@ export class HomeComponent implements OnInit {
             this.showPreloader = false;
           }, 3000);
         }else{
-          debugger
-          localStorage.language = 'EN'
+          let lang;
+          console.log('this language does not exist in the database');
+          localStorage.language = lang = 'EN'
           this.template = null;
+          this._router.config[0].path = lang
+          this._router.navigate([`../${lang}/${localStorage.location}`])
         }
       },
       (err) => {
