@@ -130,19 +130,19 @@
     justify-content: space-evenly;
 }
 .searchBtn{
-    background: #a844d4;
+    background: #448ed4;
     color: #fff;
     border-radius: 7px;
     border: none;
     height: 34px;
     padding: 5px;
     font-size: 16px;
-    box-shadow: 1px 1px 1px 1px #a45dc3;
+    box-shadow: 1px 1px 1px 1px #5d92c3;
     transition: all 0.3s ease-out;
 }
 .searchBtn:hover{
-    background: #bb5ce4;
-    box-shadow: 2px 1px 3px 1px #9765ad;
+    background: #5c90e4;
+    box-shadow: 2px 1px 3px 1px #659fad;
     transition: all 0.3s ease-in;
     cursor: pointer;
 }

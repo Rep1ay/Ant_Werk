@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { TemplatesService } from './../../templates.service';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { AuthService } from './../../auth.service';
-import { ActivatedRoute, Router } from '@angular/router';
-  // Jquery declaration
-  declare var $: any;
+import { TemplatesService } from '../../templates.service';
+import { FormBuilder, FormGroup, NgForm } from '@angular/forms';
+import { AuthService } from '../../auth.service';
+import { ActivatedRoute, Router, UrlTree, UrlSegmentGroup, UrlSegment, NavigationEnd } from '@angular/router';
+import { Location } from '@angular/common';
+// Jquery declaration
+declare var $: any;
+
 @Component({
   selector: 'app-contacts',
   templateUrl: './contacts.component.html',
@@ -28,22 +30,78 @@ export class ContactsComponent implements OnInit {
   saveBtnPublic: any;
   event: any;
   savedContent: string;
-
+  showPreloader = true;
+  winOrigin:string;
+  winPathname:string;
+  permalink: string;
   constructor(private _templatesService: TemplatesService, 
             formBuilder: FormBuilder,
             private _auth: AuthService,
             private _activeRoute: ActivatedRoute,
-            private _router: Router
+            private _router: Router,
+            private _location: Location
             ) { 
-            this._formBuilder = formBuilder;    
-            this.savePostForm = this._formBuilder.group({ })
+              this.winOrigin = window.location.origin;
+              this.winPathname = window.location.pathname;
+            //   _router.events.subscribe((val) => {
+            //     // see also 
+            //     
+            //     console.log(val instanceof NavigationEnd) 
+            // });
+            // let loc =_location.path().replace('/', '');
+            // let windPath = window.location.pathname.split('/')[1];
+            // let routConf = _router.config[1].path.split('/')[0];
+            // let empty = '';
+            // if(!localStorage.language){
+            //   if(loc !== empty){
+            //     localStorage.language = loc.split('/')[0];
+            //     _router.config[1].path = loc;
+            //   }
+            // }else{
+            //   _router.config[1].path = `${localStorage.language}/${loc.split('/')[1]}`
+            // }
+
+
+            // window.location.pathname = _router.config[1].path
+
+          //   if(localStorage.language !== locPath){
+          //     routConf = locPath;
+          //  }
+          // if( _router.config[1].path.split('/')[0] === "undefined"){
+            // _router.config[1].path = loc;
+          // }
+         
+
+
+          // this._location.go(_router.config[1].path);
+            // window.location.pathname = _router.config[1].path
+          //   if(localStorage.language !== locPath){
+          //     routConf = locPath;
+          //  }
+
+          //  this._location.go(_router.config[1].path);
           }
 
   ngOnInit() {
+
+    // let urlCollect = this._activeRoute.snapshot.url;
+    // urlCollect.forEach( url => {
+    //   //
+    // });
     
+    if(!localStorage.language){
+      
+      localStorage.language = 'EN';
+      this.prefix = localStorage.language;
+    }else{
+      this.prefix = localStorage.language;
+    }
+
     let snapshotURL = this._activeRoute.snapshot.url;
     localStorage.location = this.title = snapshotURL[0].path;
-    this.prefix = localStorage.language;
+
+
+
 
     this.loggedIn = this._auth.loggedIn();
 
@@ -53,8 +111,9 @@ export class ContactsComponent implements OnInit {
 
   if(this.loggedIn){
     $( document ).ready(()=> {
+
       let event, body = null;
-      this.addEditButton(event, body);
+    
     });
   }
 
@@ -62,12 +121,43 @@ export class ContactsComponent implements OnInit {
     .subscribe(
       (res) => {
         if(res){
+          
           let prefix = this.prefix;
-          this.template = res.body.template
+          this.permalink = res['permalink'];
+          this.template = res['template'];
+          setTimeout(() => {
+            this.showPreloader = false;
+
+            if(this.loggedIn){   
+              setTimeout(() => {      
+                this.addEditButton();
+              }, 100);
+            }
+
+          }, 2000);
+        }else{
+          let lang;
+          setTimeout(() => {
+            this.showPreloader = false;
+
+             if(this.loggedIn){   
+              setTimeout(() => {      
+                this.addEditButton();
+              }, 100);
+            }
+
+          }, 2000);
+          console.log('this language does not exist in the database');
+          this.permalink = localStorage.location;
+          localStorage.language = lang = 'EN'
+          this.template = null;
+          this._router.config[0].path = lang
+          this._router.navigate([`../${lang}/${localStorage.location}`])
         }
       },
       (err) => {
-        console.log(err);
+        // this.showPreloader = true;
+        // console.log(err);
       }
     );
 
@@ -75,7 +165,15 @@ export class ContactsComponent implements OnInit {
 
   };
 
-  addEditButton(event, body){
+  editPageURL(inputURL: NgForm){
+    console.log(inputURL.value);
+  }
+
+  addEditButton(){
+    let _self = this;
+      setTimeout(() => {
+        this.showPreloader = false;
+      }, 1500);
 
       $('.click2edit').off('mouseover').on('mouseover', function(event){
       // let savedContent;
@@ -105,6 +203,12 @@ export class ContactsComponent implements OnInit {
       let blockForBtnCancel = document.createElement('div');
       btnCancel.appendChild(textNodeCancel);
 
+      btnCancel.onclick = function(){
+        $('.blockForBtnSave').remove();
+        $('.blockForBtnCancel').remove();
+        // target.innerText = _self.savedContent;
+      }
+
 
       btnEdit.appendChild(textNodeEdit);
       blockForBtnEdit.appendChild(btnEdit);
@@ -133,7 +237,20 @@ export class ContactsComponent implements OnInit {
         target.focus();
         $(btnEdit).remove();
 
+        $('.blockForBtnSave').remove();
+        $('.blockForBtnCancel').remove();
+
         blockForBtnSave.appendChild(btnSave);
+
+
+        btnSave.onclick = function(){
+          $('.blockForBtnEdit').remove();
+          $('.blockForBtnSave').remove();
+          $('.blockForBtnCancel').remove();
+          _self.saveChangies();
+        }
+        
+
         $(blockForBtnSave).insertBefore(target)
         $(blockForBtnSave).css({'left': `${left}px`, 
                           'top': `${top - 70}px`, 
@@ -161,8 +278,10 @@ export class ContactsComponent implements OnInit {
       $(event.target).off('blur').on('blur', (event) => {
         
         target.setAttribute('contenteditable', 'false');
-        $('.blockForBtnSave').remove();
-        $('.blockForBtnCancel').remove();
+        setTimeout(() =>{
+          $('.blockForBtnSave').remove();
+          $('.blockForBtnCancel').remove();
+        }, 100)
 
         if(event.relatedTarget){
           if(event.relatedTarget.classList.contains('btnCancel')){
@@ -174,19 +293,63 @@ export class ContactsComponent implements OnInit {
      
   }
 
-  editInner(event){
-
+  saveChangies(){
     let body;
-    let pageTitle = 'home';
+    let pageTitle = localStorage.location;
+
+    let send_prefix;
+    if(localStorage.addNewLang){
+      send_prefix = localStorage.addNewLang;
+    }else{
+      send_prefix = this.prefix;
+    }
+
     if(this.template){
       body= document.querySelector('#body');
     }else{
       body= document.querySelector('#default');
     }
-   
-    this._templatesService.sendTemplate(body.innerHTML, pageTitle, this.prefix).subscribe(
+    this._templatesService.sendTemplate(body.innerHTML, pageTitle, send_prefix, this.permalink).subscribe((error) => {console.log(error)}
+    )
+    this._templatesService.add_new_lang_panel(send_prefix).subscribe(
       (res) => {
+        //
+        alert('added new lang');
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
+  }
+
+  editInner(event){
+
+    let body;
+    let pageTitle = localStorage.location;
+    if(this.template){
+      body= document.querySelector('#body');
+    }else{
+      body= document.querySelector('#default');
+    }
+    let send_prefix;
+    if(localStorage.addNewLang){
+      send_prefix = localStorage.addNewLang;
+    }else{
+      send_prefix = this.prefix;
+    }
+    this._templatesService.sendTemplate(body.innerHTML, pageTitle, send_prefix, this.permalink).subscribe(
+      (res) => {
+        this._templatesService.add_new_lang_panel(send_prefix).subscribe(
+          (res) => {
+            //
+            alert('added new lang');
+          },
+          (err) => {
+            console.log(err);
+          }
+        );
         setTimeout(() => {
+          localStorage.removeItem('addNewLang');
           this.templateSending = false;
         }, 1000)
       },

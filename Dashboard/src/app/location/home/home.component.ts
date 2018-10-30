@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TemplatesService } from '../../templates.service';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, NgForm } from '@angular/forms';
 import { AuthService } from '../../auth.service';
 import { ActivatedRoute, Router, UrlTree, UrlSegmentGroup, UrlSegment, NavigationEnd } from '@angular/router';
 import { Location } from '@angular/common';
@@ -14,6 +14,7 @@ declare var $: any;
 })
 
 export class HomeComponent implements OnInit {
+  
   loggedIn: boolean;
   lastTarget: any;
   title: string;
@@ -31,7 +32,9 @@ export class HomeComponent implements OnInit {
   event: any;
   savedContent: string;
   showPreloader = true;
-
+  winOrigin:string;
+  winPathname:string;
+  permalink: string;
   constructor(private _templatesService: TemplatesService, 
             formBuilder: FormBuilder,
             private _auth: AuthService,
@@ -39,10 +42,11 @@ export class HomeComponent implements OnInit {
             private _router: Router,
             private _location: Location
             ) { 
-
+              this.winOrigin = window.location.origin;
+              this.winPathname = window.location.pathname;
             //   _router.events.subscribe((val) => {
             //     // see also 
-            //     debugger
+            //     
             //     console.log(val instanceof NavigationEnd) 
             // });
             // let loc =_location.path().replace('/', '');
@@ -83,12 +87,11 @@ export class HomeComponent implements OnInit {
 
     // let urlCollect = this._activeRoute.snapshot.url;
     // urlCollect.forEach( url => {
-    //   //debugger
+    //   //
     // });
-
     
     if(!localStorage.language){
-      debugger
+      
       localStorage.language = 'EN';
       this.prefix = localStorage.language;
     }else{
@@ -97,7 +100,6 @@ export class HomeComponent implements OnInit {
 
     let snapshotURL = this._activeRoute.snapshot.url;
     localStorage.location = this.title = snapshotURL[0].path;
-    localStorage.language = snapshotURL[0].path;
 
 
 
@@ -112,7 +114,7 @@ export class HomeComponent implements OnInit {
     $( document ).ready(()=> {
 
       let event, body = null;
-      this.addEditButton(event, body);
+    
     });
   }
 
@@ -120,14 +122,34 @@ export class HomeComponent implements OnInit {
     .subscribe(
       (res) => {
         if(res){
+          
           let prefix = this.prefix;
+          this.permalink = res['permalink'];
           this.template = res['template'];
           setTimeout(() => {
             this.showPreloader = false;
-          }, 3000);
+
+            if(this.loggedIn){   
+              setTimeout(() => {      
+                this.addEditButton();
+              }, 100);
+            }
+            
+          }, 2000);
         }else{
           let lang;
+          setTimeout(() => {
+            this.showPreloader = false;
+
+            if(this.loggedIn){   
+              setTimeout(() => {      
+                this.addEditButton();
+              }, 100);
+            }
+           
+          }, 2000);
           console.log('this language does not exist in the database');
+          this.permalink = localStorage.location;
           localStorage.language = lang = 'EN'
           this.template = null;
           this._router.config[0].path = lang
@@ -144,7 +166,11 @@ export class HomeComponent implements OnInit {
 
   };
 
-  addEditButton(event, body){
+  editPageURL(inputURL: NgForm){
+    console.log(inputURL.value);
+  }
+
+  addEditButton(){
     let _self = this;
       setTimeout(() => {
         this.showPreloader = false;
@@ -284,11 +310,11 @@ export class HomeComponent implements OnInit {
     }else{
       body= document.querySelector('#default');
     }
-    this._templatesService.sendTemplate(body.innerHTML, pageTitle, send_prefix).subscribe((error) => {console.log(error)}
+    this._templatesService.sendTemplate(body.innerHTML, pageTitle, send_prefix, this.permalink).subscribe((error) => {console.log(error)}
     )
     this._templatesService.add_new_lang_panel(send_prefix).subscribe(
       (res) => {
-        //debugger
+        //
         alert('added new lang');
       },
       (err) => {
@@ -312,11 +338,11 @@ export class HomeComponent implements OnInit {
     }else{
       send_prefix = this.prefix;
     }
-    this._templatesService.sendTemplate(body.innerHTML, pageTitle, send_prefix).subscribe(
+    this._templatesService.sendTemplate(body.innerHTML, pageTitle, send_prefix, this.permalink).subscribe(
       (res) => {
         this._templatesService.add_new_lang_panel(send_prefix).subscribe(
           (res) => {
-            //debugger
+            //
             alert('added new lang');
           },
           (err) => {

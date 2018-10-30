@@ -10,7 +10,7 @@ import { NavbarComponent } from './location/navbar/navbar.component';
 import { RegisterComponent } from './location/register/register.component';
 import { LoginComponent } from './location/login/login.component';
 import { HomeComponent } from './location/home/home.component';
-// import { PreloaderComponent } from './en/preloader/preloader.component';
+import { PreloaderComponent } from './location/preloader/preloader.component';
 import { ContactsComponent } from './location/contacts/contacts.component';
 import { LocationComponent } from './location/location.component';
 
@@ -23,7 +23,8 @@ import { LocationComponent } from './location/location.component';
     RegisterComponent,
     NavbarComponent,
     ContactsComponent,
-    LocationComponent
+    LocationComponent,
+    PreloaderComponent
 
   ],
   imports: [

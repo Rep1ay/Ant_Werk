@@ -3,6 +3,7 @@ import { AuthService } from './../../auth.service';
 import { Router } from '@angular/router';
 
 import { NgForm } from '@angular/forms';
+import { timeout } from 'rxjs/operators';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -11,14 +12,16 @@ import { NgForm } from '@angular/forms';
 })
 export class LoginComponent implements OnInit {
 loginUserData = {};
-
+showPreloader = true;
   constructor( private _authService: AuthService,
                 private router: Router) {
-                  debugger
+                  
                  }
 
   ngOnInit() {
-
+    setTimeout(() => {
+    this.showPreloader = false;
+    },2000)
   }
 
   loginUser( form: NgForm) {

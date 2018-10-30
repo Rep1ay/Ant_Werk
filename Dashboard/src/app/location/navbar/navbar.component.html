@@ -1,3 +1,4 @@
+<app-preloader *ngIf="showPreloader"></app-preloader>
 <nav class="main_navbar">
   <ul class="navbar_container">
       
@@ -7,12 +8,10 @@
         aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <!-- <form class="form-inline col-md-4 my-3 my-lg-0">
-      <input #formInput class="form-control col-md-8 mr-sm-2" type="search" 
-              placeholder="Type title, brand or categorie" 
-              aria-label="Search">
-      <button (click)='routeToSearch(formInput)' class="btn my-2 my-sm-0 searchBtn" type="submit">Search</button>
-    </form> -->
+    <li class="nav-item">
+        <a class="nav-link" href=""><span class="sr-only">awhuifha</span></a>
+      </li>
+   
     <li routerLinkActive="active"  (click)="followLink('home')">{{home}}</li>
     <!-- <li routerLinkActive="active"  class="menu_toggle" (click)="showProductsCollection(productCollection)">Products</li> -->
     <li routerLinkActive="active" (click)="followLink('contacts')">{{contacts}}</li>
@@ -35,7 +34,15 @@
     </ul> -->
   </ul>
 </nav>
-
+<!-- <nav class="main_navbar">
+  <ul class="navbar_container">
+       <form #inputURL='ngForm' class="form-inline col-md-2 my-3 my-lg-0">
+      <input #input="ngModel" name="input" ngModel class="form-control col-md-8 mr-sm-2" type="search" 
+              aria-label="Search">
+      <button (click)='editPageURL(inputURL)' class="btn btn-primary btn-large searchBtn" type="submit">edit</button>
+    </form>
+  </ul>
+</nav> -->
 <nav id="rightsidebar_main_block" class="main_navbar ">
   <ul id="language_panel" class="navbar_container "> 
    

@@ -1,15 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
+import { NgForm } from '@angular/forms';
 
 
 @Component({
-  template: '<router-outlet></router-outlet>',
+  selector: 'app-location-component',
+  templateUrl: './location.component.html',
 })
 export class LocationComponent implements OnInit {
-
+  winOrigin: string;
+  winPathname: string;
+  edition = false;
   constructor( private _activatedRoute: ActivatedRoute, private _router: Router,private _location: Location) { 
-    // debugger
+    this.winOrigin = window.location.origin;
+    this.winPathname = window.location.pathname;
+    // 
     // let redirectURL;
     // let lang = localStorage.language;
     // let winPath = window.location.pathname;
@@ -52,7 +58,7 @@ export class LocationComponent implements OnInit {
     // }
     // _router.config[0].children[0].path = winPath
     // _location.go(winPath);
-    // debugger
+    // 
     
     // let loc =_location.path().replace('/', '');
     // let windPath = window.location.pathname.split('/')[1];
@@ -70,11 +76,19 @@ export class LocationComponent implements OnInit {
   }
 
   ngOnInit() {
+     //  this.winPathname = window.location.pathname;
     // this._activatedRoute.queryParamMap.subscribe(params => {
-    //   debugger
+    //   
     //   localStorage.language = params.get('prefix')
     // });
     // window.location.reload();
+
+    this._activatedRoute.snapshot.root
+
+    
   }
 
+  editPageURL(inputURL: NgForm){
+    console.log(inputURL.value);
+  }
 }

@@ -1,6 +1,7 @@
 
+<app-preloader *ngIf="showPreloader"></app-preloader>
 
-<div class="container">
+<div *ngIf="!showPreloader" class="container">
   <div class="row pt-5">
     <div class="col-md-6 mx-auto">
       <div class="card rounded-7">

@@ -7,6 +7,7 @@ import { Router, ActivatedRoute, UrlTree, UrlSegmentGroup, UrlSegment, Activated
 import { TemplatesService } from 'src/app/templates.service';
 import { LangPanel } from '../../lang-panel';
 import { Location } from '@angular/common';
+import { NgForm } from '@angular/forms';
 
 declare var $: any;
 
@@ -26,6 +27,7 @@ export class NavbarComponent implements OnInit {
   formInput: string;
   loggedUser: boolean;
   templateSending:any;
+  showPreloader = false;
   constructor(
 
 
@@ -124,7 +126,7 @@ export class NavbarComponent implements OnInit {
 
   }
   isLoggedIn(state) {
-    debugger
+    
     this.loggedUser = state;
   }
 
@@ -132,7 +134,19 @@ export class NavbarComponent implements OnInit {
 // 
     let lang = localStorage.language;
     let snapshot = this._activatedRoute.snapshot;
+
+    this.showPreloader = true;
     this._router.navigate([`${lang}/${path}`]);
+    setTimeout(() => {
+    this.showPreloader = false;
+    }, 1000);
+    // window.location.reload();
+    setTimeout(() => {
+      
+    }, 1000);
+
+
+   
   }
 
   add_new_lang_to_panel(){
@@ -362,6 +376,10 @@ export class NavbarComponent implements OnInit {
     // setTimeout(()=>{
     //   $(paragraf).css({'right': '-500px'});
     // },3000);
+  }
+
+  editPageURL(input: NgForm){
+    
   }
 
   navbarBehavior() {
