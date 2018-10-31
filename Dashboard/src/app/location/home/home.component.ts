@@ -35,11 +35,13 @@ export class HomeComponent implements OnInit {
   winOrigin:string;
   winPathname:string;
   permalink: string;
+  permalinkEdit: string;
+  newLanguageAdded = false;
   constructor(private _templatesService: TemplatesService, 
             formBuilder: FormBuilder,
             private _auth: AuthService,
             private _activeRoute: ActivatedRoute,
-            private _router: Router,
+            public _router: Router,
             private _location: Location
             ) { 
               this.winOrigin = window.location.origin;
@@ -110,21 +112,14 @@ export class HomeComponent implements OnInit {
       event => this.editInner(event)
     )
 
-  if(this.loggedIn){
-    $( document ).ready(()=> {
-
-      let event, body = null;
-    
-    });
-  }
-
    this._templatesService.getTemplate(this.title, this.prefix)
     .subscribe(
       (res) => {
         if(res){
           
           let prefix = this.prefix;
-          this.permalink = res['permalink'];
+          this.permalink = this.permalinkEdit = res['permalink'];
+          localStorage.permalink = res['permalink'];
           this.template = res['template'];
           setTimeout(() => {
             this.showPreloader = false;
@@ -162,11 +157,11 @@ export class HomeComponent implements OnInit {
       }
     );
 
-    // const headers = ['H1', 'H2', 'H3', 'H4',]
-
   };
 
   editPageURL(inputURL: NgForm){
+    this.permalink = '';
+    this.permalinkEdit 
     console.log(inputURL.value);
   }
 
@@ -248,7 +243,7 @@ export class HomeComponent implements OnInit {
           $('.blockForBtnEdit').remove();
           $('.blockForBtnSave').remove();
           $('.blockForBtnCancel').remove();
-          _self.saveChangies();
+          _self.saveChanges();
         }
         
 
@@ -294,7 +289,7 @@ export class HomeComponent implements OnInit {
      
   }
 
-  saveChangies(){
+  saveChanges(){
     let body;
     let pageTitle = localStorage.location;
 
@@ -315,6 +310,10 @@ export class HomeComponent implements OnInit {
     this._templatesService.add_new_lang_panel(send_prefix).subscribe(
       (res) => {
         //
+        // this.newLanguageAdded = true;
+        setTimeout(() =>{
+          //  this.newLanguageAdded = false;
+        },2000)
         alert('added new lang');
       },
       (err) => {

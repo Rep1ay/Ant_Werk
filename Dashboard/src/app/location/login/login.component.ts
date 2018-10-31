@@ -13,6 +13,7 @@ import { timeout } from 'rxjs/operators';
 export class LoginComponent implements OnInit {
 loginUserData = {};
 showPreloader = true;
+invalidAuth = false;
   constructor( private _authService: AuthService,
                 private router: Router) {
                   
@@ -36,7 +37,12 @@ showPreloader = true;
           state => {debugger});
         window.location.reload();
       },
-      (error) => console.log(error)
+      (error) => {
+        setTimeout(() => {
+            this.invalidAuth = true;
+        }, 500)
+      
+        console.log(error)}
     );
   }
 

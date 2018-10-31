@@ -15,7 +15,7 @@ let prefix = localStorage.language;
 // debugger
 const routes: Routes = [
 
-  // { path: '', redirectTo:`/${prefix}/home`, pathMatch: 'full'},
+ 
   {path: `${prefix}`, component : LocationComponent,
     children: [
       { path: `home`, component: HomeComponent},
@@ -23,6 +23,7 @@ const routes: Routes = [
       { path: `register`, component : RegisterComponent},
       { path: `contacts`, component: ContactsComponent},
     ]},
+    { path: '**', redirectTo:`/${prefix}/home`, pathMatch: 'full'},
   
   // { path: `${prefix}/login`, component : LoginComponent},
   // { path: `${prefix}/register`, component : RegisterComponent},

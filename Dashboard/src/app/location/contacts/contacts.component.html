@@ -2,7 +2,7 @@
 
 <!-- ============ permalink block start ======================  -->
 
-<div *ngIf="!showPreloader"  style="height: 80px;" class="container-fluid">
+<div *ngIf="!showPreloader && loggedIn"  style="height: 80px;" class="container-fluid">
     <form  #inputURL='ngForm' class="form-inline col-md-4 permalinkForm">
       <label for="input">Permalink: </label>
       <a href='{{winOrigin}}'>{{winOrigin}}/{{permalink}}</a>
@@ -23,7 +23,6 @@
     <div style="margin-top:40px" class="form-group">
       <label class="click2edit" for="exampleInputEmail1">Email address</label>
       <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
-      <small id="emailHelp" class="form-text text-muted click2edit">We'll never share your email with anyone else.</small>
     </div>
     <div class="form-group">
       <label class="click2edit" for="exampleInputPassword1">Password</label>

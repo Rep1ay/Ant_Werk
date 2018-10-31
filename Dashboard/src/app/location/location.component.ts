@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { NgForm } from '@angular/forms';
+import { TemplatesService } from '../templates.service';
 
 
 @Component({
@@ -12,7 +13,13 @@ export class LocationComponent implements OnInit {
   winOrigin: string;
   winPathname: string;
   edition = false;
-  constructor( private _activatedRoute: ActivatedRoute, private _router: Router,private _location: Location) { 
+  permalink: string;
+  permalinkEdit: string;
+  constructor( private _activatedRoute: ActivatedRoute,
+    private _router: Router,
+    private _location: Location,
+    private _templatesService : TemplatesService
+    ) { 
     this.winOrigin = window.location.origin;
     this.winPathname = window.location.pathname;
     // 
@@ -76,6 +83,31 @@ export class LocationComponent implements OnInit {
   }
 
   ngOnInit() {
+    let prefix = localStorage.language;
+    let title = localStorage.location;
+    this._templatesService.getTemplate(title, prefix)
+    .subscribe(
+      (res) => {
+        if(res){
+          debugger
+          this.permalink = this.permalinkEdit = res['permalink'];
+          localStorage.permalink = res['permalink'];
+        }else{
+          // let lang;
+          // console.log('this language does not exist in the database');
+          // this.permalink = localStorage.location;
+          // localStorage.language = lang = 'EN'
+          // this.template = null;
+          // this._router.config[0].path = lang
+          // this._router.navigate([`../${lang}/${localStorage.location}`])
+        }
+      },
+      (err) => {
+        console.log('error from location get Template');
+        // this.showPreloader = true;
+        // console.log(err);
+      }
+    );
      //  this.winPathname = window.location.pathname;
     // this._activatedRoute.queryParamMap.subscribe(params => {
     //   

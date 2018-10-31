@@ -247,7 +247,7 @@ export class ContactsComponent implements OnInit {
           $('.blockForBtnEdit').remove();
           $('.blockForBtnSave').remove();
           $('.blockForBtnCancel').remove();
-          _self.saveChangies();
+          _self.saveChanges();
         }
         
 
@@ -293,7 +293,7 @@ export class ContactsComponent implements OnInit {
      
   }
 
-  saveChangies(){
+  saveChanges(){
     let body;
     let pageTitle = localStorage.location;
 
