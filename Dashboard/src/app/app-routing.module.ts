@@ -12,7 +12,7 @@ let prefix = localStorage.language;
 // if(!prefix){
 //   prefix = localStorage.language = 'EN'
 // }
-// debugger
+
 const routes: Routes = [
 
  
@@ -37,7 +37,7 @@ const routes: Routes = [
 })
 export class AppRoutingModule {
 constructor( private _activeRoute: ActivatedRoute, _router: Router, _location:Location){
-  debugger
+
   let winPath = window.location.pathname;
   if(winPath.length > 2){
      localStorage.language = window.location.pathname.split('/')[1];

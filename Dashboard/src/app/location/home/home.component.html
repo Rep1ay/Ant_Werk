@@ -7,7 +7,7 @@
 
 <div *ngIf="!showPreloader && loggedIn" style="height: 80px;" class="container-fluid">
 	<div class="row">
-		<form  #inputURL='ngForm' class="form-inline col-md-5 permalinkForm">
+		<!-- <form  #inputURL='ngForm' class="form-inline col-md-5 permalinkForm">
 			<label for="input">Permalink: </label>
 			<a href='{{winOrigin}}'>{{winOrigin}}/{{permalink}}</a>
 			<input *ngIf="edition" #input="ngModel" [(ngModel)]='permalinkEdit' name="input" ngModel class="form-control col-md-3">
@@ -19,7 +19,7 @@
 
 			<button *ngIf="edition" style="margin: 10px;" (click)='editPageURL(inputURL); edition = !edition' 
 			class="btn btn-danger btn-large searchBtn" type="submit">Cancel</button>
-		</form>
+		</form> -->
 		<div *ngIf="newLanguageAdded" class="col-md-3">
 			<p>added new language {{localhost.language}} to this page</p>
 		</div>

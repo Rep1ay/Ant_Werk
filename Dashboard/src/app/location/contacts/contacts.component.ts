@@ -4,6 +4,9 @@ import { FormBuilder, FormGroup, NgForm } from '@angular/forms';
 import { AuthService } from '../../auth.service';
 import { ActivatedRoute, Router, UrlTree, UrlSegmentGroup, UrlSegment, NavigationEnd } from '@angular/router';
 import { Location } from '@angular/common';
+import { Observable, Subject, asapScheduler, pipe, of, from,
+  interval, merge, fromEvent } from 'rxjs';
+  import { map, filter, scan } from 'rxjs/operators';
 // Jquery declaration
 declare var $: any;
 
@@ -34,6 +37,7 @@ export class ContactsComponent implements OnInit {
   winOrigin:string;
   winPathname:string;
   permalink: string;
+  permalinkEdit: string;
   constructor(private _templatesService: TemplatesService, 
             formBuilder: FormBuilder,
             private _auth: AuthService,
@@ -43,6 +47,19 @@ export class ContactsComponent implements OnInit {
             ) { 
               this.winOrigin = window.location.origin;
               this.winPathname = window.location.pathname;
+
+
+              
+              // this._router.events.pipe(
+              //   filter((event:Event) => event instanceof NavigationEnd)
+              // ).subscribe((routeData: any) => {
+              //   //
+              //   this.changeOfRoutes(routeData);
+              // //   if(routeData.urlAfterRedirects === '/') {
+              // //     this.showAfterLogin = true;
+              // // }
+              // })
+
             //   _router.events.subscribe((val) => {
             //     // see also 
             //     
@@ -123,7 +140,7 @@ export class ContactsComponent implements OnInit {
         if(res){
           
           let prefix = this.prefix;
-          this.permalink = res['permalink'];
+          // this.permalink = res['permalink'];
           this.template = res['template'];
           setTimeout(() => {
             this.showPreloader = false;
@@ -148,11 +165,12 @@ export class ContactsComponent implements OnInit {
 
           }, 2000);
           console.log('this language does not exist in the database');
-          this.permalink = localStorage.location;
+          // this.permalink = localStorage.permalink;
           localStorage.language = lang = 'EN'
           this.template = null;
           this._router.config[0].path = lang
-          this._router.navigate([`../${lang}/${localStorage.location}`])
+          //
+          this._router.navigate([`../${lang}/${localStorage.permalink}`])
         }
       },
       (err) => {
@@ -165,8 +183,39 @@ export class ContactsComponent implements OnInit {
 
   };
 
-  editPageURL(inputURL: NgForm){
-    console.log(inputURL.value);
+  changeOfRoutes(url){
+    let routeUrl = url;
+
+    let _self = this;
+    let title = localStorage.location;
+    this._templatesService.getPermalink(title)
+    .subscribe(
+      (res) => {
+        //
+        if(res){
+          //
+          let pageTitle = res['pageTitle'];
+          this.permalink = this.permalinkEdit = res['permalink'];
+          localStorage.permalink = res['permalink'];
+
+          _self._router.config[0].children.forEach((route) => {
+            if(route.path === pageTitle){
+              route.path = `${res['permalink']}`;
+
+              // route.path = `${localStorage.language}/${res['permalink']}`;
+             
+            }
+          })
+           _self._location.go(`${localStorage.language}/${res['permalink']}`)
+        }else{
+          console.log('empty permalink');
+          
+        }
+      },
+      (err) => {
+        console.log('Error form getting permalink' + err);
+      }
+    )
   }
 
   addEditButton(){

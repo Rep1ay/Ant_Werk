@@ -4,6 +4,10 @@ import { FormBuilder, FormGroup, NgForm } from '@angular/forms';
 import { AuthService } from '../../auth.service';
 import { ActivatedRoute, Router, UrlTree, UrlSegmentGroup, UrlSegment, NavigationEnd } from '@angular/router';
 import { Location } from '@angular/common';
+// import { filter } from 'rxjs/operators';
+import { Observable, Subject, asapScheduler, pipe, of, from,
+  interval, merge, fromEvent } from 'rxjs';
+  import { map, filter, scan } from 'rxjs/operators';
 // Jquery declaration
 declare var $: any;
 
@@ -37,6 +41,9 @@ export class HomeComponent implements OnInit {
   permalink: string;
   permalinkEdit: string;
   newLanguageAdded = false;
+
+  showBeforeLogin:any = true;
+  showAfterLogin:any
   constructor(private _templatesService: TemplatesService, 
             formBuilder: FormBuilder,
             private _auth: AuthService,
@@ -46,6 +53,26 @@ export class HomeComponent implements OnInit {
             ) { 
               this.winOrigin = window.location.origin;
               this.winPathname = window.location.pathname;
+
+              // this.changeOfRoutes();
+
+              // this._router.events
+              //     .filter(event => (event instanceof NavigationEnd))
+              //         .subscribe((routeData: any) => {
+              //             if(routeData.urlAfterRedirects === '/') {
+              //                 this.showAfterLogin = true;
+              //             }
+              //         });
+
+                      // this._router.events.pipe(
+                      //   filter((event:Event) => event instanceof NavigationEnd)
+                      // ).subscribe((routeData: any) => {
+                      //   //
+                      //   this.changeOfRoutes(routeData);
+                      // //   if(routeData.urlAfterRedirects === '/') {
+                      // //     this.showAfterLogin = true;
+                      // // }
+                      // })
             //   _router.events.subscribe((val) => {
             //     // see also 
             //     
@@ -91,6 +118,8 @@ export class HomeComponent implements OnInit {
     // urlCollect.forEach( url => {
     //   //
     // });
+
+    this._router.routerState
     
     if(!localStorage.language){
       
@@ -111,16 +140,17 @@ export class HomeComponent implements OnInit {
     this._templatesService._event.subscribe(
       event => this.editInner(event)
     )
-
+  let _self = this;
    this._templatesService.getTemplate(this.title, this.prefix)
     .subscribe(
       (res) => {
         if(res){
           
           let prefix = this.prefix;
-          this.permalink = this.permalinkEdit = res['permalink'];
-          localStorage.permalink = res['permalink'];
+          // this.permalink = this.permalinkEdit = res['permalink'];
+          // localStorage.permalink = res['permalink'];
           this.template = res['template'];
+          _self._router
           setTimeout(() => {
             this.showPreloader = false;
 
@@ -144,20 +174,65 @@ export class HomeComponent implements OnInit {
            
           }, 2000);
           console.log('this language does not exist in the database');
-          this.permalink = localStorage.location;
+          this.permalink = localStorage.permalink;
           localStorage.language = lang = 'EN'
           this.template = null;
           this._router.config[0].path = lang
-          this._router.navigate([`../${lang}/${localStorage.location}`])
+          //
+          this._router.navigate([`../${lang}/${localStorage.permalink}`])
         }
       },
       (err) => {
-        // this.showPreloader = true;
-        // console.log(err);
+        console.log(err);
       }
     );
 
   };
+
+  changeOfRoutes(url){
+    let routeUrl = url;
+
+    let _self = this;
+    let prefix = localStorage.language;
+    let title = localStorage.location;
+    this._templatesService.getPermalink(title)
+    .subscribe(
+      (res) => {
+        if(res){
+          //
+          let pageTitle = res['pageTitle'];
+          this.permalink = this.permalinkEdit = res['permalink'];
+          localStorage.permalink = res['permalink'];
+
+          _self._router.config[0].children.forEach((route) => {
+            if(route.path === pageTitle){
+
+
+
+
+              // Вчера поменял с 
+            // route.path = `${localStorage.language}/${res['permalink']}`;
+
+                  //  на
+                  //  в консоли показывало router 'contacts': 'EN/kontakty'
+                  route.path = `${res['permalink']}`;
+             
+            }
+          })
+           _self._location.go(`${localStorage.language}/${res['permalink']}`)
+        }else{
+          console.log('empty permalink');
+          localStorage.permalink = title;
+          this._router.navigate([`${prefix}/${title}`]);
+          console.log('empty permalink');
+          
+        }
+      },
+      (err) => {
+        console.log('Error form getting permalink' + err);
+      }
+    )
+  }
 
   editPageURL(inputURL: NgForm){
     this.permalink = '';
@@ -305,8 +380,8 @@ export class HomeComponent implements OnInit {
     }else{
       body= document.querySelector('#default');
     }
-    this._templatesService.sendTemplate(body.innerHTML, pageTitle, send_prefix, this.permalink).subscribe((error) => {console.log(error)}
-    )
+    this._templatesService.sendTemplate(body.innerHTML, pageTitle, send_prefix, this.permalink).subscribe((error) => {console.log(error)});
+
     this._templatesService.add_new_lang_panel(send_prefix).subscribe(
       (res) => {
         //
@@ -320,6 +395,9 @@ export class HomeComponent implements OnInit {
         console.log(err);
       }
     );
+
+    this._templatesService.send_permalink(pageTitle, this.permalink).subscribe(res => {  localStorage.permalink = res['permalink']});
+
   }
 
   editInner(event){

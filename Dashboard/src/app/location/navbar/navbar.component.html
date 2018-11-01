@@ -1,7 +1,14 @@
 <app-preloader *ngIf="showPreloader"></app-preloader>
 <nav class="main_navbar">
   <ul class="navbar_container">
-      
+      <li style="width: 40vw;font-size: 20px;font-weight: 300;">                           <!--*ngIf="!showPreloader && loggedIn"-->
+        <form   #inputURL='ngForm' class="form-inline">
+          <label for="input">Permalink: </label>
+          <a style="margin-left: 5px" href='{{winOrigin}}'> {{winOrigin}}{{permalink}}{{permalinkEdit}}</a>
+          <input *ngIf="edition" #input="ngModel" [(ngModel)]='permalinkEdit' name="input" ngModel class="form-control col-md-3">
+          <button style="margin: 10px;" (click)='editPageURL(inputURL); edition = !edition' class="btn btn-primary btn-large searchBtn" type="submit">Edit</button>
+        </form>
+    </li>
     <button class="navbar-toggler" type="button" 
         data-toggle="collapse" data-target="#navbarSupportedContent" 
         aria-controls="navbarSupportedContent" aria-expanded="false" 
@@ -10,9 +17,11 @@
     </button>
     <li class="nav-item">
         <a class="nav-link" href=""><span class="sr-only">awhuifha</span></a>
-      </li>
+    </li>
    
     <li routerLinkActive="active"  (click)="followLink('home')">{{home}}</li>
+    
+    
     <!-- <li routerLinkActive="active"  class="menu_toggle" (click)="showProductsCollection(productCollection)">Products</li> -->
     <li routerLinkActive="active" (click)="followLink('contacts')">{{contacts}}</li>
     <li routerLinkActive="active" (click)="followLink('services')" >{{services}}</li>

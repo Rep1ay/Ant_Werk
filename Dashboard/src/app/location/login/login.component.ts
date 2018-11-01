@@ -34,7 +34,7 @@ invalidAuth = false;
         this.router.navigate([`${localStorage.language}/${localStorage.location}`]);
         
         this._authService._state.subscribe(
-          state => {debugger});
+          state => {});
         window.location.reload();
       },
       (error) => {

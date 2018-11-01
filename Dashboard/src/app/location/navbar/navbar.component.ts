@@ -8,7 +8,9 @@ import { TemplatesService } from 'src/app/templates.service';
 import { LangPanel } from '../../lang-panel';
 import { Location } from '@angular/common';
 import { NgForm } from '@angular/forms';
-
+import { Observable, Subject, asapScheduler, pipe, of, from,
+  interval, merge, fromEvent } from 'rxjs';
+  import { map, filter, scan } from 'rxjs/operators';
 declare var $: any;
 
 @Component({
@@ -28,6 +30,10 @@ export class NavbarComponent implements OnInit {
   loggedUser: boolean;
   templateSending:any;
   showPreloader = false;
+  permalink: string;
+  permalinkEdit: string;
+  winOrigin: string;
+  winPathname: string;
   constructor(
 
 
@@ -39,66 +45,21 @@ export class NavbarComponent implements OnInit {
               private _location : Location,
               )
                { 
+                this.winOrigin = window.location.origin;
+                this.winPathname = window.location.pathname;
+                this._router.events.pipe(
+                  filter((event:Event) => event instanceof NavigationEnd)
+                ).subscribe((routeData: any) => {
+                  
+                  this.changeOfRoutes(routeData);
 
-              //   _router.events.subscribe((val) => {
-              //     // see also 
-              //     
-              //     console.log(val instanceof NavigationEnd) 
-              // });
-//               
-//               let windPath = window.location.pathname.split('/')[1];
-//               _router.config.forEach(rout => {
-//                 
-//                 let pageRout = rout.path.split('/')[1];
-//                 if(pageRout.length > 2){
-//                    pageRout 
-//                 }
-               
-//               })
-
-//               let loc =_location.path().replace('/', '');
-           
-//               let routConf = _router.config[1].path.split('/')[0];
-//               let empty = '';
-//               if(!localStorage.language){
-//                 if(loc !== empty){
-//                   localStorage.language = loc.split('/')[0];
-//                   _router.config[1].path = loc;
-//                 }
-//               }else{
-//                 _router.config[1].path = `${localStorage.language}/${loc.split('/')[1]}`
-//               }
-
-//               // _router.config[0].path = _location.path().replace('/','');
-//               // _router.config[0].children[0].path = _location.path().replace('/', '');
-// 
-
-//               // window.location.pathname = _router.config[1].path
-
-//             //   if(localStorage.language !== locPath){
-//             //     routConf = locPath;
-//             //  }
-//             // if( _router.config[1].path.split('/')[0] === "undefined"){
-             
-//             // }
-           
-
-
-//             this._location.go(_router.config[1].path);
-            // _router.config[1].path = loc;
+                })
             }
-
-
 
   ngOnInit() {
 
-
-
-    // $( document ).ready(()=> {
-    //   this.chageLanguage();
-    // });
     this._authService._state.subscribe(
-      state => {debugger;this.isLoggedIn(state)});
+      state => {;this.isLoggedIn(state)});
 
     this.loggedUser = this._authService.loggedIn();
     this.loggedUser = !!localStorage.getItem('token');
@@ -130,13 +91,80 @@ export class NavbarComponent implements OnInit {
     this.loggedUser = state;
   }
 
+  changeOfRoutes(url){
+    let routeUrl = url;
+    
+    let _self = this;
+    let prefix = localStorage.language;
+    let title = localStorage.location;
+    this._templatesService.getPermalink(title)
+    .subscribe(
+      (res) => {
+        if(res){
+          
+          let pageTitle = res['pageTitle'];
+          _self.permalink = _self.permalinkEdit = res['permalink'];
+          localStorage.permalink = res['permalink'];
+
+          _self._router.config[0].children.forEach((route) => {
+            if(route.path === pageTitle){
+              route.path = `${res['permalink']}`;
+            }
+          })
+           _self._location.go(`${localStorage.language}/${res['permalink']}`)
+        }else{
+          console.log('empty permalink');
+          localStorage.permalink = title;
+          this._router.navigate([`${prefix}/${title}`]);
+          console.log('empty permalink');
+          
+        }
+      },
+      (err) => {
+        console.log('Error form getting permalink' + err);
+      }
+    )
+  }
+
   followLink(path){
-// 
     let lang = localStorage.language;
     let snapshot = this._activatedRoute.snapshot;
+    let _self = this;
+
+    this._templatesService.getPermalink(path)
+    .subscribe(
+      (res) => {
+        if(res){
+          
+          let pageTitle = res['pageTitle'];
+          // this.permalink = this.permalinkEdit = res['permalink'];
+          // localStorage.permalink = res['permalink'];
+
+          _self._router.config[0].children.forEach((route) => {
+            if(route.path === pageTitle){
+              // route.path = `${localStorage.language}/${res['permalink']}`;
+              route.path = `${res['permalink']}`;
+            }
+          })
+          localStorage.permalink = `${res['permalink']}`;
+           _self._location.go(`${localStorage.language}/${res['permalink']}`);
+           localStorage.location = `${res['permalink']}`
+
+           this._router.navigate([`${lang}/${res['permalink']}`]);
+        }else{
+          console.log('empty permalink');
+          localStorage.permalink = path;
+          this._router.navigate([`${lang}/${path}`]);
+          // _self._location.go(`${localStorage.language}/${path}`)
+        }
+      },
+      (err) => {
+        console.log('Error form getting permalink' + err);
+      }
+    )
 
     this.showPreloader = true;
-    this._router.navigate([`${lang}/${path}`]);
+   
     setTimeout(() => {
     this.showPreloader = false;
     }, 1000);
@@ -147,6 +175,13 @@ export class NavbarComponent implements OnInit {
 
 
    
+  }
+
+  editPageURL(inputURL: NgForm){
+    debugger
+    this.permalink = '';
+    this.permalinkEdit = `/${localStorage.permalink}`;
+    console.log(inputURL.value);
   }
 
   add_new_lang_to_panel(){
@@ -245,9 +280,9 @@ export class NavbarComponent implements OnInit {
               // let prefix = localStorage.language;
               this.template = res['template'];
               this._router.config[0].path = lang
-              this._router.navigate([`../${lang}/${localStorage.location}`])
+              this._router.navigate([`../${lang}/${localStorage.permalink}`])
 
-              window.location.reload();
+              // window.location.reload();
     
             }else{
               this.createNewLanguage(lang);
@@ -376,10 +411,6 @@ export class NavbarComponent implements OnInit {
     // setTimeout(()=>{
     //   $(paragraf).css({'right': '-500px'});
     // },3000);
-  }
-
-  editPageURL(input: NgForm){
-    
   }
 
   navbarBehavior() {

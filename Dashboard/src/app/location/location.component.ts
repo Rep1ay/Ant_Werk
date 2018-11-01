@@ -83,23 +83,25 @@ export class LocationComponent implements OnInit {
   }
 
   ngOnInit() {
+    let _self = this;
     let prefix = localStorage.language;
     let title = localStorage.location;
     this._templatesService.getTemplate(title, prefix)
     .subscribe(
       (res) => {
         if(res){
-          debugger
-          this.permalink = this.permalinkEdit = res['permalink'];
-          localStorage.permalink = res['permalink'];
-        }else{
-          // let lang;
-          // console.log('this language does not exist in the database');
-          // this.permalink = localStorage.location;
-          // localStorage.language = lang = 'EN'
-          // this.template = null;
-          // this._router.config[0].path = lang
-          // this._router.navigate([`../${lang}/${localStorage.location}`])
+          // //
+          let pageTitle = res['pageTitle'];
+          // this.permalink = this.permalinkEdit = res['permalink'];
+          // localStorage.permalink = res['permalink'];
+
+          _self._router.config[0].children.forEach((route) => {
+            if(route.path === pageTitle){
+              // route.path = `${localStorage.language}/${res['permalink']}`;
+             
+            }
+          })
+          //  _self._location.go(`${localStorage.language}/${res['permalink']}`)
         }
       },
       (err) => {
@@ -108,6 +110,34 @@ export class LocationComponent implements OnInit {
         // console.log(err);
       }
     );
+
+    this._templatesService.getPermalink(title)
+    .subscribe(
+      (res) => {
+        if(res){
+          //
+          let pageTitle = res['pageTitle'];
+          this.permalink = this.permalinkEdit = res['permalink'];
+          localStorage.permalink = res['permalink'];
+
+          _self._router.config[0].children.forEach((route) => {
+            if(route.path === pageTitle){
+              // route.path = `${localStorage.language}/${res['permalink']}`;
+                            route.path = `${res['permalink']}`;
+
+             
+            }
+          })
+           _self._location.go(`${localStorage.language}/${res['permalink']}`)
+        }else{
+          console.log('empty permalink');
+
+        }
+      },
+      (err) => {
+        console.log('Error form getting permalink' + err);
+      }
+    )
      //  this.winPathname = window.location.pathname;
     // this._activatedRoute.queryParamMap.subscribe(params => {
     //   
@@ -118,9 +148,5 @@ export class LocationComponent implements OnInit {
     this._activatedRoute.snapshot.root
 
     
-  }
-
-  editPageURL(inputURL: NgForm){
-    console.log(inputURL.value);
   }
 }

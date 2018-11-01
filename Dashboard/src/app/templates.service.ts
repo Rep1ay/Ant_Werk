@@ -5,6 +5,7 @@ import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import {Event} from './event'
 import { LangPanel } from './lang-panel';
+import { Permalink } from './permalink';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +18,7 @@ template:any;
   
 private _templatesUrl = 'http://localhost:3000/api/templates'
 private _lang_panelURL = 'http://localhost:3000/api/lang_panel'
+private _permalinkUrl = 'http://localhost:3000/api/permalink'
 // private _templatesUrl = 'http://68.183.30.119/api/templates'
 
   constructor(private _http: HttpClient) { 
@@ -62,6 +64,27 @@ private _lang_panelURL = 'http://localhost:3000/api/lang_panel'
     } 
    
     return this._http.put<any>(this._templatesUrl, templateBody);  
+  }
+
+  getPermalink(title){
+    let headerJson = {
+      'Content-Type': 'application/json',
+      'Accept' : 'application/json',
+      'pageTitle': title
+    }
+
+    const headers = new HttpHeaders(headerJson);
+
+    return this._http.get(this._permalinkUrl, {headers}).pipe(map((responce:any) => responce))
+  }
+
+  send_permalink(title, permalink){
+    let permalinkBody : Permalink = {
+      pageTitle: title,
+      permalink: permalink
+    }
+
+    return this._http.put<any>(this._permalinkUrl, permalinkBody)
   }
 
   add_new_lang_panel(prefix){
