@@ -195,43 +195,43 @@ export class HomeComponent implements OnInit {
     let _self = this;
     let prefix = localStorage.language;
     let title = localStorage.location;
-    this._templatesService.getPermalink(title)
-    .subscribe(
-      (res) => {
-        if(res){
-          //
-          let pageTitle = res['pageTitle'];
-          this.permalink = this.permalinkEdit = res['permalink'];
-          localStorage.permalink = res['permalink'];
+    // this._templatesService.getPermalink(title)
+    // .subscribe(
+    //   (res) => {
+    //     if(res){
+    //       //
+    //       let pageTitle = res['pageTitle'];
+    //       this.permalink = this.permalinkEdit = res['permalink'];
+    //       localStorage.permalink = res['permalink'];
 
-          _self._router.config[0].children.forEach((route) => {
-            if(route.path === pageTitle){
-
-
+    //       _self._router.config[0].children.forEach((route) => {
+    //         if(route.path === pageTitle){
 
 
-              // Вчера поменял с 
-            // route.path = `${localStorage.language}/${res['permalink']}`;
 
-                  //  на
-                  //  в консоли показывало router 'contacts': 'EN/kontakty'
-                  route.path = `${res['permalink']}`;
+
+    //           // Вчера поменял с 
+    //         // route.path = `${localStorage.language}/${res['permalink']}`;
+
+    //               //  на
+    //               //  в консоли показывало router 'contacts': 'EN/kontakty'
+    //               route.path = `${res['permalink']}`;
              
-            }
-          })
-           _self._location.go(`${localStorage.language}/${res['permalink']}`)
-        }else{
-          console.log('empty permalink');
-          localStorage.permalink = title;
-          this._router.navigate([`${prefix}/${title}`]);
-          console.log('empty permalink');
+    //         }
+    //       })
+    //        _self._location.go(`${localStorage.language}/${res['permalink']}`)
+    //     }else{
+    //       console.log('empty permalink');
+    //       localStorage.permalink = title;
+    //       this._router.navigate([`${prefix}/${title}`]);
+    //       console.log('empty permalink');
           
-        }
-      },
-      (err) => {
-        console.log('Error form getting permalink' + err);
-      }
-    )
+    //     }
+    //   },
+    //   (err) => {
+    //     console.log('Error form getting permalink' + err);
+    //   }
+    // )
   }
 
   editPageURL(inputURL: NgForm){

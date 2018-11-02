@@ -188,34 +188,34 @@ export class ContactsComponent implements OnInit {
 
     let _self = this;
     let title = localStorage.location;
-    this._templatesService.getPermalink(title)
-    .subscribe(
-      (res) => {
-        //
-        if(res){
-          //
-          let pageTitle = res['pageTitle'];
-          this.permalink = this.permalinkEdit = res['permalink'];
-          localStorage.permalink = res['permalink'];
+    // this._templatesService.getPermalink(title)
+    // .subscribe(
+    //   (res) => {
+    //     //
+    //     if(res){
+    //       //
+    //       let pageTitle = res['pageTitle'];
+    //       this.permalink = this.permalinkEdit = res['permalink'];
+    //       localStorage.permalink = res['permalink'];
 
-          _self._router.config[0].children.forEach((route) => {
-            if(route.path === pageTitle){
-              route.path = `${res['permalink']}`;
+    //       _self._router.config[0].children.forEach((route) => {
+    //         if(route.path === pageTitle){
+    //           route.path = `${res['permalink']}`;
 
-              // route.path = `${localStorage.language}/${res['permalink']}`;
+    //           // route.path = `${localStorage.language}/${res['permalink']}`;
              
-            }
-          })
-           _self._location.go(`${localStorage.language}/${res['permalink']}`)
-        }else{
-          console.log('empty permalink');
+    //         }
+    //       })
+    //        _self._location.go(`${localStorage.language}/${res['permalink']}`)
+    //     }else{
+    //       console.log('empty permalink');
           
-        }
-      },
-      (err) => {
-        console.log('Error form getting permalink' + err);
-      }
-    )
+    //     }
+    //   },
+    //   (err) => {
+    //     console.log('Error form getting permalink' + err);
+    //   }
+    // )
   }
 
   addEditButton(){

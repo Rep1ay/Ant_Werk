@@ -30,6 +30,7 @@ export class NavbarComponent implements OnInit {
   loggedIn: boolean;
   templateSending:any;
   showPreloader = false;
+  routeUrl: string;
   permalink: string;
   permalinkEdit: string;
   winOrigin: string;
@@ -51,7 +52,7 @@ export class NavbarComponent implements OnInit {
                   filter((event:Event) => event instanceof NavigationEnd)
                 ).subscribe((routeData: any) => {
                   
-                  this.changeOfRoutes(routeData);
+                  this.changeOfRoutes(routeData.url);
 
                 })
             }
@@ -92,7 +93,7 @@ export class NavbarComponent implements OnInit {
   }
 
   changeOfRoutes(url){
-    let routeUrl = url;
+    this.routeUrl = url;
     
     let _self = this;
     let prefix = localStorage.language;
@@ -104,7 +105,7 @@ export class NavbarComponent implements OnInit {
           
           let pageTitle = res['pageTitle'];
           _self.permalink = `/${res['permalink']}`;
-          localStorage.permalink = res['permalink'];
+          localStorage.permalink = _self.routeUrl;
 
           _self._router.config[0].children.forEach((route) => {
             if(route.path === pageTitle){
@@ -148,7 +149,8 @@ export class NavbarComponent implements OnInit {
           })
           localStorage.permalink = `${res['permalink']}`;
            _self._location.go(`${localStorage.language}/${res['permalink']}`);
-           localStorage.location = `${res['permalink']}`
+           debugger
+           localStorage.location = path;
 
            this._router.navigate([`${lang}/${res['permalink']}`]);
         }else{
