@@ -113,11 +113,12 @@ export class ContactsComponent implements OnInit {
     }else{
       this.prefix = localStorage.language;
     }
-
+debugger
     let snapshotURL = this._activeRoute.snapshot.url;
-    localStorage.location = this.title = snapshotURL[0].path;
+    // localStorage.location = this.title = snapshotURL[0].path;
+    this.title = localStorage.location;
 
-
+debugger
 
 
     this.loggedIn = this._auth.loggedIn();

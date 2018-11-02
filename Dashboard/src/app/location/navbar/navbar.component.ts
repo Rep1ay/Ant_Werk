@@ -105,7 +105,7 @@ export class NavbarComponent implements OnInit {
           
           let pageTitle = res['pageTitle'];
           _self.permalink = `/${res['permalink']}`;
-          localStorage.permalink = _self.routeUrl;
+          localStorage.permalink = _self.routeUrl.split('/')[2];
 
           _self._router.config[0].children.forEach((route) => {
             if(route.path === pageTitle){
@@ -206,7 +206,7 @@ export class NavbarComponent implements OnInit {
   }
 
   cancelPermalink(){
-    
+    debugger
     this.permalink = `/${localStorage.permalink}`
     this.permalinkEdit = '';
   }

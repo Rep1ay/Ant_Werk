@@ -1,7 +1,7 @@
 <app-preloader *ngIf="showPreloader"></app-preloader>
 <nav class="main_navbar">
   <ul class="navbar_container">
-      <li style="width: 40vw;font-size: 20px;font-weight: 300;">                           <!--*ngIf="loggedIn"-->
+      <li  *ngIf="!showPreloader" style="width: 40vw;font-size: 20px;font-weight: 300;">                           <!--*ngIf="loggedIn"-->
         <form *ngIf="loggedIn"  #inputURL='ngForm' class="form-inline">
           <label for="input">Permalink: </label>
           <a style="margin-left: 5px" href='{{winOrigin}}'> {{winOrigin}}{{permalink}}</a>
