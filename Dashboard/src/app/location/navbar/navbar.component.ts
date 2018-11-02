@@ -27,7 +27,7 @@ export class NavbarComponent implements OnInit {
   lang_items: LangPanel[] = [];
   template: any;
   formInput: string;
-  loggedUser: boolean;
+  loggedIn: boolean;
   templateSending:any;
   showPreloader = false;
   permalink: string;
@@ -61,8 +61,8 @@ export class NavbarComponent implements OnInit {
     this._authService._state.subscribe(
       state => {;this.isLoggedIn(state)});
 
-    this.loggedUser = this._authService.loggedIn();
-    this.loggedUser = !!localStorage.getItem('token');
+    this.loggedIn = this._authService.loggedIn();
+    this.loggedIn = !!localStorage.getItem('token');
     this.navbarBehavior();   
 
    this._templatesService.get_lang_panel().subscribe(
@@ -88,7 +88,7 @@ export class NavbarComponent implements OnInit {
   }
   isLoggedIn(state) {
     
-    this.loggedUser = state;
+    this.loggedIn = state;
   }
 
   changeOfRoutes(url){
@@ -103,7 +103,7 @@ export class NavbarComponent implements OnInit {
         if(res){
           
           let pageTitle = res['pageTitle'];
-          _self.permalink = _self.permalinkEdit = res['permalink'];
+          _self.permalink = `/${res['permalink']}`;
           localStorage.permalink = res['permalink'];
 
           _self._router.config[0].children.forEach((route) => {
@@ -163,11 +163,11 @@ export class NavbarComponent implements OnInit {
       }
     )
 
-    this.showPreloader = true;
+    // this.showPreloader = true;
    
-    setTimeout(() => {
-    this.showPreloader = false;
-    }, 1000);
+    // setTimeout(() => {
+    // this.showPreloader = false;
+    // }, 1000);
     // window.location.reload();
     setTimeout(() => {
       
@@ -178,10 +178,35 @@ export class NavbarComponent implements OnInit {
   }
 
   editPageURL(inputURL: NgForm){
-    debugger
-    this.permalink = '';
-    this.permalinkEdit = `/${localStorage.permalink}`;
+    
+    this.permalink = '/';
+    this.permalinkEdit = `${localStorage.permalink}`;
     console.log(inputURL.value);
+  }
+
+  savePermalink(permalink: NgForm){
+    let _self = this;
+    let permalinkToSend = permalink.value.input;
+    this.permalink = `/${permalink.value.input}`;
+    localStorage.permalink = permalink.value.input;
+    this._templatesService.send_permalink(localStorage.location, permalinkToSend).subscribe(
+      (res) => {
+        // _self._router.navigate([`${localStorage.language}/${res['permalink']}`]);
+        _self._location.go(`${localStorage.language}/${res['permalink']}`)
+        window.location.reload();
+      },
+      (err) => {
+        console.log('Error from permalink send from navbar' + '</br>' + err);
+      }
+    )
+
+    this.permalinkEdit = '';
+  }
+
+  cancelPermalink(){
+    
+    this.permalink = `/${localStorage.permalink}`
+    this.permalinkEdit = '';
   }
 
   add_new_lang_to_panel(){
@@ -447,13 +472,13 @@ export class NavbarComponent implements OnInit {
 
   logoutUser() {
     setTimeout(() => {
-      this.loggedUser = false;
+      this.loggedIn = false;
     }, 500);
     
     this._authService.logoutUser();
     window.location.reload();
-    // this.loggedUser = this._authService.loggedIn();
-    // this.loggedUser = localStorage.getItem('token');
+    // this.loggedIn = this._authService.loggedIn();
+    // this.loggedIn = localStorage.getItem('token');
   }
 
 }

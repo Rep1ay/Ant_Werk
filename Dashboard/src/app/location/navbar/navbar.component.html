@@ -1,12 +1,28 @@
 <app-preloader *ngIf="showPreloader"></app-preloader>
 <nav class="main_navbar">
   <ul class="navbar_container">
-      <li style="width: 40vw;font-size: 20px;font-weight: 300;">                           <!--*ngIf="!showPreloader && loggedIn"-->
-        <form   #inputURL='ngForm' class="form-inline">
+      <li style="width: 40vw;font-size: 20px;font-weight: 300;">                           <!--*ngIf="loggedIn"-->
+        <form *ngIf="loggedIn"  #inputURL='ngForm' class="form-inline">
           <label for="input">Permalink: </label>
-          <a style="margin-left: 5px" href='{{winOrigin}}'> {{winOrigin}}{{permalink}}{{permalinkEdit}}</a>
+          <a style="margin-left: 5px" href='{{winOrigin}}'> {{winOrigin}}{{permalink}}</a>
           <input *ngIf="edition" #input="ngModel" [(ngModel)]='permalinkEdit' name="input" ngModel class="form-control col-md-3">
-          <button style="margin: 10px;" (click)='editPageURL(inputURL); edition = !edition' class="btn btn-primary btn-large searchBtn" type="submit">Edit</button>
+          
+          <button *ngIf="!edition" style="margin: 10px;padding: 0px 17px;font-size: 17px;" 
+            (click)='editPageURL(inputURL); edition = !edition' 
+            class="btn btn-primary btn-large searchBtn" 
+            type="submit">
+            Edit
+          </button>
+          
+          <button *ngIf="edition" style="margin: 10px 5px;" (click)='savePermalink(inputURL); edition = !edition' 
+            class="btn btn-success btn-large">
+            Save
+          </button>
+
+          <button *ngIf="edition" style="margin: 10px 2px;" (click)='cancelPermalink(); edition = !edition' 
+            class="btn btn-danger btn-large">
+            Cancel
+          </button>
         </form>
     </li>
     <button class="navbar-toggler" type="button" 
