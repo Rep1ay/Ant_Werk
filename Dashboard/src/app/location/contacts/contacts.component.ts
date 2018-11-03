@@ -43,6 +43,7 @@ export class ContactsComponent implements OnInit {
   routeUrl: string;
   showBeforeLogin:any = true;
   showAfterLogin:any
+  permalinkURL:string;
   constructor(private _templatesService: TemplatesService, 
             formBuilder: FormBuilder,
             private _auth: AuthService,
@@ -137,8 +138,7 @@ export class ContactsComponent implements OnInit {
     this.loggedIn = this._auth.loggedIn();
 
     this._templatesService._event.subscribe(
-      event => {
-        debugger;
+      event => {    
         this.editInner(event)
       }
     )
@@ -150,7 +150,6 @@ export class ContactsComponent implements OnInit {
   changeOfRoutes(url){
 
     let title = url.split('/')[2];
-debugger
     this.routeUrl = url;
     // this.showPreloader = false;
     let _self = this;
@@ -168,7 +167,7 @@ debugger
     .subscribe(
       (res) => {
         if(res){
-          debugger
+          
           let template = res['template'];
           localStorage.location = res['pageTitle'];
           _self._templatesService.getPermalink(res['pageTitle'])
@@ -184,7 +183,10 @@ debugger
                  }
                }, 100)
               }, 1000)
-              debugger
+              
+              let origin = window.location.origin;
+              _self.permalinkURL = `${origin}/${lang}/${permalink}`
+
               _self.renderTemplate(template)
               localStorage.permalink = permalink;
               _self.permalink = `/${permalink}`;
@@ -213,7 +215,7 @@ debugger
     .subscribe(
       (res) => {
         if(res){
-          debugger
+          
           // _self.showPreloader = false;
           let pageTitle = localStorage.location = res['pageTitle'];
           _self.permalink = `/${res['permalink']}`;
@@ -263,7 +265,7 @@ debugger
   }
 
   renderTemplate(template){
-    debugger
+    
     this.template = template;
   }
 
@@ -429,7 +431,7 @@ debugger
   }
 
   editInner(event){
-debugger
+
     let body;
     let pageTitle = localStorage.location;
     if(this.template){

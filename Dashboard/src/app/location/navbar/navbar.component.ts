@@ -97,16 +97,20 @@ export class NavbarComponent implements OnInit {
 
   changeOfRoutes(url){
 
-    let title = url.split('/')[2];
-debugger
+    let title;
+
     this.routeUrl = url;
     this.showPreloader = false;
     let _self = this;
     let prefix = localStorage.language;
     // let title = localStorage.location;
-
-    this.getTemplate(title)
-
+    if(title){
+      title = url.split('/')[2];
+      this.getTemplate(title);
+    }else{
+      title = window.location.pathname.split('/')[2];
+      this.getTemplate(title);
+    }
   }
 
  getTemplate(title){
@@ -117,7 +121,7 @@ debugger
     .subscribe(
       (res) => {
         if(res){
-          debugger
+          
           _self.showPreloader = false;
           localStorage.location = res['pageTitle'];
 
@@ -132,7 +136,7 @@ debugger
             }
           )
         }else{
-          debugger
+          
           _self.getTemplateByPermalink();
         }
       },
@@ -151,7 +155,7 @@ debugger
     .subscribe(
       (res) => {
         if(res){
-          debugger
+          
           _self.showPreloader = false;
           let pageTitle = localStorage.location = res['pageTitle'];
           _self.permalink = `/${res['permalink']}`;
@@ -189,7 +193,7 @@ debugger
           })
           localStorage.permalink = `${res['permalink']}`;
            _self._location.go(`${localStorage.language}/${res['permalink']}`);
-           debugger
+           
            localStorage.location = path;
           _self.permalink = `/${res['permalink']}`;
            this._router.navigate([`${lang}/${res['permalink']}`]);
@@ -215,11 +219,8 @@ debugger
       
     }, 1000);
 
-
-   
   }
   
-
   editPageURL(inputURL: NgForm){
     
     this.permalink = '/';
@@ -342,14 +343,34 @@ debugger
           (res) => {
 
             if(res){
-              
-              localStorage.language = lang;
+
+              localStorage.language = res['prefix'];
               // let prefix = localStorage.language;
               this.template = res['template'];
               this._router.config[0].path = lang
-              this._router.navigate([`../${lang}/${localStorage.permalink}`])
 
-              // window.location.reload();
+
+              _self._templatesService.getPermalink(res['pageTitle'])
+              .subscribe(
+                (res) => {
+                  _self.permalink = `${res['permalink']}`;
+                  let title = res['pageTitle'];
+                  let permalink = res['permalink']
+                  _self._router.config[0].children.forEach((route) => {
+                    if(route.path === title){
+                      // route.path = `${localStorage.language}/${res['permalink']}`;
+                      route.path = `${permalink}`;
+                    }
+                  })
+
+                  _self._location.go(`${lang}/${permalink}`);
+                  _self._router.navigate([`../${lang}/${permalink}`]);
+                  window.location.reload();
+                },
+                (err) => {
+                  console.log('Error form HomeComp get template' + err);
+                }
+              )
     
             }else{
               this.createNewLanguage(lang);

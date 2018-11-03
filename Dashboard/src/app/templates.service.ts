@@ -36,7 +36,6 @@ debugger
   }
 
   getTemplate(title, prefix): Observable<Template>{
-    //
     let pageTitle = localStorage.location;
     // let titleId = 'home';
     let headerJson = {
@@ -52,7 +51,7 @@ debugger
   }
 
   sendTemplate(template, title, prefix, permalink){
-    //
+
     // this.add_new_lang_panel(prefix);
     let  templateBody: Template = {
       body: {

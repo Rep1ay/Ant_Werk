@@ -44,6 +44,8 @@ export class HomeComponent implements OnInit {
   routeUrl: string;
   showBeforeLogin:any = true;
   showAfterLogin:any
+  currentLang: string;
+  permalinkURL: string;
   constructor(private _templatesService: TemplatesService, 
             formBuilder: FormBuilder,
             private _auth: AuthService,
@@ -123,13 +125,13 @@ export class HomeComponent implements OnInit {
 
     this._router.routerState
     
-    if(!localStorage.language){
+    // if(!localStorage.language){
       
-      localStorage.language = 'EN';
-      this.prefix = localStorage.language;
-    }else{
-      this.prefix = localStorage.language;
-    }
+    //   localStorage.language = 'EN';
+    //   this.prefix = localStorage.language;
+    // }else{
+    //   this.prefix = localStorage.language;
+    // }
 
     let snapshotURL = this._activeRoute.snapshot.url;
     // localStorage.location = this.title = snapshotURL[0].path;
@@ -139,7 +141,7 @@ export class HomeComponent implements OnInit {
 
     this._templatesService._event.subscribe(
       event => {
-        debugger;
+        ;
         this.editInner(event)
       }
     )
@@ -150,16 +152,20 @@ export class HomeComponent implements OnInit {
 
   changeOfRoutes(url){
 
-    let title = url.split('/')[2];
-debugger
+    let title;
+
     this.routeUrl = url;
     // this.showPreloader = false;
     let _self = this;
     let prefix = localStorage.language;
     // let title = localStorage.location;
-
-    this.getTemplate(title)
-
+    if(title){
+      title = url.split('/')[2];
+      this.getTemplate(title);
+    }else{
+      title = window.location.pathname.split('/')[2];
+      this.getTemplate(title);
+    }
   }
 
  getTemplate(title){
@@ -169,7 +175,7 @@ debugger
     .subscribe(
       (res) => {
         if(res){
-          debugger
+          _self.currentLang = localStorage.language = res['prefix']; 
           let template = res['template'];
           localStorage.location = res['pageTitle'];
           _self._templatesService.getPermalink(res['pageTitle'])
@@ -185,8 +191,13 @@ debugger
                  }
                }, 100)
               }, 1000)
+              
+              
+              _self.renderTemplate(template);
               debugger
-              _self.renderTemplate(template)
+              let origin = window.location.origin;
+              _self.permalinkURL = `${origin}/${lang}/${permalink}`
+
               localStorage.permalink = permalink;
               _self.permalink = `/${permalink}`;
               _self._location.go(`${lang}/${permalink}`);
@@ -214,7 +225,7 @@ debugger
     .subscribe(
       (res) => {
         if(res){
-          debugger
+          
           // _self.showPreloader = false;
           let pageTitle = localStorage.location = res['pageTitle'];
           _self.permalink = `/${res['permalink']}`;
@@ -264,14 +275,14 @@ debugger
   }
 
   renderTemplate(template){
-    debugger
+    
     this.template = template;
   }
 
   addEditButton(){
     let _self = this;
       setTimeout(() => {
-        this.showPreloader = false;
+        // this.showPreloader = false;
       }, 1500);
 
       $('.click2edit').off('mouseover').on('mouseover', function(event){
@@ -397,10 +408,26 @@ debugger
     let pageTitle = localStorage.location;
 
     let send_prefix;
+
     if(localStorage.addNewLang){
       send_prefix = localStorage.addNewLang;
+
+      this._templatesService.add_new_lang_panel(send_prefix).subscribe(
+        (res) => {
+          localStorage.removeItem('addNewLang')
+          // this.newLanguageAdded = true;
+          setTimeout(() =>{
+            //  this.newLanguageAdded = false;
+          },2000)
+            alert('added new lang');
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
+      
     }else{
-      send_prefix = this.prefix;
+      send_prefix = this.currentLang;
     }
 
     if(this.template){
@@ -409,28 +436,19 @@ debugger
       body= document.querySelector('#default');
     }
     let permalink = localStorage.permalink
-    this._templatesService.sendTemplate(body.innerHTML, pageTitle, send_prefix, permalink).subscribe((error) => {console.log(error)});
+    this._templatesService.sendTemplate(body.innerHTML, pageTitle, send_prefix, permalink).subscribe((error) => {
+      console.log(error)
+      localStorage.removeItem('addNewLang');
+    });
 
-    this._templatesService.add_new_lang_panel(send_prefix).subscribe(
-      (res) => {
-        //
-        // this.newLanguageAdded = true;
-        setTimeout(() =>{
-          //  this.newLanguageAdded = false;
-        },2000)
-        alert('added new lang');
-      },
-      (err) => {
-        console.log(err);
-      }
-    );
+
 
     this._templatesService.send_permalink(pageTitle, permalink).subscribe(res => {  localStorage.permalink = res['permalink']});
 
   }
 
   editInner(event){
-debugger
+
     let body;
     let pageTitle = localStorage.location;
     if(this.template){

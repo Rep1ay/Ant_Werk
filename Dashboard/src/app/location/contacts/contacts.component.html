@@ -7,7 +7,7 @@
 		<div class="permalinkForm">
 			<form *ngIf="loggedIn"  #inputURL='ngForm' class="form-inline">
 				<label for="input">Permalink: </label>
-				<a style="margin-left: 5px" href='{{winOrigin}}{{permalink}}'> {{winOrigin}}{{permalink}}</a>
+				<a style="margin-left: 5px" href='{{permalinkURL}}'> {{winOrigin}}{{permalink}}</a>
 				<input *ngIf="edition" #input="ngModel" [(ngModel)]='permalinkEdit' name="input" ngModel class="form-control col-md-3">
 				
 				<button *ngIf="!edition" style="margin: 10px" 
