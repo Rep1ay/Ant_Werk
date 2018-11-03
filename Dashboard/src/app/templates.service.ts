@@ -19,6 +19,7 @@ template:any;
 private _templatesUrl = 'http://localhost:3000/api/templates'
 private _lang_panelURL = 'http://localhost:3000/api/lang_panel'
 private _permalinkUrl = 'http://localhost:3000/api/permalink'
+private _pageTitleUrl = 'http://localhost:3000/api/pageTitle'
 // private _templatesUrl = 'http://68.183.30.119/api/templates'
 
   constructor(private _http: HttpClient) { 
@@ -30,7 +31,7 @@ private _permalinkUrl = 'http://localhost:3000/api/permalink'
   //   this.persons = res;
   // });
   editInner(event: Event){
-    // //
+debugger
     this.eventValue.next(event)
   }
 
@@ -76,6 +77,20 @@ private _permalinkUrl = 'http://localhost:3000/api/permalink'
     const headers = new HttpHeaders(headerJson);
 
     return this._http.get(this._permalinkUrl, {headers}).pipe(map((responce:any) => responce))
+  }
+
+  get_pageTitle(permalink){
+
+    let headerJson = {
+      'Content-Type': 'application/json',
+      'Accept' : 'application/json',
+      'permalink': permalink
+    }
+
+    const headers = new HttpHeaders(headerJson);
+    
+   return this._http.get(this._pageTitleUrl, {headers}).pipe(map((responce: any) => responce))
+
   }
 
   send_permalink(title, permalink){

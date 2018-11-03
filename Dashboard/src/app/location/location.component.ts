@@ -86,30 +86,30 @@ export class LocationComponent implements OnInit {
     let _self = this;
     let prefix = localStorage.language;
     let title = localStorage.location;
-    this._templatesService.getTemplate(title, prefix)
-    .subscribe(
-      (res) => {
-        if(res){
-          // //
-          let pageTitle = res['pageTitle'];
-          // this.permalink = this.permalinkEdit = res['permalink'];
-          // localStorage.permalink = res['permalink'];
+    // this._templatesService.getTemplate(title, prefix)
+    // .subscribe(
+    //   (res) => {
+    //     if(res){
+    //       // //
+    //       let pageTitle = res['pageTitle'];
+    //       // this.permalink = this.permalinkEdit = res['permalink'];
+    //       // localStorage.permalink = res['permalink'];
 
-          _self._router.config[0].children.forEach((route) => {
-            if(route.path === pageTitle){
-              // route.path = `${localStorage.language}/${res['permalink']}`;
+    //       _self._router.config[0].children.forEach((route) => {
+    //         if(route.path === pageTitle){
+    //           // route.path = `${localStorage.language}/${res['permalink']}`;
              
-            }
-          })
-          //  _self._location.go(`${localStorage.language}/${res['permalink']}`)
-        }
-      },
-      (err) => {
-        console.log('error from location get Template');
-        // this.showPreloader = true;
-        // console.log(err);
-      }
-    );
+    //         }
+    //       })
+    //       //  _self._location.go(`${localStorage.language}/${res['permalink']}`)
+    //     }
+    //   },
+    //   (err) => {
+    //     console.log('error from location get Template');
+    //     // this.showPreloader = true;
+    //     // console.log(err);
+    //   }
+    // );
 
     // this._templatesService.getPermalink(title)
     // .subscribe(

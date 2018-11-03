@@ -46,13 +46,14 @@ export class NavbarComponent implements OnInit {
               private _location : Location,
               )
                { 
-                this.winOrigin = window.location.origin;
-                this.winPathname = window.location.pathname;
+              
                 this._router.events.pipe(
                   filter((event:Event) => event instanceof NavigationEnd)
                 ).subscribe((routeData: any) => {
-                  
-                  this.changeOfRoutes(routeData.url);
+                  this.winOrigin = window.location.origin;
+                  this.winPathname = window.location.pathname;
+                  // this.permalink = `/${localStorage.permalink}`;
+                  // this.changeOfRoutes(routeData.url);
 
                 })
             }
@@ -60,7 +61,7 @@ export class NavbarComponent implements OnInit {
   ngOnInit() {
 
     this._authService._state.subscribe(
-      state => {;this.isLoggedIn(state)});
+      state => {this.isLoggedIn(state)});
 
     this.loggedIn = this._authService.loggedIn();
     this.loggedIn = !!localStorage.getItem('token');
@@ -86,6 +87,8 @@ export class NavbarComponent implements OnInit {
       }
     )
 
+    this.showPreloader = false;
+
   }
   isLoggedIn(state) {
     
@@ -93,37 +96,69 @@ export class NavbarComponent implements OnInit {
   }
 
   changeOfRoutes(url){
+
+    let title = url.split('/')[2];
+debugger
     this.routeUrl = url;
-    this.showPreloader = true;
+    this.showPreloader = false;
     let _self = this;
     let prefix = localStorage.language;
-    let title = localStorage.location;
+    // let title = localStorage.location;
+
+    this.getTemplate(title)
+
+  }
+
+ getTemplate(title){
+    let _self = this;
+    let prefix = localStorage.language;
+    _self.showPreloader = false;
+    this._templatesService.getTemplate(title, prefix)
+    .subscribe(
+      (res) => {
+        if(res){
+          debugger
+          _self.showPreloader = false;
+          localStorage.location = res['pageTitle'];
+
+          // _self.permalink = `/${res['permalink']}`;
+          _self._templatesService.getPermalink(res['pageTitle'])
+          .subscribe(
+            (res) => {
+              _self.permalink = `${res['permalink']}`;
+            },
+            (err) => {
+              console.log('Error form HomeComp get template' + err);
+            }
+          )
+        }else{
+          debugger
+          _self.getTemplateByPermalink();
+        }
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
+  }
+
+  getTemplateByPermalink(){
+    let _self = this;
+
+    let title = this.routeUrl.split('/')[2];
+
     this._templatesService.getPermalink(title)
     .subscribe(
       (res) => {
         if(res){
-          let pageTitle = res['pageTitle'];
+          debugger
+          _self.showPreloader = false;
+          let pageTitle = localStorage.location = res['pageTitle'];
           _self.permalink = `/${res['permalink']}`;
-          localStorage.permalink = _self.routeUrl.split('/')[2];
-
-          _self._router.config[0].children.forEach((route) => {
-            if(route.path === pageTitle){
-              route.path = `${res['permalink']}`;
-            }
-          })
-           _self._location.go(`${localStorage.language}/${res['permalink']}`);
-           setTimeout(() => {
-              _self.showPreloader = false;
-           }, 1500)
+          _self.getTemplate(pageTitle)
         }else{
-          setTimeout(() => {
-            _self.showPreloader = false;
-         }, 1500)
-          console.log('empty permalink');
-          localStorage.permalink = title;
-          this._router.navigate([`${prefix}/${title}`]);
-          console.log('empty permalink');
-          
+          // let pageTitle = window.location.pathname.split('/')[2];
+          // _self.getTemplate(pageTitle);
         }
       },
       (err) => {
@@ -156,7 +191,7 @@ export class NavbarComponent implements OnInit {
            _self._location.go(`${localStorage.language}/${res['permalink']}`);
            debugger
            localStorage.location = path;
-
+          _self.permalink = `/${res['permalink']}`;
            this._router.navigate([`${lang}/${res['permalink']}`]);
         }else{
           console.log('empty permalink');
@@ -183,6 +218,7 @@ export class NavbarComponent implements OnInit {
 
    
   }
+  
 
   editPageURL(inputURL: NgForm){
     
@@ -211,7 +247,6 @@ export class NavbarComponent implements OnInit {
   }
 
   cancelPermalink(){
-    debugger
     this.permalink = `/${localStorage.permalink}`
     this.permalinkEdit = '';
   }

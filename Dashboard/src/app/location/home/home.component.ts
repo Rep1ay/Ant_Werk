@@ -41,7 +41,7 @@ export class HomeComponent implements OnInit {
   permalink: string;
   permalinkEdit: string;
   newLanguageAdded = false;
-
+  routeUrl: string;
   showBeforeLogin:any = true;
   showAfterLogin:any
   constructor(private _templatesService: TemplatesService, 
@@ -56,13 +56,15 @@ export class HomeComponent implements OnInit {
 
               // this.changeOfRoutes();
 
-              // this._router.events
-              //     .filter(event => (event instanceof NavigationEnd))
-              //         .subscribe((routeData: any) => {
-              //             if(routeData.urlAfterRedirects === '/') {
-              //                 this.showAfterLogin = true;
-              //             }
-              //         });
+              this._router.events.pipe(
+                filter((event:Event) => event instanceof NavigationEnd)
+              ).subscribe((routeData: any) => {
+                this.winOrigin = window.location.origin;
+                this.winPathname = window.location.pathname;
+  
+                this.changeOfRoutes(routeData.url);
+
+              })
 
                       // this._router.events.pipe(
                       //   filter((event:Event) => event instanceof NavigationEnd)
@@ -128,115 +130,142 @@ export class HomeComponent implements OnInit {
     }else{
       this.prefix = localStorage.language;
     }
-debugger
+
     let snapshotURL = this._activeRoute.snapshot.url;
     // localStorage.location = this.title = snapshotURL[0].path;
-    debugger
-    this.title = localStorage.location;
+    let title = localStorage.location;
 
     this.loggedIn = this._auth.loggedIn();
 
     this._templatesService._event.subscribe(
-      event => this.editInner(event)
+      event => {
+        debugger;
+        this.editInner(event)
+      }
     )
   let _self = this;
-   this._templatesService.getTemplate(this.title, this.prefix)
+
+  };
+
+
+  changeOfRoutes(url){
+
+    let title = url.split('/')[2];
+debugger
+    this.routeUrl = url;
+    // this.showPreloader = false;
+    let _self = this;
+    let prefix = localStorage.language;
+    // let title = localStorage.location;
+
+    this.getTemplate(title)
+
+  }
+
+ getTemplate(title){
+    let _self = this;
+    let prefix = localStorage.language;
+    this._templatesService.getTemplate(title, prefix)
     .subscribe(
       (res) => {
         if(res){
-          
-          let prefix = this.prefix;
-          // this.permalink = this.permalinkEdit = res['permalink'];
-          // localStorage.permalink = res['permalink'];
-          this.template = res['template'];
-          _self._router
-          setTimeout(() => {
-            this.showPreloader = false;
-
-            if(this.loggedIn){   
-              setTimeout(() => {      
-                this.addEditButton();
-              }, 100);
+          debugger
+          let template = res['template'];
+          localStorage.location = res['pageTitle'];
+          _self._templatesService.getPermalink(res['pageTitle'])
+          .subscribe(
+            (res) => {
+            let permalink = res['permalink'];
+              let lang = localStorage.language;
+              setTimeout(() => {
+                 _self.showPreloader = false;
+                 setTimeout(() => {
+                  if(_self.loggedIn) {
+                   _self.addEditButton();
+                 }
+               }, 100)
+              }, 1000)
+              debugger
+              _self.renderTemplate(template)
+              localStorage.permalink = permalink;
+              _self.permalink = `/${permalink}`;
+              _self._location.go(`${lang}/${permalink}`);
+            },
+            (err) => {
+              console.log('Error form HomeComp get template' + err);
             }
-            
-          }, 2000);
+          )
         }else{
-          let lang;
-          setTimeout(() => {
-            this.showPreloader = false;
-
-            if(this.loggedIn){   
-              setTimeout(() => {      
-                this.addEditButton();
-              }, 100);
-            }
-           
-          }, 2000);
-          console.log('this language does not exist in the database');
-          this.permalink = localStorage.permalink;
-          localStorage.language = lang = 'EN'
-          this.template = null;
-          this._router.config[0].path = lang
-          //
-          this._router.navigate([`../${lang}/${localStorage.permalink}`])
+          _self.getTemplateByPermalink();
         }
       },
       (err) => {
         console.log(err);
       }
     );
-
-  };
-
-  changeOfRoutes(url){
-    let routeUrl = url;
-
-    let _self = this;
-    let prefix = localStorage.language;
-    let title = localStorage.location;
-    // this._templatesService.getPermalink(title)
-    // .subscribe(
-    //   (res) => {
-    //     if(res){
-    //       //
-    //       let pageTitle = res['pageTitle'];
-    //       this.permalink = this.permalinkEdit = res['permalink'];
-    //       localStorage.permalink = res['permalink'];
-
-    //       _self._router.config[0].children.forEach((route) => {
-    //         if(route.path === pageTitle){
-
-
-
-
-    //           // Вчера поменял с 
-    //         // route.path = `${localStorage.language}/${res['permalink']}`;
-
-    //               //  на
-    //               //  в консоли показывало router 'contacts': 'EN/kontakty'
-    //               route.path = `${res['permalink']}`;
-             
-    //         }
-    //       })
-    //        _self._location.go(`${localStorage.language}/${res['permalink']}`)
-    //     }else{
-    //       console.log('empty permalink');
-    //       localStorage.permalink = title;
-    //       this._router.navigate([`${prefix}/${title}`]);
-    //       console.log('empty permalink');
-          
-    //     }
-    //   },
-    //   (err) => {
-    //     console.log('Error form getting permalink' + err);
-    //   }
-    // )
   }
 
-  editPageURL(inputURL: NgForm){
-    this.permalink = '';
-    this.permalinkEdit 
+  getTemplateByPermalink(){
+    let _self = this;
+
+    let permalink = this.routeUrl.split('/')[2];
+
+    this._templatesService.get_pageTitle(permalink)
+    .subscribe(
+      (res) => {
+        if(res){
+          debugger
+          // _self.showPreloader = false;
+          let pageTitle = localStorage.location = res['pageTitle'];
+          _self.permalink = `/${res['permalink']}`;
+          _self.getTemplate(pageTitle)
+
+
+        }else{
+          // let pageTitle = window.location.pathname.split('/')[2];
+          // _self.getTemplate(pageTitle);
+        }
+      },
+      (err) => {
+        console.log('Error form getting permalink' + err);
+      }
+    )
+  }
+
+  editPermalink(inputURL: NgForm){
+    
+    this.permalink = '/';
+    this.permalinkEdit = `${localStorage.permalink}`;
     console.log(inputURL.value);
+  }
+
+  savePermalink(permalink: NgForm){
+    let _self = this;
+    let permalinkToSend = permalink.value.input;
+    this.permalink = `/${permalink.value.input}`;
+    localStorage.permalink = permalink.value.input;
+    this._templatesService.send_permalink(localStorage.location, permalinkToSend).subscribe(
+      (res) => {
+        // _self._router.navigate([`${localStorage.language}/${res['permalink']}`]);
+        _self._location.go(`${localStorage.language}/${res['permalink']}`)
+        window.location.reload();
+      },
+      (err) => {
+        console.log('Error from permalink send from navbar' + '</br>' + err);
+      }
+    )
+
+    this.permalinkEdit = '';
+  }
+
+  cancelPermalink(){
+    this.permalink = `/${localStorage.permalink}`
+    this.permalinkEdit = '';
+  }
+
+  renderTemplate(template){
+    debugger
+    this.template = template;
   }
 
   addEditButton(){
@@ -379,7 +408,8 @@ debugger
     }else{
       body= document.querySelector('#default');
     }
-    this._templatesService.sendTemplate(body.innerHTML, pageTitle, send_prefix, this.permalink).subscribe((error) => {console.log(error)});
+    let permalink = localStorage.permalink
+    this._templatesService.sendTemplate(body.innerHTML, pageTitle, send_prefix, permalink).subscribe((error) => {console.log(error)});
 
     this._templatesService.add_new_lang_panel(send_prefix).subscribe(
       (res) => {
@@ -395,12 +425,12 @@ debugger
       }
     );
 
-    this._templatesService.send_permalink(pageTitle, this.permalink).subscribe(res => {  localStorage.permalink = res['permalink']});
+    this._templatesService.send_permalink(pageTitle, permalink).subscribe(res => {  localStorage.permalink = res['permalink']});
 
   }
 
   editInner(event){
-
+debugger
     let body;
     let pageTitle = localStorage.location;
     if(this.template){
@@ -408,13 +438,14 @@ debugger
     }else{
       body= document.querySelector('#default');
     }
+    let permalink = localStorage.permalink
     let send_prefix;
     if(localStorage.addNewLang){
       send_prefix = localStorage.addNewLang;
     }else{
       send_prefix = this.prefix;
     }
-    this._templatesService.sendTemplate(body.innerHTML, pageTitle, send_prefix, this.permalink).subscribe(
+    this._templatesService.sendTemplate(body.innerHTML, pageTitle, send_prefix, permalink).subscribe(
       (res) => {
         this._templatesService.add_new_lang_panel(send_prefix).subscribe(
           (res) => {

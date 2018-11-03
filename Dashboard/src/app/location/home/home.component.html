@@ -4,22 +4,33 @@
 <!-- ============ permalink block start ======================  -->
 
 
-
 <div *ngIf="!showPreloader && loggedIn" style="height: 80px;" class="container-fluid">
-	<div class="row">
-		<!-- <form  #inputURL='ngForm' class="form-inline col-md-5 permalinkForm">
-			<label for="input">Permalink: </label>
-			<a href='{{winOrigin}}'>{{winOrigin}}/{{permalink}}</a>
-			<input *ngIf="edition" #input="ngModel" [(ngModel)]='permalinkEdit' name="input" ngModel class="form-control col-md-3">
-			<button *ngIf="!edition" style="margin: 10px;" (click)='editPageURL(inputURL); edition = !edition' 
-			class="btn btn-primary btn-large searchBtn" type="submit">Edit</button>
+	<div style="height: 100px;" class="row">
+		<div class="permalinkForm">
+			<form *ngIf="loggedIn"  #inputURL='ngForm' class="form-inline">
+				<label for="input">Permalink: </label>
+				<a style="margin-left: 5px" href='{{winOrigin}}'> {{winOrigin}}{{permalink}}</a>
+				<input *ngIf="edition" #input="ngModel" [(ngModel)]='permalinkEdit' name="input" ngModel class="form-control col-md-3">
+				
+				<button *ngIf="!edition" style="margin: 10px" 
+				(click)='editPermalink(inputURL); edition = !edition' 
+				class="btn btn-primary btn-large" 
+				type="submit">
+				Edit
+				</button>
+				
+				<button *ngIf="edition" style="margin: 10px 5px;" (click)='savePermalink(inputURL); edition = !edition' 
+				class="btn btn-success btn-large">
+				Save
+				</button>
+	
+				<button *ngIf="edition" style="margin: 10px 2px;" (click)='cancelPermalink(); edition = !edition' 
+				class="btn btn-danger btn-large">
+				Cancel
+				</button>
+		  	</form>
+		</div>
 
-			<button *ngIf="edition" style="margin: 10px;" (click)='editPageURL(inputURL); edition = !edition' 
-			class="btn btn-success btn-large searchBtn" type="submit">Save</button>
-
-			<button *ngIf="edition" style="margin: 10px;" (click)='editPageURL(inputURL); edition = !edition' 
-			class="btn btn-danger btn-large searchBtn" type="submit">Cancel</button>
-		</form> -->
 		<div *ngIf="newLanguageAdded" class="col-md-3">
 			<p>added new language {{localhost.language}} to this page</p>
 		</div>
@@ -46,7 +57,7 @@
 	<section  class="areaBeforeBlock">
 		<div class="jumbotron">
 			<h2 class="click2edit" contenteditable="false" id="hello">
-				Hello, world!
+				Hllo, world!
 			</h2>
 			<p class="click2edit" contenteditable="false">
 				This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique.
