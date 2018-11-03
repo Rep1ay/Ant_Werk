@@ -1,7 +1,7 @@
 <app-preloader *ngIf="showPreloader"></app-preloader>
 <nav class="main_navbar">
   <ul class="navbar_container">
-      <li  *ngIf="!showPreloader" style="width: 40vw;font-size: 20px;font-weight: 300;">                           <!--*ngIf="loggedIn"-->
+      <li  *ngIf="!showPreloader" style="width: 60vw;font-size: 20px;font-weight: 300;">                       <!--*ngIf="loggedIn"-->
         <form *ngIf="loggedIn"  #inputURL='ngForm' class="form-inline">
           <label for="input">Permalink: </label>
           <a style="margin-left: 5px" href='{{winOrigin}}'> {{winOrigin}}{{permalink}}</a>
@@ -43,11 +43,11 @@
     <li routerLinkActive="active" (click)="followLink('services')" >{{services}}</li>
 
     
-    <li *ngIf='!loggedUser' routerLinkActive="active"  (click)="followLink('login')">Login</li>
+    <li *ngIf='!loggedIn' routerLinkActive="active"  (click)="followLink('login')">Login</li>
     
-    <!-- <li *ngIf='loggedUser' routerLinkActive="active"  routerLink="/adminPanel"><fa-icon [icon]="faUser"></fa-icon></li> -->
+    <!-- <li *ngIf='loggedIn' routerLinkActive="active"  routerLink="/adminPanel"><fa-icon [icon]="faUser"></fa-icon></li> -->
    
-    <li (click)="logoutUser()" *ngIf='loggedUser' routerLinkActive="active"  >Logout</li>
+    <li (click)="logoutUser()" *ngIf='loggedIn' routerLinkActive="active"  >Logout</li>
 
     <!-- <ul class="navbar-nav">
       <button *ngIf="!templateSending" (click)='editInner($event)' class="btn btn-primary my-2 my-sm-0"  type="button">

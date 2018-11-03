@@ -29,7 +29,7 @@ export class NavbarComponent implements OnInit {
   formInput: string;
   loggedIn: boolean;
   templateSending:any;
-  showPreloader = false;
+  showPreloader = true;
   routeUrl: string;
   permalink: string;
   permalinkEdit: string;
@@ -94,7 +94,7 @@ export class NavbarComponent implements OnInit {
 
   changeOfRoutes(url){
     this.routeUrl = url;
-    
+    this.showPreloader = true;
     let _self = this;
     let prefix = localStorage.language;
     let title = localStorage.location;
@@ -102,7 +102,6 @@ export class NavbarComponent implements OnInit {
     .subscribe(
       (res) => {
         if(res){
-          
           let pageTitle = res['pageTitle'];
           _self.permalink = `/${res['permalink']}`;
           localStorage.permalink = _self.routeUrl.split('/')[2];
@@ -112,8 +111,14 @@ export class NavbarComponent implements OnInit {
               route.path = `${res['permalink']}`;
             }
           })
-           _self._location.go(`${localStorage.language}/${res['permalink']}`)
+           _self._location.go(`${localStorage.language}/${res['permalink']}`);
+           setTimeout(() => {
+              _self.showPreloader = false;
+           }, 1500)
         }else{
+          setTimeout(() => {
+            _self.showPreloader = false;
+         }, 1500)
           console.log('empty permalink');
           localStorage.permalink = title;
           this._router.navigate([`${prefix}/${title}`]);
