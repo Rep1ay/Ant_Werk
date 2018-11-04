@@ -9,9 +9,9 @@ import { Location } from '@angular/common';
 
 let prefix = localStorage.language;
 
-// if(!prefix){
-//   prefix = localStorage.language = 'EN'
-// }
+if(!prefix){
+  prefix = localStorage.language = 'EN'
+}
 
 const routes: Routes = [
 
@@ -36,12 +36,22 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 export class AppRoutingModule {
+
+  winPathname: any;
 constructor( private _activeRoute: ActivatedRoute, _router: Router, _location:Location){
 
-  let winPath = window.location.pathname;
-  if(winPath.length > 2){
-     localStorage.language = window.location.pathname.split('/')[1];
-     _router.config[0].path = localStorage.language
+  this.winPathname = window.location.pathname.split('/');
+  debugger
+  if(this.winPathname.length <= 2){
+    let lang = localStorage.language
+    if(lang){
+      this.winPathname[0] = `/${lang}/`
+      _router.config[0].path = lang
+    }else{
+      this.winPathname[0] = `/EN/`;
+      _router.config[0].path = `EN`;
+    }
+    _location.go(`${lang}/${this.winPathname[1]}`)
   }
 }
  }

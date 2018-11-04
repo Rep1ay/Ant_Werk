@@ -141,7 +141,6 @@ export class HomeComponent implements OnInit {
 
     this._templatesService._event.subscribe(
       event => {
-        ;
         this.editInner(event)
       }
     )
@@ -155,7 +154,7 @@ export class HomeComponent implements OnInit {
     let title;
 
     this.routeUrl = url;
-    // this.showPreloader = false;
+    this.showPreloader = true;
     let _self = this;
     let prefix = localStorage.language;
     // let title = localStorage.location;

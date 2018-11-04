@@ -11,7 +11,7 @@ import { TemplatesService } from '../templates.service';
 })
 export class LocationComponent implements OnInit {
   winOrigin: string;
-  winPathname: string;
+  winPathname:any;
   edition = false;
   permalink: string;
   permalinkEdit: string;
@@ -20,8 +20,25 @@ export class LocationComponent implements OnInit {
     private _location: Location,
     private _templatesService : TemplatesService
     ) { 
-    this.winOrigin = window.location.origin;
-    this.winPathname = window.location.pathname;
+    // this.winOrigin = window.location.origin;
+    // this.winPathname = window.location.pathname.split('/');
+    //   if(this.winPathname.length <= 2){
+    //     let lang = localStorage.language
+    //     if(lang){
+    //       this.winPathname[0] = `/${lang}/`
+    //       _router.config[0].path = lang
+    //     }else{
+    //       this.winPathname[0] = `/EN/`;
+    //       _router.config[0].path = `/EN/`;
+    //     }
+    //   }
+
+      // let winPath = window.location.pathname;
+      // if(this.winPathname.length > 2){
+      //   //  localStorage.language = window.location.pathname.split('/')[1];
+      //    _router.config[0].path = localStorage.language
+      // }
+
     // 
     // let redirectURL;
     // let lang = localStorage.language;
@@ -86,6 +103,7 @@ export class LocationComponent implements OnInit {
     let _self = this;
     let prefix = localStorage.language;
     let title = localStorage.location;
+    
     // this._templatesService.getTemplate(title, prefix)
     // .subscribe(
     //   (res) => {

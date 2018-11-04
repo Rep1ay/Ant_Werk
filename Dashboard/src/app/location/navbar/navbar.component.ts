@@ -365,7 +365,13 @@ export class NavbarComponent implements OnInit {
 
                   _self._location.go(`${lang}/${permalink}`);
                   _self._router.navigate([`../${lang}/${permalink}`]);
-                  window.location.reload();
+                  // _self.showPreloader = true;
+
+
+                  setTimeout(() => {
+                      // _self.showPreloader = false;
+                  }, 1500)
+                  // window.location.reload();
                 },
                 (err) => {
                   console.log('Error form HomeComp get template' + err);
