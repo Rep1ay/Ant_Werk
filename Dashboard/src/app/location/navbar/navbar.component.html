@@ -51,25 +51,9 @@
    
     <li (click)="logoutUser()" *ngIf='loggedIn' routerLinkActive="active"  >Logout</li>
 
-    <!-- <ul class="navbar-nav">
-      <button *ngIf="!templateSending" (click)='editInner($event)' class="btn btn-primary my-2 my-sm-0"  type="button">
-        Save
-      </button>
-      <button *ngIf="templateSending" class="btn btn-info my-2 my-sm-0"  type="button">
-        Saving
-      </button>
-    </ul> -->
   </ul>
 </nav>
-<!-- <nav class="main_navbar">
-  <ul class="navbar_container">
-       <form #inputURL='ngForm' class="form-inline col-md-2 my-3 my-lg-0">
-      <input #input="ngModel" name="input" ngModel class="form-control col-md-8 mr-sm-2" type="search" 
-              aria-label="Search">
-      <button (click)='editPageURL(inputURL)' class="btn btn-primary btn-large searchBtn" type="submit">edit</button>
-    </form>
-  </ul>
-</nav> -->
+
 <nav id="rightsidebar_main_block" class="main_navbar ">
   <ul id="language_panel" class="navbar_container "> 
    
@@ -79,26 +63,38 @@
         font-size: 30px;
         border: 1px solid #2ec52e;
         background: #10b510;
-        padding: 2px 15px;" 
+        padding:2px 15px;" 
 
-      data-lang="add" routerLinkActive="active" (click)="add_new_lang_to_panel()">
+      data-lang="add" routerLinkActive="active" (click)=" addingNewLan = !addingNewLan">
       +
+      <!-- add_new_lang_to_panel(); -->
     </li>
        <li [attr.data-lang]="lang.prefix" *ngFor="let lang of lang_items" (click)="changeLanguage(lang.prefix)">{{lang.prefix}}</li>
-      <!-- <li class="lang_menu_item" data-lang="en" routerLinkActive="active"  >EN</li> -->
+      <!-- <li class="lang_menu_item" data-lang="en" routerLinkActive="active"  >eng</li> -->
 
     
     </ul>
+   
 </nav>
-<!-- <div class="products_collections">
-    <ul class="fade_out_navbar">
-      <li routerLink="/">Home</li>
-      <li class="menu_toggle">Products</li>
-      <li>Contact</li>
-      <li>Services</li>
-      <li routerLink="/">Home</li>
-      <li class="menu_toggle">Products</li>
-      <li>Contact</li>
-      <li>Services</li>
-    </ul>
-</div> -->
+
+  <div *ngIf="alertAddingLang" class="blockForEditLang" style="position: fixed; top: 90px; right: 0px; background: rgba(245, 73, 73, 0.47); font-size: 20px; color: rgb(255, 255, 255); padding: 12px;">
+    <p>Adding {{addingLangBody}} language, dont forget save changes</p>
+    <button (click)="alertAddingLang = !alertAddingLang" class="btn btn-primary">OK</button>
+  </div>
+
+  <div *ngIf="acceptAddingNewLang" style="position: fixed; top: 300px; right: 70px; background: yellowgreen; font-size: 20px; color: rgb(255, 255, 255); padding: 12px;">
+    <p>Add {{addingLangBody}} language for this page?</p>
+    <button (click)="acceptLangBlock()" class="btn btn-warning">Accept</button>
+    <button (click)="cancelLangBlock()" class="btn btn-danger" style="margin-left: 10px;">Cancel</button>
+  </div>
+
+  <div id="addNewLangToPanel" *ngIf="addingNewLan" class="input-group mb-3 col-md-3">
+  <select (change)='chooseLanguage($event)' class="custom-select" id="inputGroupSelect04">
+    <option selected>Choose...</option>
+    <option value="{{lang.short}}" *ngFor="let lang of lang_list">{{lang.short}} - {{lang.nativeName}}</option>
+  </select>
+  <div class="input-group-append">
+    <button (click)="languageAdding()" class="btn btn-info" type="button">OK</button>
+    <button (click)='addingNewLan = !addingNewLan' class="btn btn-danger" type="button">Close</button>
+  </div>
+</div>

@@ -203,6 +203,14 @@
     cursor: pointer;
 }
 
+#addNewLangToPanel {
+    position: fixed;
+    right: 60px;
+    z-index: 100;
+    top: 228px;
+    max-width: 410px;
+}
+
 @media all and (max-width: 800px) {
     .main_navbar ul, .rightsidebar_main_block ul {
       justify-content: space-around;

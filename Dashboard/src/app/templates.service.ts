@@ -6,6 +6,7 @@ import { map } from 'rxjs/operators';
 import {Event} from './event'
 import { LangPanel } from './lang-panel';
 import { Permalink } from './permalink';
+import { LangList } from './lang-list';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,8 @@ private _templatesUrl = 'http://localhost:3000/api/templates'
 private _lang_panelURL = 'http://localhost:3000/api/lang_panel'
 private _permalinkUrl = 'http://localhost:3000/api/permalink'
 private _pageTitleUrl = 'http://localhost:3000/api/pageTitle'
+private _langListURL = 'http://localhost:3000/api/lang_list'
+
 // private _templatesUrl = 'http://68.183.30.119/api/templates'
 
   constructor(private _http: HttpClient) { 
@@ -31,9 +34,14 @@ private _pageTitleUrl = 'http://localhost:3000/api/pageTitle'
   //   this.persons = res;
   // });
   editInner(event: Event){
-debugger
+
     this.eventValue.next(event)
   }
+
+  getLangList(){
+    return this._http.get<LangList[]>(this._langListURL)
+  }
+
 
   getTemplate(title, prefix): Observable<Template>{
     let pageTitle = localStorage.location;
@@ -41,7 +49,7 @@ debugger
     let headerJson = {
       'Content-Type': 'application/json',
       'Accept' : 'application/json',
-      'prefix': (prefix).toUpperCase(),
+      'prefix': prefix,
       'pageTitle': title
     }
     const headers = new HttpHeaders(headerJson);
@@ -55,7 +63,7 @@ debugger
     // this.add_new_lang_panel(prefix);
     let  templateBody: Template = {
       body: {
-        'prefix': (prefix).toUpperCase(),
+        'prefix': prefix,
         'permalink': permalink,
         'pageTitle': title,
         'template': template
@@ -104,7 +112,7 @@ debugger
   add_new_lang_panel(prefix){
     
     let body: LangPanel = {
-      prefix: (prefix).toUpperCase()
+      prefix: prefix
     }
     return this._http.put<any>(this._lang_panelURL, body)
   }

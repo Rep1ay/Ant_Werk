@@ -28,8 +28,8 @@ export class LocationComponent implements OnInit {
     //       this.winPathname[0] = `/${lang}/`
     //       _router.config[0].path = lang
     //     }else{
-    //       this.winPathname[0] = `/EN/`;
-    //       _router.config[0].path = `/EN/`;
+    //       this.winPathname[0] = `/eng/`;
+    //       _router.config[0].path = `/eng/`;
     //     }
     //   }
 

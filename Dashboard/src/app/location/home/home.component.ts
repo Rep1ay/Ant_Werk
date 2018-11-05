@@ -56,8 +56,6 @@ export class HomeComponent implements OnInit {
               this.winOrigin = window.location.origin;
               this.winPathname = window.location.pathname;
 
-              // this.changeOfRoutes();
-
               this._router.events.pipe(
                 filter((event:Event) => event instanceof NavigationEnd)
               ).subscribe((routeData: any) => {
@@ -67,72 +65,12 @@ export class HomeComponent implements OnInit {
                 this.changeOfRoutes(routeData.url);
 
               })
-
-                      // this._router.events.pipe(
-                      //   filter((event:Event) => event instanceof NavigationEnd)
-                      // ).subscribe((routeData: any) => {
-                      //   //
-                      //   this.changeOfRoutes(routeData);
-                      // //   if(routeData.urlAfterRedirects === '/') {
-                      // //     this.showAfterLogin = true;
-                      // // }
-                      // })
-            //   _router.events.subscribe((val) => {
-            //     // see also 
-            //     
-            //     console.log(val instanceof NavigationEnd) 
-            // });
-            // let loc =_location.path().replace('/', '');
-            // let windPath = window.location.pathname.split('/')[1];
-            // let routConf = _router.config[1].path.split('/')[0];
-            // let empty = '';
-            // if(!localStorage.language){
-            //   if(loc !== empty){
-            //     localStorage.language = loc.split('/')[0];
-            //     _router.config[1].path = loc;
-            //   }
-            // }else{
-            //   _router.config[1].path = `${localStorage.language}/${loc.split('/')[1]}`
-            // }
-
-
-            // window.location.pathname = _router.config[1].path
-
-          //   if(localStorage.language !== locPath){
-          //     routConf = locPath;
-          //  }
-          // if( _router.config[1].path.split('/')[0] === "undefined"){
-            // _router.config[1].path = loc;
-          // }
-         
-
-
-          // this._location.go(_router.config[1].path);
-            // window.location.pathname = _router.config[1].path
-          //   if(localStorage.language !== locPath){
-          //     routConf = locPath;
-          //  }
-
-          //  this._location.go(_router.config[1].path);
           }
 
   ngOnInit() {
 
-    // let urlCollect = this._activeRoute.snapshot.url;
-    // urlCollect.forEach( url => {
-    //   //
-    // });
-
     this._router.routerState
     
-    // if(!localStorage.language){
-      
-    //   localStorage.language = 'EN';
-    //   this.prefix = localStorage.language;
-    // }else{
-    //   this.prefix = localStorage.language;
-    // }
-
     let snapshotURL = this._activeRoute.snapshot.url;
     // localStorage.location = this.title = snapshotURL[0].path;
     let title = localStorage.location;
@@ -191,9 +129,8 @@ export class HomeComponent implements OnInit {
                }, 100)
               }, 1000)
               
-              
               _self.renderTemplate(template);
-              debugger
+              
               let origin = window.location.origin;
               _self.permalinkURL = `${origin}/${lang}/${permalink}`
 
@@ -403,31 +340,10 @@ export class HomeComponent implements OnInit {
   }
 
   saveChanges(){
+    debugger
     let body;
     let pageTitle = localStorage.location;
-
-    let send_prefix;
-
-    if(localStorage.addNewLang){
-      send_prefix = localStorage.addNewLang;
-
-      this._templatesService.add_new_lang_panel(send_prefix).subscribe(
-        (res) => {
-          localStorage.removeItem('addNewLang')
-          // this.newLanguageAdded = true;
-          setTimeout(() =>{
-            //  this.newLanguageAdded = false;
-          },2000)
-            alert('added new lang');
-        },
-        (err) => {
-          console.log(err);
-        }
-      );
-      
-    }else{
-      send_prefix = this.currentLang;
-    }
+    let lang  = localStorage.language;
 
     if(this.template){
       body= document.querySelector('#body');
@@ -435,12 +351,10 @@ export class HomeComponent implements OnInit {
       body= document.querySelector('#default');
     }
     let permalink = localStorage.permalink
-    this._templatesService.sendTemplate(body.innerHTML, pageTitle, send_prefix, permalink).subscribe((error) => {
+    this._templatesService.sendTemplate(body.innerHTML, pageTitle, lang, permalink).subscribe((error) => {
       console.log(error)
       localStorage.removeItem('addNewLang');
     });
-
-
 
     this._templatesService.send_permalink(pageTitle, permalink).subscribe(res => {  localStorage.permalink = res['permalink']});
 

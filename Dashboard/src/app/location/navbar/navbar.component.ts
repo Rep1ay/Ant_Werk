@@ -11,6 +11,7 @@ import { NgForm } from '@angular/forms';
 import { Observable, Subject, asapScheduler, pipe, of, from,
   interval, merge, fromEvent } from 'rxjs';
   import { map, filter, scan } from 'rxjs/operators';
+import { LangList } from 'src/app/lang-list';
 declare var $: any;
 
 @Component({
@@ -35,6 +36,14 @@ export class NavbarComponent implements OnInit {
   permalinkEdit: string;
   winOrigin: string;
   winPathname: string;
+  lang_list: LangList[] = [];
+  lang_collection: any;
+  addingNewLan = false;
+  addingLang: any;
+  acceptAddingNewLang = false;
+  alertAddingLang = false;
+  addingLangBody: string;
+
   constructor(
 
 
@@ -59,6 +68,43 @@ export class NavbarComponent implements OnInit {
             }
 
   ngOnInit() {
+let _self = this;
+
+    this._templatesService.getLangList().subscribe(
+        (res) => {
+          _self.lang_collection = res;
+          for(let lang in res[0]){
+            
+            let lang_collect = [];
+            if(lang !== '_id'){
+              lang_collect.push(lang);
+           }
+
+           lang_collect.forEach((lang) => {
+            let lang_coll = _self.lang_collection[0];
+             let lang_add = {
+               'short': lang_coll[lang]['639-1'],
+               'long': lang_coll[lang]['639-2'],
+               'name': lang_coll[lang]['name'],
+               'nativeName': lang_coll[lang]['nativeName']
+             }
+
+             _self.lang_list.push(lang_add);
+           })
+          }
+          // this.lang_list = res;
+        //  res.forEach(lang => {
+        //    this.lang_list.push(lang);
+        //    
+          
+        //  })
+
+
+        },
+        (err) => {
+          console.log('Error from get LAng_list ' + err);
+        }
+      )
 
     this._authService._state.subscribe(
       state => {this.isLoggedIn(state)});
@@ -75,9 +121,9 @@ export class NavbarComponent implements OnInit {
           lang_collect.push(lang.prefix); 
         });
         
-        if(!lang_collect.includes('EN')){
+        if(!lang_collect.includes('en')){
           let en_lang = {
-            prefix: 'EN'
+            prefix: 'en'
           }
           this.lang_items.push(en_lang);
         }
@@ -171,6 +217,55 @@ export class NavbarComponent implements OnInit {
     )
   }
 
+  chooseLanguage(event){
+    let lang = event.currentTarget.value
+    this.addingLangBody = lang
+    this.addingLang = {
+      prefix: lang
+    }
+  }
+
+  languageAdding(){
+    this.acceptAddingNewLang = !this.acceptAddingNewLang;
+    this.addingNewLan = !this.addingNewLan;
+    this.lang_items.push(this.addingLang);
+  }
+
+  acceptLangBlock(){
+    let _self = this;
+    this.alertAddingLang = !this.alertAddingLang;
+    this.acceptAddingNewLang = !this.acceptAddingNewLang;
+    this.showPreloader = true;
+    setTimeout(() => {
+      this.alertAddingLang = false;
+    }, 10000)
+
+    let lang = this.addingLangBody;
+    this._templatesService.add_new_lang_panel(lang)
+    
+    .subscribe(
+      (res) => {
+        let lang = res['prefix'];
+        let permalink = localStorage.permalink;
+        localStorage.language = lang;
+        this._router.config[0].path = lang;
+
+        _self._location.go(`${lang}/${permalink}`);
+
+        setTimeout(() => {
+          _self.showPreloader = false;
+        }, 1500)
+      },
+      (err) => {
+        console.log('Error from adding new lang');
+      }
+    )
+  }
+
+  cancelLangBlock(){
+    this.acceptAddingNewLang = !this.acceptAddingNewLang;
+  }
+
   followLink(path){
     let lang = localStorage.language;
     let snapshot = this._activatedRoute.snapshot;
@@ -254,77 +349,77 @@ export class NavbarComponent implements OnInit {
 
   add_new_lang_to_panel(){
 
-    let _self = this;
-    let blockForShortcut = document.createElement('div');
-    let inputForShortcut = document.createElement('input');
-    let paragraf_for_shortcut = document.createElement('p');
-    let paragraf_shortcut_text = document.createTextNode('Type shortcut ');
+    // let _self = this;
+    // let blockForShortcut = document.createElement('div');
+    // let inputForShortcut = document.createElement('input');
+    // let paragraf_for_shortcut = document.createElement('p');
+    // let paragraf_shortcut_text = document.createTextNode('Type shortcut ');
 
-    let btnCancelShortcut = document.createElement('button');
-    let btnCancelShortcutNodeTxt = document.createTextNode('Cancel');
+    // let btnCancelShortcut = document.createElement('button');
+    // let btnCancelShortcutNodeTxt = document.createTextNode('Cancel');
     
-    let btn_ok_for_shortcut = document.createElement('button');
-    let btn_shortcut_text = document.createTextNode('OK');
+    // let btn_ok_for_shortcut = document.createElement('button');
+    // let btn_shortcut_text = document.createTextNode('OK');
 
-    $(paragraf_for_shortcut).css({'padding': '5px','margin': '0px'});
+    // $(paragraf_for_shortcut).css({'padding': '5px','margin': '0px'});
 
-    inputForShortcut.setAttribute('class', 'form-control');
-    btn_ok_for_shortcut.setAttribute('class', 'btn btn-success');
-    btnCancelShortcut.setAttribute('class','btn btn-warning');
+    // inputForShortcut.setAttribute('class', 'form-control');
+    // btn_ok_for_shortcut.setAttribute('class', 'btn btn-success');
+    // btnCancelShortcut.setAttribute('class','btn btn-warning');
 
-    btnCancelShortcut.appendChild(btnCancelShortcutNodeTxt);
-    paragraf_for_shortcut.appendChild(paragraf_shortcut_text);
-    blockForShortcut.appendChild(paragraf_for_shortcut);
-    blockForShortcut.appendChild(inputForShortcut);
-    blockForShortcut.appendChild(btn_ok_for_shortcut);
-    blockForShortcut.appendChild(btnCancelShortcut);
-    btn_ok_for_shortcut.appendChild(btn_shortcut_text);
+    // btnCancelShortcut.appendChild(btnCancelShortcutNodeTxt);
+    // paragraf_for_shortcut.appendChild(paragraf_shortcut_text);
+    // blockForShortcut.appendChild(paragraf_for_shortcut);
+    // blockForShortcut.appendChild(inputForShortcut);
+    // blockForShortcut.appendChild(btn_ok_for_shortcut);
+    // blockForShortcut.appendChild(btnCancelShortcut);
+    // btn_ok_for_shortcut.appendChild(btn_shortcut_text);
 
-    document.body.appendChild(blockForShortcut);
+    // document.body.appendChild(blockForShortcut);
 
-    $(btnCancelShortcut).off().on('click', () => {
-      $(blockForShortcut).css({ 'right':'-1000px'})
-    });
+    // $(btnCancelShortcut).off().on('click', () => {
+    //   $(blockForShortcut).css({ 'right':'-1000px'})
+    // });
 
-    $(btn_ok_for_shortcut).off().on('click', (event) => {
+    // $(btn_ok_for_shortcut).off().on('click', (event) => {
      
-      let lang = {
-        prefix: (inputForShortcut.value).toUpperCase()
-      }
-      this.lang_items.push(lang);
+    //   let lang = {
+    //     prefix: (inputForShortcut.value).toUpperCase()
+    //   }
+    //   this.lang_items.push(lang);
 
-      // this._templatesService.add_new_lang_panel(lang).subscribe(
-      //   (res) => {
-      //     alert('language has been added');
-      //   },
-      //   (err) => {
-      //     console.log();
-      //   }
-      // );
+    //   // this._templatesService.add_new_lang_panel(lang).subscribe(
+    //   //   (res) => {
+    //   //     alert('language has been added');
+    //   //   },
+    //   //   (err) => {
+    //   //     console.log();
+    //   //   }
+    //   // );
 
-    $('.lang_menu_item').css('cursor', 'pointer');
+    // $('.lang_menu_item').css('cursor', 'pointer');
 
-    setTimeout(() => {
-      $(blockForShortcut).css({ 'right':'-1000px'})
-    }, 500);
+    // setTimeout(() => {
+    //   $(blockForShortcut).css({ 'right':'-1000px'})
+    // }, 500);
 
-    })
+    // })
 
-    $(inputForShortcut).css({
-      'width': '55px',
-      'font-size': '25px',
-      'color': '#222'
-    })
+    // $(inputForShortcut).css({
+    //   'width': '55px',
+    //   'font-size': '25px',
+    //   'color': '#222'
+    // })
     
-    $(blockForShortcut).css({ 'position':'fixed', 
-                                'top': '220px', 
-                                'display': 'flex',
-                                'right': '50px', 
-                                'background': '#2e8dc5', 
-                                'font-size': '17px',
-                                'color': '#fff',
-                                'padding': '12px'
-                              });
+    // $(blockForShortcut).css({ 'position':'fixed', 
+    //                             'top': '220px', 
+    //                             'display': 'flex',
+    //                             'right': '50px', 
+    //                             'background': '#2e8dc5', 
+    //                             'font-size': '17px',
+    //                             'color': '#fff',
+    //                             'padding': '12px'
+    //                           });
   
 
   // end of else
@@ -334,7 +429,7 @@ export class NavbarComponent implements OnInit {
 
   changeLanguage(lang){
     let _self = this;
-
+    this.addingLangBody = lang;
         // let lang = event.target.dataset.lang;
         let title = localStorage.location;
         // let prefix = localStorage.language;
@@ -379,7 +474,7 @@ export class NavbarComponent implements OnInit {
               )
     
             }else{
-              this.createNewLanguage(lang);
+               this.acceptAddingNewLang = true;
             }
               },
           (err) => {
@@ -389,123 +484,124 @@ export class NavbarComponent implements OnInit {
             )
   }
 
-  createNewLanguage(lang){
 
-    console.log('tamplate dosen exist');
-    let alertNodeElem = document.createTextNode(` ${(lang).toUpperCase()} language does not exist`);
-    // let paragraf = document.createElement('p');
+  // createNewLanguage(lang){
 
-    let blockForAddBtn = document.createElement('div')
-    let paragrafNewLang = document.createElement('p');
-    let paragrafNewLangTaxt = document.createTextNode(`Add ${(lang).toUpperCase()} language for this page?`);
+  //   console.log('tamplate dosen exist');
+  //   let alertNodeElem = document.createTextNode(` ${(lang).toUpperCase()} language does not exist`);
+  //   // let paragraf = document.createElement('p');
+
+  //   let blockForAddBtn = document.createElement('div')
+  //   let paragrafNewLang = document.createElement('p');
+  //   let paragrafNewLangTaxt = document.createTextNode(`Add ${(lang).toUpperCase()} language for this page?`);
     
-    let btnAddNewLang = document.createElement('button');
-    let btnAddNodeTxt = document.createTextNode('+ Add');
+  //   let btnAddNewLang = document.createElement('button');
+  //   let btnAddNodeTxt = document.createTextNode('+ Add');
 
-    let btnCancelNewLang = document.createElement('button');
-    let btnCancelNodeTxt = document.createTextNode('Cancel');
+  //   let btnCancelNewLang = document.createElement('button');
+  //   let btnCancelNodeTxt = document.createTextNode('Cancel');
 
-    let blockForEditLang = document.createElement('div')
-    let btGotIt = document.createElement('button');
-    let btnGotItText = document.createTextNode(`Ok,I've got it!`);
-    let paragrafEditLang = document.createElement('p');
-    let paragrafEditLangText = document.createTextNode(`Adding ${(lang).toUpperCase()} language, dont forget save changes`);
+  //   let blockForEditLang = document.createElement('div')
+  //   let btGotIt = document.createElement('button');
+  //   let btnGotItText = document.createTextNode(`Ok,I've got it!`);
+  //   let paragrafEditLang = document.createElement('p');
+  //   let paragrafEditLangText = document.createTextNode(`Adding ${(lang).toUpperCase()} language, dont forget save changes`);
 
 
-    blockForEditLang.setAttribute('class', 'blockForEditLang');
+  //   blockForEditLang.setAttribute('class', 'blockForEditLang');
 
     
-    btGotIt.appendChild(btnGotItText);
-    paragrafEditLang.appendChild(paragrafEditLangText);
-    blockForEditLang.appendChild(paragrafEditLang);
-    blockForEditLang.appendChild(btGotIt);
-    btGotIt.setAttribute('class','btn btn-primary');
-    btGotIt.onclick = function(){
-      $(blockForEditLang).css('right', '-1000px');
-    }
+  //   btGotIt.appendChild(btnGotItText);
+  //   paragrafEditLang.appendChild(paragrafEditLangText);
+  //   blockForEditLang.appendChild(paragrafEditLang);
+  //   blockForEditLang.appendChild(btGotIt);
+  //   btGotIt.setAttribute('class','btn btn-primary');
+  //   btGotIt.onclick = function(){
+  //     $(blockForEditLang).css('right', '-1000px');
+  //   }
 
-    blockForAddBtn.appendChild(btnAddNewLang);
+  //   blockForAddBtn.appendChild(btnAddNewLang);
 
-    paragrafNewLang.appendChild(paragrafNewLangTaxt);
-    blockForAddBtn.appendChild(paragrafNewLang);
+  //   paragrafNewLang.appendChild(paragrafNewLangTaxt);
+  //   blockForAddBtn.appendChild(paragrafNewLang);
 
-    btnAddNewLang.appendChild(btnAddNodeTxt);
-    blockForAddBtn.appendChild(paragrafNewLang);
-    blockForAddBtn.appendChild(btnAddNewLang);
+  //   btnAddNewLang.appendChild(btnAddNodeTxt);
+  //   blockForAddBtn.appendChild(paragrafNewLang);
+  //   blockForAddBtn.appendChild(btnAddNewLang);
 
-    btnAddNewLang.appendChild(btnAddNodeTxt);
-    blockForAddBtn.appendChild(paragrafNewLang);
-    blockForAddBtn.appendChild(btnAddNewLang);
+  //   btnAddNewLang.appendChild(btnAddNodeTxt);
+  //   blockForAddBtn.appendChild(paragrafNewLang);
+  //   blockForAddBtn.appendChild(btnAddNewLang);
 
-    btnCancelNewLang.appendChild(btnCancelNodeTxt);
-    blockForAddBtn.appendChild(btnCancelNewLang);
+  //   btnCancelNewLang.appendChild(btnCancelNodeTxt);
+  //   blockForAddBtn.appendChild(btnCancelNewLang);
 
-    // paragraf.appendChild(alertNodeElem);
-    // alertBlock.appendChild(paragraf);
+  //   // paragraf.appendChild(alertNodeElem);
+  //   // alertBlock.appendChild(paragraf);
 
-    // document.body.appendChild(paragraf);
-    document.body.appendChild(blockForAddBtn);
-    document.body.appendChild(blockForEditLang);
-    // document.body.appendChild(btnCancelNewLang);
+  //   // document.body.appendChild(paragraf);
+  //   document.body.appendChild(blockForAddBtn);
+  //   document.body.appendChild(blockForEditLang);
+  //   // document.body.appendChild(btnCancelNewLang);
     
-    btnAddNewLang.setAttribute('class','btn btn-warning');
-    // btnSaveChanges.setAttribute('class','btn btn-primary');
+  //   btnAddNewLang.setAttribute('class','btn btn-warning');
+  //   // btnSaveChanges.setAttribute('class','btn btn-primary');
 
 
-    $(btnAddNewLang).off().on('click', (event) => {
-      localStorage.addNewLang = lang;
-      // $('.navbar_container').addClass('editing');
-      // $('.rightsidebar_main_block').addClass('editing');
-      $(blockForAddBtn).css('right', '-1000px');
-      $(blockForEditLang).css('right', '0px');
-    });
+  //   $(btnAddNewLang).off().on('click', (event) => {
+  //     localStorage.addNewLang = lang;
+  //     // $('.navbar_container').addClass('editing');
+  //     // $('.rightsidebar_main_block').addClass('editing');
+  //     $(blockForAddBtn).css('right', '-1000px');
+  //     $(blockForEditLang).css('right', '0px');
+  //   });
 
-    $(btnCancelNewLang).off().on('click', (event) => {
-      $(blockForAddBtn).css('right', '-1000px');
-    });
+  //   $(btnCancelNewLang).off().on('click', (event) => {
+  //     $(blockForAddBtn).css('right', '-1000px');
+  //   });
 
-    btnCancelNewLang.setAttribute('class','btn btn-danger');
-    $(btnCancelNewLang).css('margin-left', '10px');
+  //   btnCancelNewLang.setAttribute('class','btn btn-danger');
+  //   $(btnCancelNewLang).css('margin-left', '10px');
 
-    // $(paragraf).css({ 'position':'absolute', 
-    //                   'top': '220px', 
-    //                   'right': '-200px', 
-    //                   'background': 'yellowgreen', 
-    //                   'font-size': '20px',
-    //                   'color': '#fff',
-    //                   'padding': '12px'
-    //                 });
+  //   // $(paragraf).css({ 'position':'absolute', 
+  //   //                   'top': '220px', 
+  //   //                   'right': '-200px', 
+  //   //                   'background': 'yellowgreen', 
+  //   //                   'font-size': '20px',
+  //   //                   'color': '#fff',
+  //   //                   'padding': '12px'
+  //   //                 });
 
-    $(blockForAddBtn).css({ 'position':'fixed', 
-                            'top': '300px', 
-                            'right': '-1000px', 
-                            'background': 'yellowgreen', 
-                            'font-size': '20px',
-                            'color': '#fff',
-                            'padding': '12px'
-                          });
+  //   $(blockForAddBtn).css({ 'position':'fixed', 
+  //                           'top': '300px', 
+  //                           'right': '-1000px', 
+  //                           'background': 'yellowgreen', 
+  //                           'font-size': '20px',
+  //                           'color': '#fff',
+  //                           'padding': '12px'
+  //                         });
 
-    $(blockForEditLang).css({ 'position':'fixed', 
-                            'top': '120px', 
-                            'right': '-1000px', 
-                            'background': '#f5494978', 
-                            'font-size': '20px',
-                            'color': '#fff',
-                            'padding': '12px'
-                          });
+  //   $(blockForEditLang).css({ 'position':'fixed', 
+  //                           'top': '120px', 
+  //                           'right': '-1000px', 
+  //                           'background': '#f5494978', 
+  //                           'font-size': '20px',
+  //                           'color': '#fff',
+  //                           'padding': '12px'
+  //                         });
 
-    setTimeout(()=>{
-      $(blockForAddBtn).css({'right': '70px'});
-    },1000);
+  //   setTimeout(()=>{
+  //     $(blockForAddBtn).css({'right': '70px'});
+  //   },1000);
   
-    // setTimeout(()=>{
-    //   $(paragraf).css({'right': '70px'});
-    // },100);
+  //   // setTimeout(()=>{
+  //   //   $(paragraf).css({'right': '70px'});
+  //   // },100);
 
-    // setTimeout(()=>{
-    //   $(paragraf).css({'right': '-500px'});
-    // },3000);
-  }
+  //   // setTimeout(()=>{
+  //   //   $(paragraf).css({'right': '-500px'});
+  //   // },3000);
+  // }
 
   navbarBehavior() {
     window.addEventListener('scroll', function(e) {

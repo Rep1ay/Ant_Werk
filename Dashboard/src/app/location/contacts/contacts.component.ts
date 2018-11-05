@@ -125,7 +125,7 @@ export class ContactsComponent implements OnInit {
     
     if(!localStorage.language){
       
-      localStorage.language = 'EN';
+      localStorage.language = 'en';
       this.prefix = localStorage.language;
     }else{
       this.prefix = localStorage.language;
