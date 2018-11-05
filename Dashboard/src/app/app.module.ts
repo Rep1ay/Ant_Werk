@@ -13,6 +13,7 @@ import { HomeComponent } from './location/home/home.component';
 import { PreloaderComponent } from './location/preloader/preloader.component';
 import { ContactsComponent } from './location/contacts/contacts.component';
 import { LocationComponent } from './location/location.component';
+import { CareerComponent } from './location/career/career.component';
 
 
 @NgModule({
@@ -24,7 +25,8 @@ import { LocationComponent } from './location/location.component';
     NavbarComponent,
     ContactsComponent,
     LocationComponent,
-    PreloaderComponent
+    PreloaderComponent,
+    CareerComponent
 
   ],
   imports: [

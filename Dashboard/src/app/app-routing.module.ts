@@ -6,6 +6,7 @@ import { RegisterComponent } from './location/register/register.component';
 import { ContactsComponent } from './location/contacts/contacts.component';
 import { LocationComponent } from './location/location.component';
 import { Location } from '@angular/common';
+import { CareerComponent } from './location/career/career.component';
 
 let prefix = localStorage.language;
 
@@ -17,11 +18,15 @@ const routes: Routes = [
 
  
   {path: `${prefix}`, component : LocationComponent,
+  
     children: [
+
       { path: `home`, component: HomeComponent},
       { path: `login`, component : LoginComponent},
       { path: `register`, component : RegisterComponent},
       { path: `contacts`, component: ContactsComponent},
+      { path: `carrer`, component: CareerComponent},
+
     ]},
     { path: '**', redirectTo:`/${prefix}/home`, pathMatch: 'full'},
   

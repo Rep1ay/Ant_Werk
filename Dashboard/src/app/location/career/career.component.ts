@@ -12,11 +12,11 @@ import { Observable, Subject, asapScheduler, pipe, of, from,
 declare var $: any;
 
 @Component({
-  selector: 'app-contacts',
-  templateUrl: './contacts.component.html',
-  styleUrls: ['./contacts.component.css']
+  selector: 'app-career',
+  templateUrl: './career.component.html',
+  styleUrls: ['./career.component.css']
 })
-export class ContactsComponent implements OnInit {
+export class CareerComponent implements OnInit {
   
   loggedIn: boolean;
   lastTarget: any;
@@ -120,15 +120,7 @@ export class ContactsComponent implements OnInit {
             (res) => {
             let permalink = res['permalink'];
               let lang = localStorage.language;
-              setTimeout(() => {
-                 _self.showPreloader = false;
-                 setTimeout(() => {
-                  if(_self.loggedIn) {
-                   _self.addEditButton();
-                 }
-               }, 100)
-              }, 1000)
-              
+
               _self.renderTemplate(template);
               
               let origin = window.location.origin;
@@ -214,9 +206,16 @@ export class ContactsComponent implements OnInit {
   }
 
   renderTemplate(template){
-    
     this.template = template;
-    this.showPreloader = false;
+
+    if(this.loggedIn) {
+      setTimeout(() => {
+        this.showPreloader = false;
+        setTimeout(() => {
+          this.addEditButton();
+        }, 100)
+     }, 1000)
+    }
   }
 
   addEditButton(){
@@ -297,9 +296,11 @@ export class ContactsComponent implements OnInit {
           $('.blockForBtnEdit').remove();
           $('.blockForBtnSave').remove();
           $('.blockForBtnCancel').remove();
+
+//========================   Save Method ======================
+
           _self.saveChanges();
         }
-        
 
         $(blockForBtnSave).insertBefore(target)
         $(blockForBtnSave).css({'left': `${left}px`, 
@@ -340,6 +341,21 @@ export class ContactsComponent implements OnInit {
         }
       })
       });
+
+      let acc = document.getElementsByClassName("accordion");
+      let i;
+      
+      for (i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function() {
+          this.classList.toggle("active");
+          let panel = this.nextElementSibling;
+          if (panel.style.maxHeight){
+            panel.style.maxHeight = null;
+          } else {
+            panel.style.maxHeight = panel.scrollHeight + "px";
+          } 
+        });
+      }
      
   }
 

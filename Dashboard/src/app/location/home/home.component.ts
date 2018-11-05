@@ -106,6 +106,7 @@ export class HomeComponent implements OnInit {
   }
 
  getTemplate(title){
+   
     let _self = this;
     let prefix = localStorage.language;
     this._templatesService.getTemplate(title, prefix)
@@ -120,15 +121,7 @@ export class HomeComponent implements OnInit {
             (res) => {
             let permalink = res['permalink'];
               let lang = localStorage.language;
-              setTimeout(() => {
-                 _self.showPreloader = false;
-                 setTimeout(() => {
-                  if(_self.loggedIn) {
-                   _self.addEditButton();
-                 }
-               }, 100)
-              }, 1000)
-              
+
               _self.renderTemplate(template);
               
               let origin = window.location.origin;
@@ -169,6 +162,9 @@ export class HomeComponent implements OnInit {
 
 
         }else{
+          
+          let template = undefined;
+          _self.renderTemplate(template);
           // let pageTitle = window.location.pathname.split('/')[2];
           // _self.getTemplate(pageTitle);
         }
@@ -211,8 +207,16 @@ export class HomeComponent implements OnInit {
   }
 
   renderTemplate(template){
-    
     this.template = template;
+
+    if(this.loggedIn) {
+      setTimeout(() => {
+        this.showPreloader = false;
+        setTimeout(() => {
+          this.addEditButton();
+        }, 100)
+     }, 1000)
+    }
   }
 
   addEditButton(){
@@ -293,9 +297,11 @@ export class HomeComponent implements OnInit {
           $('.blockForBtnEdit').remove();
           $('.blockForBtnSave').remove();
           $('.blockForBtnCancel').remove();
+
+//========================   Save Method ======================
+
           _self.saveChanges();
         }
-        
 
         $(blockForBtnSave).insertBefore(target)
         $(blockForBtnSave).css({'left': `${left}px`, 
@@ -336,11 +342,11 @@ export class HomeComponent implements OnInit {
         }
       })
       });
-     
+
   }
 
   saveChanges(){
-    debugger
+    
     let body;
     let pageTitle = localStorage.location;
     let lang  = localStorage.language;

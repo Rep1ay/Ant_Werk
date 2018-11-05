@@ -163,7 +163,6 @@ export class LocationComponent implements OnInit {
     // });
     // window.location.reload();
 
-    this._activatedRoute.snapshot.root
 
     
   }

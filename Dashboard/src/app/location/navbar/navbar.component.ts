@@ -24,7 +24,7 @@ export class NavbarComponent implements OnInit {
   // faUser  = faUser;
   home = 'Home';
   contacts = 'Contacts';
-  services = 'Services';
+  carrer = 'Carrer';
   lang_items: LangPanel[] = [];
   template: any;
   formInput: string;
@@ -47,7 +47,6 @@ export class NavbarComponent implements OnInit {
   constructor(
 
 
-    
     private _templatesService: TemplatesService,
               private _authService: AuthService,
               private _router: Router,
