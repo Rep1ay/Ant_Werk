@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { TemplatesService } from '../../templates.service';
 import { FormBuilder, FormGroup, NgForm } from '@angular/forms';
 import { AuthService } from '../../auth.service';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { ActivatedRoute, Router, UrlTree, UrlSegmentGroup, UrlSegment, NavigationEnd } from '@angular/router';
 import { Location } from '@angular/common';
 // import { filter } from 'rxjs/operators';
@@ -9,7 +10,7 @@ import { Observable, Subject, asapScheduler, pipe, of, from,
   interval, merge, fromEvent } from 'rxjs';
   import { map, filter, scan } from 'rxjs/operators';
 // Jquery declaration
-declare var $: any;
+declare let $: any;
 
 @Component({
   selector: 'app-career',
@@ -45,6 +46,7 @@ export class CareerComponent implements OnInit {
   showAfterLogin:any
   currentLang: string;
   permalinkURL: string;
+  currentLocation: string;
   constructor(private _templatesService: TemplatesService, 
             formBuilder: FormBuilder,
             private _auth: AuthService,
@@ -108,6 +110,7 @@ export class CareerComponent implements OnInit {
    
     let _self = this;
     let prefix = localStorage.language;
+   
     this._templatesService.getTemplate(title, prefix)
     .subscribe(
       (res) => {
@@ -135,6 +138,7 @@ export class CareerComponent implements OnInit {
             }
           )
         }else{
+          localStorage.location = this.currentLocation = title;
           _self.getTemplateByPermalink();
         }
       },
@@ -159,11 +163,12 @@ export class CareerComponent implements OnInit {
           _self.permalink = `/${res['permalink']}`;
           _self.getTemplate(pageTitle)
 
-
         }else{
           
           let template = undefined;
+          localStorage.location = _self.currentLocation;
           _self.renderTemplate(template);
+
           // let pageTitle = window.location.pathname.split('/')[2];
           // _self.getTemplate(pageTitle);
         }
@@ -210,6 +215,7 @@ export class CareerComponent implements OnInit {
 
     if(this.loggedIn) {
       setTimeout(() => {
+        this.createAccordion();
         this.showPreloader = false;
         setTimeout(() => {
           this.addEditButton();
@@ -274,7 +280,7 @@ export class CareerComponent implements OnInit {
       blockForBtnEdit.setAttribute('class', 'blockForBtnEdit');
      
       $(blockForBtnEdit).css({'left': `${left}px`, 
-                          'top': `${top - 70}px`, 
+                          'top': `${top - 80}px`, 
                           'position': 'absolute',
                           'font-size':'16px',
                           });
@@ -304,7 +310,7 @@ export class CareerComponent implements OnInit {
 
         $(blockForBtnSave).insertBefore(target)
         $(blockForBtnSave).css({'left': `${left}px`, 
-                          'top': `${top - 70}px`, 
+                          'top': `${top - 80}px`, 
                           'position': 'absolute',
                           'font-size':'16px',
                           'z-index': '1'
@@ -316,7 +322,7 @@ export class CareerComponent implements OnInit {
         blockForBtnCancel.appendChild(btnCancel);
         $(blockForBtnCancel).insertBefore(target)
         $(blockForBtnCancel).css({'left': `${left + 70}px`, 
-                          'top': `${top - 70}px`, 
+                          'top': `${top - 80}px`, 
                           'position': 'absolute',
                           'font-size':'16px',
                           'z-index': '1'
@@ -342,23 +348,402 @@ export class CareerComponent implements OnInit {
       })
       });
 
-      let acc = document.getElementsByClassName("accordion");
-      let i;
-      
-      for (i = 0; i < acc.length; i++) {
-        acc[i].addEventListener("click", function() {
-          this.classList.toggle("active");
-          let panel = this.nextElementSibling;
-          if (panel.style.maxHeight){
-            panel.style.maxHeight = null;
-          } else {
-            panel.style.maxHeight = panel.scrollHeight + "px";
-          } 
-        });
-      }
+      // this.createAccordion();
      
   }
 
+  createAccordion(){
+    let _self = this;
+    $(function(){
+
+      
+      let addNewPosition = $("<div/>", {
+ 
+        // PROPERTIES HERE
+        // text: '+',
+        // id: "addNewVacancy",
+        "class": "addNewVacancy",      // ('class' is still better in quotes)
+        css: {           
+         
+        },
+        on: {
+          click: function() {
+         
+            _self.createNewVacancy();
+            
+          }
+        },
+        append: "<p>+</p>",
+        // appendTo: ".positions_list"      // Finally, append to any selector
+        
+      });
+
+      $(addNewPosition).insertBefore($('.item')[0]);
+
+
+      let vacant_position = $(this);
+     
+      $(this).addClass('showed');
+      if ($('.vacant_position').hasClass('showed')){
+          $('.vacant_position').next().slideUp(500);
+      }      
+     else if (vacant_position.attr('data-attr') === '1') {
+          return;
+      }
+      vacant_position.attr('data-attr','1').next().stop(true).slideToggle(500,function () {
+          vacant_position.attr('data-attr','0');
+      });
+
+      
+
+      $('.vacant_position').on('click', function(){
+          let vacant_position = $(this);
+          $('.vacant_row').css({'flex-direction': 'row',
+                                'display': 'flex',
+                                'justify-content': 'space-between',
+                                'padding': '10px 30px'})
+          $('.vacant_position').removeClass('showed');
+          $(this).addClass('showed');
+          $('.vacant_position').css({'background':'#f3f3f3', 'color': '#333'});
+          // $('.showed').css({'background': '#ffaa27','color': '#fff'})
+          if ($('.vacant_position').hasClass('showed')){
+              $('.vacant_position').next().slideUp(500);
+              $('.showed').css({'background': '#ffaa27','color': '#fff'})
+          }      
+         else if (vacant_position.attr('data-attr') === '1') {
+              return;
+          }
+          vacant_position.attr('data-attr','1').next().stop(true).slideToggle(500,function () {
+              vacant_position.attr('data-attr','0');
+          });
+      });
+
+      let context = '.actionPanel'
+      _self.createActionPanel(context);
+      _self.activateStyles();
+
+    });
+  }
+
+  createActionPanel(context){
+    let _self = this;
+    $(function(){
+
+    $("<label/>", {
+ 
+      // text: '+',
+      // id: "addNewVacancy",
+      "class": "switch",     
+      css: {           
+
+      },
+
+      on:{
+        click: function(){
+          let currentBlock =  $(this).parents('.item');
+          if($(this).find('input[type=checkbox]')[0]['checked']){
+            currentBlock.toggleClass('active')
+          }else{
+            currentBlock.toggleClass('inactive')
+          }
+        }
+      },
+
+      append: '<input type="checkbox"><span class="slider round"></span>',
+      
+      appendTo: context
+      
+    }); 
+
+    
+    let items = document.querySelectorAll('.item')
+
+    items.forEach(element => {
+      if($(element).hasClass('active')){
+        $(element).find('input[type=checkbox]').attr('checked', true);
+      }
+    });
+
+   $("<p/>", {
+
+      "class": "switch",     
+      css: {           
+        'cursor': 'pointer'
+      },
+      on: {
+        click: function(){
+          $(this).parents('.item').remove()
+        }
+      },
+
+      append: '	<i class="material-icons delete_btn">delete_forever</i>',
+      appendTo: context
+      
+    }); 
+
+    _self.activateStyles();
+
+
+  });
+
+  }
+
+
+  createNewVacancy(){
+
+    let _self = this;
+    $(function(){
+      
+    
+      let addNewPosition = $("<div/>", {
+ 
+        "class": "item",     
+        css: {
+          'position': 'relative',           
+          'margin': '20px 0px',
+          'border': '1px solid #d0d0d0',
+        },
+
+        append: `<div class="col-md-2 actionPanel row">
+        
+        </div>`,
+        
+      }); 
+
+      let new_position = $("<div/>", {
+ 
+        text: 'New Vacancy',
+        "class": "vacant_position click2edit col-md-9",
+        css: {           
+          'font-size': '30px',
+          'cursor': 'pointer', 
+          'padding': '10px',
+          'background': '#f3f3f3'
+        },
+        on: {
+          click: function() {
+         
+            let vacant_position = $(this);
+          $('.vacant_row').css({'flex-direction': 'row',
+                                'display': 'flex',
+                                'justify-content': 'space-between',
+                                'padding': '10px 30px'})
+          $('.vacant_position').removeClass('showed');
+          $(this).addClass('showed');
+          $('.vacant_position').css({'background':'#f3f3f3', 'color': '#333'});
+          // $('.showed').css({'background': '#ffaa27','color': '#fff'})
+          if ($('.vacant_position').hasClass('showed')){
+              $('.vacant_position').next().slideUp(500);
+              $('.showed').css({'background': '#ffaa27','color': '#fff'})
+          }      
+         else if (vacant_position.attr('data-attr') === '1') {
+              return;
+          }
+          vacant_position.attr('data-attr','1').next().stop(true).slideToggle(500,function () {
+              vacant_position.attr('data-attr','0');
+          });
+          }
+        },
+
+        appendTo: addNewPosition
+        
+      }); 
+
+
+      $(addNewPosition).insertAfter($('.addNewVacancy'));
+
+      let vacancy_description = $("<div/>", {
+ 
+        "class": "description",
+        css: {           
+         
+        },
+        on: {
+          click: function() {
+         
+            
+          }
+        },
+        // appendTo:  addNewPosition
+        
+      }); 
+
+      let newVacancyBlock = $("<div/>", {
+ 
+        "class": "description",
+        css: {           
+         
+        },
+        on: {
+          click: function() {
+         
+            
+          }
+        },
+        append: `<p class="click2edit">Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate voluptas modi sapiente tempore maxime fuga eos iusto distinctio, nemo vel nam unde ea nostrum aut reprehenderit voluptatibus beatae impedit? Ab explicabo omnis deserunt dicta aperiam deleniti, dignissimos qui consequuntur, modi sed iusto quam minus doloribus at praesentium animi in necessitatibus tempora. Veritatis deleniti aut ratione blanditiis. Aliquid facilis architecto numquam </p>`,
+        appendTo:  addNewPosition
+        
+      }); 
+  
+      let context = $(addNewPosition).find('.actionPanel');
+      _self.createActionPanel(context);
+      _self.addEditButton();
+    }); 
+
+  }
+
+
+  activateStyles(){
+    $(function(){
+      
+
+  $('head').append(`<style>
+
+
+    .actionPanel{
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between
+    }
+
+    .positions_list{
+      padding: 30px;
+      width: 100%
+    }
+
+    .positions_list .item{
+      margin: 20px 0px;
+      border: 1px solid #d0d0d0
+    }
+
+    .vacant_row{
+      flex-direction: row;
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 30px
+    }
+
+    .positions_list .item .vacant_position{
+      font-size: 30px;
+      cursor: pointer; 
+      padding: 10px;
+      background: #f3f3f3
+    }
+
+    .positions_list .item .description{
+     background: #fff;
+      overflow : hidden;
+      display: none;
+      padding: 0 15px
+    }
+
+
+    .description p{
+      margin-top: 0px;
+      margin-bottom: 0px;
+      padding: 10px;
+    }
+
+
+    .addNewVacancy{
+      fontSize: 3em;
+      cursor: pointer;
+      color: #52ff52;
+      font-size: 3em;
+      display: flex;
+      cursor: pointer;
+      border: 2px solid #52ff52;
+      justify-content: center;
+    }
+      .item  {
+        position: relative;
+      }
+      label.switch {
+        top: 4px;
+      }
+      .actionPanel{
+        position: absolute;
+        right: 70px;
+        top: 14px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        z-index: 100;
+      }
+
+      .delete_btn{
+        font-size: 28px;
+        padding: 5px 5px;
+        color: #ff6868;
+        position: absolute;
+        background: #fff;
+        border-radius: 50%;
+        box-shadow: 1px 1px 3px 1px #bdbdbd;
+      }
+
+      .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+        
+      }
+      
+      .switch input { 
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+      
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+      }
+      
+      .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        -webkit-transition: .4s;
+        transition: .4s;
+      }
+      
+      input:checked + .slider {
+        background-color: #41ff34;
+      }
+      
+      input:focus + .slider {
+        box-shadow: 0 0 1px #41ff34;
+      }
+      
+      input:checked + .slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+      }
+      
+      .slider.round {
+        border-radius: 34px;
+      }
+      
+      .slider.round:before {
+        border-radius: 50%;
+      }</style>`);
+
+    });
+  }
+  
   saveChanges(){
     
     let body;
@@ -371,9 +756,14 @@ export class CareerComponent implements OnInit {
       body= document.querySelector('#default');
     }
     let permalink = localStorage.permalink
+
+
+    $('.switch').remove();
+    $('.addNewVacancy').remove();
     this._templatesService.sendTemplate(body.innerHTML, pageTitle, lang, permalink).subscribe((error) => {
       console.log(error)
       localStorage.removeItem('addNewLang');
+    
     });
 
     this._templatesService.send_permalink(pageTitle, permalink).subscribe(res => {  localStorage.permalink = res['permalink']});

@@ -14,7 +14,8 @@ import { PreloaderComponent } from './location/preloader/preloader.component';
 import { ContactsComponent } from './location/contacts/contacts.component';
 import { LocationComponent } from './location/location.component';
 import { CareerComponent } from './location/career/career.component';
-
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {MaterialModule} from './material';
 
 @NgModule({
   declarations: [
@@ -27,14 +28,16 @@ import { CareerComponent } from './location/career/career.component';
     LocationComponent,
     PreloaderComponent,
     CareerComponent
-
   ],
+  
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
+    BrowserAnimationsModule,
+    MaterialModule
     // NgbModule
   ],
   providers: [],
