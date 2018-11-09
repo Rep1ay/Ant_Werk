@@ -371,7 +371,6 @@ export class CareerComponent implements OnInit {
     let _self = this;
     $(function(){
 
-      let discription;
       let addNewPosition = $("<div/>", {
  
         // PROPERTIES HERE
@@ -409,11 +408,11 @@ export class CareerComponent implements OnInit {
           vacant_position.attr('data-attr','0');
       });
 
-      
 
       $('.vacant_position').on('click', function(){
           let vacant_position = $(this);
-          discription = vacant_position.next('.description')
+          let discription = vacant_position.next('.discription');
+          let discription_list = $(discription).find('.discription_list');
           $('.vacant_row').css({'flex-direction': 'row',
                                 'display': 'flex',
                                 'justify-content': 'space-between',
@@ -432,10 +431,22 @@ export class CareerComponent implements OnInit {
           vacant_position.attr('data-attr','1').next().stop(true).slideToggle(500,function () {
               vacant_position.attr('data-attr','0');
           });
+
+
+          let btnExist = $(discription).find('.add_discription_list_btn')
+
+          let send_body = {
+            discription: discription,
+            discription_list: discription_list
+          }
+
+          if(!btnExist.length){
+            _self.addDiscriptionList(send_body);
+
+          }
       });
 
-      let context = '.actionPanel'
-      _self.addDescriptionList(discription)
+      let context = null;   
       _self.createActionPanel(context);
       _self.activateStyles();
 
@@ -444,6 +455,9 @@ export class CareerComponent implements OnInit {
 
   createActionPanel(context){
     let _self = this;
+    if(!context){
+      context = '.actionPanel'
+    }
     $(function(){
 
     $("<label/>", {
@@ -505,7 +519,6 @@ export class CareerComponent implements OnInit {
   });
 
   }
-
 
   createNewVacancy(){
 
@@ -570,9 +583,9 @@ export class CareerComponent implements OnInit {
 
       $(addNewPosition).insertAfter($('.addNewVacancy'));
 
-      let vacancy_description = $("<div/>", {
+      let vacancy_discription = $("<div/>", {
  
-        "class": "description",
+        "class": "discription",
         css: {           
          
         },
@@ -587,8 +600,10 @@ export class CareerComponent implements OnInit {
         
       });
 
-     
-      _self.addDescriptionList(vacancy_description)
+     let send_body = {
+       discription: vacancy_discription
+     }
+      _self.addDiscriptionList(send_body)
       let context = $(addNewPosition).find('.actionPanel');
       _self.createActionPanel(context);
       _self.addEditButton();
@@ -601,12 +616,17 @@ export class CareerComponent implements OnInit {
 
   }
 
-  addDescriptionList(append_block){
+  addDiscriptionList(body){
 
     let _self = this;
-
-    let discription_list = $("<div/>", {"class": "discription_list",}); 
-
+    let discription_list;
+    
+    if(!body.discription_list){
+      discription_list = $("<div/>", {"class": "discription_list",}); 
+      $(discription_list).appendTo($(body.discription));
+    }else{
+      discription_list = body.discription_list
+    }
   
     let add_discription_list_btn = $("<button/>", {
       text: 'Edit list',
@@ -675,7 +695,6 @@ export class CareerComponent implements OnInit {
             }
           });
 
-
           $('.cancelBtn').css({'background': '#ff3131','color': '#fff'})
           $('.saveBtn').css({'background': '#10b510','color': '#fff'})
 
@@ -686,13 +705,11 @@ export class CareerComponent implements OnInit {
 
     // for only just added vacancy
 
-    // $(discription_list).appendTo($(append_block));
-    // $(add_discription_list_btn).appendTo($(append_block));
+    $(add_discription_list_btn).appendTo($(body.discription));
 
-    
     // for multi vacancy
-    $(discription_list).appendTo($('.discription_list'));
-    $(add_discription_list_btn).appendTo($('.discription_list'));
+    // $(discription_list).appendTo($('.discription_list'));
+    // $(add_discription_list_btn).appendTo($('.discription_list'));
 
   }
 
@@ -756,7 +773,7 @@ export class CareerComponent implements OnInit {
       background: #f3f3f3
     }
 
-    .positions_list .item .description{
+    .positions_list .item .discription{
      background: #fff;
       overflow : hidden;
       display: none;
@@ -764,7 +781,7 @@ export class CareerComponent implements OnInit {
     }
 
 
-    .description p{
+    .discription p{
       margin-top: 0px;
       margin-bottom: 0px;
       padding: 10px;
@@ -871,7 +888,7 @@ export class CareerComponent implements OnInit {
   }
   
   saveChanges(){
-    
+    let _self = this;
     let body;
     let pageTitle = localStorage.location;
     let lang  = localStorage.language;
@@ -886,6 +903,8 @@ export class CareerComponent implements OnInit {
     debugger
     // if($('.discription_list').text())
     $('.switch').remove();
+    // if()
+    $('.discription_list').find('p').remove()
     $('.add_discription_list_btn').remove();
     $('.addNewVacancy').remove();
     this._templatesService.sendTemplate(body.innerHTML, pageTitle, lang, permalink).subscribe((error) => {
@@ -895,8 +914,35 @@ export class CareerComponent implements OnInit {
     });
 
     this._templatesService.send_permalink(pageTitle, permalink).subscribe(res => {  localStorage.permalink = res['permalink']});
+debugger
 
-    body.innerHTML
+
+let addNewPosition = $("<div/>", {
+ 
+  // PROPERTIES HERE
+  // text: '+',
+  // id: "addNewVacancy",
+  "class": "addNewVacancy",      // ('class' is still better in quotes)
+  css: {           
+   
+  },
+  on: {
+    click: function() {
+   
+      _self.createNewVacancy();
+      
+    }
+  },
+  append: "<p>+</p>",
+  // appendTo: ".positions_list"      // Finally, append to any selector
+  
+});
+
+$(addNewPosition).insertBefore($('.item')[0]);
+
+    let context = '.actionPanel'
+    this.createActionPanel(context)
+
   }
 
   editInner(event){
