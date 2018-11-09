@@ -371,7 +371,7 @@ export class CareerComponent implements OnInit {
     let _self = this;
     $(function(){
 
-      
+      let discription;
       let addNewPosition = $("<div/>", {
  
         // PROPERTIES HERE
@@ -413,6 +413,7 @@ export class CareerComponent implements OnInit {
 
       $('.vacant_position').on('click', function(){
           let vacant_position = $(this);
+          discription = vacant_position.next('.description')
           $('.vacant_row').css({'flex-direction': 'row',
                                 'display': 'flex',
                                 'justify-content': 'space-between',
@@ -434,6 +435,7 @@ export class CareerComponent implements OnInit {
       });
 
       let context = '.actionPanel'
+      _self.addDescriptionList(discription)
       _self.createActionPanel(context);
       _self.activateStyles();
 
@@ -508,8 +510,8 @@ export class CareerComponent implements OnInit {
   createNewVacancy(){
 
     let _self = this;
+    let append_block;
     $(function(){
-      
     
       let addNewPosition = $("<div/>", {
  
@@ -539,7 +541,7 @@ export class CareerComponent implements OnInit {
         on: {
           click: function() {
          
-            let vacant_position = $(this);
+            let vacant_position = append_block = $(this);
           $('.vacant_row').css({'flex-direction': 'row',
                                 'display': 'flex',
                                 'justify-content': 'space-between',
@@ -580,32 +582,140 @@ export class CareerComponent implements OnInit {
             
           }
         },
-        // appendTo:  addNewPosition
-        
-      }); 
-
-      let newVacancyBlock = $("<div/>", {
- 
-        "class": "description",
-        css: {           
-         
-        },
-        on: {
-          click: function() {
-         
-            
-          }
-        },
         append: `<p class="click2edit">Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate voluptas modi sapiente tempore maxime fuga eos iusto distinctio, nemo vel nam unde ea nostrum aut reprehenderit voluptatibus beatae impedit? Ab explicabo omnis deserunt dicta aperiam deleniti, dignissimos qui consequuntur, modi sed iusto quam minus doloribus at praesentium animi in necessitatibus tempora. Veritatis deleniti aut ratione blanditiis. Aliquid facilis architecto numquam </p>`,
         appendTo:  addNewPosition
         
-      }); 
-  
+      });
+
+     
+      _self.addDescriptionList(vacancy_description)
       let context = $(addNewPosition).find('.actionPanel');
       _self.createActionPanel(context);
       _self.addEditButton();
+
+
+      // end of IIF
     }); 
 
+
+
+  }
+
+  addDescriptionList(append_block){
+
+    let _self = this;
+
+    let discription_list = $("<div/>", {"class": "discription_list",}); 
+
+  
+    let add_discription_list_btn = $("<button/>", {
+      text: 'Edit list',
+      "class": "btn btn-success add_discription_list_btn",
+    css: {
+      'margin': '15px'
+    },
+      on:{
+        click: function(){
+          
+          let SaveButton = (context) => {
+            let ui = $.summernote.ui;
+            let button = ui.button({
+              className: 'saveBtn',
+              background: '#337ab7',
+              contents: '<i class="fa fa-child"/> Save',
+              // tooltip: 'Save',
+              click: function () {
+      
+                let send_body = {
+                  elem: $(discription_list),
+                }
+      
+            _self.save(send_body);
+              }
+            });
+          
+            return button.render();
+          }
+           // let initialText = $(body.elem).summernote('code');
+      
+          let CancelButton = (context) => {
+            let ui = $.summernote.ui;
+            let button = ui.button({
+              className: 'cancelBtn',
+              backgroundColor: '#337ab7',
+              contents: '<i class="fa fa-child"/> Cancel',
+              // tooltip: 'Save',
+              click: function () {
+      
+                let send_body = {
+                  elem: $(discription_list),
+                  initialText: $(discription_list).summernote('code')
+                }
+      
+            _self.cancel(send_body);
+              }
+            });
+          
+            return button.render();
+          }
+
+          $(discription_list).summernote({
+            // width: editorWidth,
+
+            toolbar: [
+              ['font-style', ['bold', 'italic', 'underline', 'strikethrough', 'clear']],
+              ['para', ['ul', 'ol']],
+              ['misc', ['undo', 'redo']],
+              ['savebutton', ['save']],
+              ['cancelbutton', ['cancel']],
+            ],
+            buttons: {
+              save: SaveButton,
+              cancel: CancelButton
+            }
+          });
+
+
+          $('.cancelBtn').css({'background': '#ff3131','color': '#fff'})
+          $('.saveBtn').css({'background': '#10b510','color': '#fff'})
+
+        }
+      }
+    
+    }); 
+
+    // for only just added vacancy
+
+    // $(discription_list).appendTo($(append_block));
+    // $(add_discription_list_btn).appendTo($(append_block));
+
+    
+    // for multi vacancy
+    $(discription_list).appendTo($('.discription_list'));
+    $(add_discription_list_btn).appendTo($('.discription_list'));
+
+  }
+
+  save(body){
+
+    this.currentElem = body.elem;
+
+    let markup = $(body.elem).summernote('code');
+
+    $(body.elem).summernote('destroy');
+
+    this.saveChanges();
+
+  }
+
+  cancel(body){
+    let markup = $(body.elem).summernote('code');
+    // if(markup === "<p><br></p>"){
+    //   body.elem.context.parentElement.remove();
+    // }
+    $(body.elem).summernote('reset');
+    $(body.elem).summernote('insertCode', body.initialText);
+    $(body.elem).summernote('destroy');
   }
 
 
@@ -772,9 +882,11 @@ export class CareerComponent implements OnInit {
       body= document.querySelector('#default');
     }
     let permalink = localStorage.permalink
-
-
+    let originBody = body;
+    debugger
+    // if($('.discription_list').text())
     $('.switch').remove();
+    $('.add_discription_list_btn').remove();
     $('.addNewVacancy').remove();
     this._templatesService.sendTemplate(body.innerHTML, pageTitle, lang, permalink).subscribe((error) => {
       console.log(error)
@@ -784,6 +896,7 @@ export class CareerComponent implements OnInit {
 
     this._templatesService.send_permalink(pageTitle, permalink).subscribe(res => {  localStorage.permalink = res['permalink']});
 
+    body.innerHTML
   }
 
   editInner(event){
