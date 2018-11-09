@@ -280,12 +280,27 @@ export class CareerComponent implements OnInit {
       blockForBtnEdit.setAttribute('class', 'blockForBtnEdit');
      
       $(blockForBtnEdit).css({'left': `${left}px`, 
-                          'top': `${top - 80}px`, 
+                          'top': `${top - 75}px`, 
                           'position': 'absolute',
                           'font-size':'16px',
                           });
 
       $(btnEdit).off('click').on('click', (event) =>{
+
+
+        $(target).keypress(function(event) {
+          var keycode = (event.keyCode ? event.keyCode : event.which);
+          if (keycode == '13') {
+            debugger
+            event.preventDefault();
+            $(this).focusout();
+            $(this).attr('contenteditable','false');
+            $('.blockForBtnEdit').remove();
+            $('.blockForBtnSave').remove();
+            $('.blockForBtnCancel').remove();
+            // event.preventDefault();
+          }
+      });
 
         this.savedContent = target.innerText;
         target.setAttribute('contenteditable', 'true');
@@ -310,10 +325,10 @@ export class CareerComponent implements OnInit {
 
         $(blockForBtnSave).insertBefore(target)
         $(blockForBtnSave).css({'left': `${left}px`, 
-                          'top': `${top - 80}px`, 
+                          'top': `${top - 75}px`, 
                           'position': 'absolute',
                           'font-size':'16px',
-                          'z-index': '1'
+                          'z-index': '1000'
                           });
         blockForBtnSave.setAttribute('class', 'blockForBtnSave');
 
@@ -322,10 +337,10 @@ export class CareerComponent implements OnInit {
         blockForBtnCancel.appendChild(btnCancel);
         $(blockForBtnCancel).insertBefore(target)
         $(blockForBtnCancel).css({'left': `${left + 70}px`, 
-                          'top': `${top - 80}px`, 
+                          'top': `${top - 75}px`, 
                           'position': 'absolute',
                           'font-size':'16px',
-                          'z-index': '1'
+                          'z-index': '1000'
                           });
         blockForBtnCancel.setAttribute('class', 'blockForBtnCancel');
        
@@ -456,13 +471,14 @@ export class CareerComponent implements OnInit {
     }); 
 
     
-    let items = document.querySelectorAll('.item')
+    let items = $('.item')
 
-    items.forEach(element => {
+
+    for(let element of items) {
       if($(element).hasClass('active')){
         $(element).find('input[type=checkbox]').attr('checked', true);
       }
-    });
+    }
 
    $("<p/>", {
 
