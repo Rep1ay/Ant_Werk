@@ -87,7 +87,6 @@ export class CareerComponent implements OnInit {
 
   };
 
-
   changeOfRoutes(url){
 
     let title;
@@ -212,14 +211,21 @@ export class CareerComponent implements OnInit {
 
   renderTemplate(template){
     this.template = template;
-
+    this.activateStyles();
     if(this.loggedIn) {
       setTimeout(() => {
         this.createAccordion();
         this.showPreloader = false;
         setTimeout(() => {
           this.addEditButton();
+          this.createNewVacancy();
         }, 100)
+     }, 1000)
+    }
+    else{
+      setTimeout(() => {
+        this.showPreloader = false;
+        this.createAccordion();
      }, 1000)
     }
   }
@@ -362,161 +368,165 @@ export class CareerComponent implements OnInit {
         }
       })
       });
-
-      // this.createAccordion();
      
   }
 
   createAccordion(){
     let _self = this;
+
     $(function(){
 
-      let addNewPosition = $("<div/>", {
- 
-        // PROPERTIES HERE
-        // text: '+',
-        // id: "addNewVacancy",
-        "class": "addNewVacancy",      // ('class' is still better in quotes)
-        css: {           
-         
-        },
-        on: {
-          click: function() {
-         
-            _self.createNewVacancy();
-            
-          }
-        },
-        append: "<p>+</p>",
-        // appendTo: ".positions_list"      // Finally, append to any selector
-        
-      });
-
-      $(addNewPosition).insertBefore($('.item')[0]);
-
-
       let vacant_position = $(this);
-     
-      $(this).addClass('showed');
-      if ($('.vacant_position').hasClass('showed')){
-          $('.vacant_position').next().slideUp(500);
-      }      
-     else if (vacant_position.attr('data-attr') === '1') {
-          return;
+
+      if(!_self.loggedIn){
+        $('.item').css({'background': '#f3f3f3'})
+      }else{
+        $('.item').css({'background': '#eeeeff'})
       }
-      vacant_position.attr('data-attr','1').next().stop(true).slideToggle(500,function () {
+
+      // $(this).addClass('showed');
+      // if ($('.vacant_position').hasClass('showed')){
+          $('.vacant_position').next().slideUp(500);
+      // }      
+      // else if (vacant_position.attr('data-attr') === '1') {
+      //   return;
+      // }
+
+      // vacant_position.attr('data-attr','1').next().stop(true).slideToggle(500,function () {
+      //   vacant_position.attr('data-attr','0');
+      // });
+
+      $('.vacant_position').off('click').on('click', function(){
+        if(!_self.loggedIn){
+          $('.item').css({'background': '#f3f3f3'})
+        }
+
+        let vacant_position = $(this);
+        let discription = vacant_position.next('.discription');
+        let discription_list = $(discription).find('.discription_list');
+        $('.vacant_row').css({'flex-direction': 'row',
+                              'display': 'flex',
+                              'justify-content': 'space-between',
+                              'padding': '10px 30px'})
+        $('.vacant_position').removeClass('showed');
+        $(this).addClass('showed');
+        $('.vacant_position').css({'background':'#f3f3f3', 'color': '#333'});
+        // $('.showed').css({'background': '#ffaa27','color': '#fff'})
+        if ($('.vacant_position').hasClass('showed')){
+            $('.vacant_position').next().slideUp(500);
+            $('.showed').css({'background': '#ffaa27','color': '#fff'})
+            if(!_self.loggedIn){
+              $(this).parent('.item').css({'background': '#ffaa27'})
+            }
+        }      
+        else if (vacant_position.attr('data-attr') === '1') {
+          return;
+        }
+        vacant_position.attr('data-attr','1').next().stop(true).slideToggle(500,function () {
           vacant_position.attr('data-attr','0');
+        });
+
+        let btnExist = $(discription).find('.add_discription_list_btn')
+
+        let send_body = {
+          discription: discription,
+          discription_list: discription_list
+        }
+
+        if(!btnExist.length){
+          _self.addDiscriptionList(send_body);
+        }
       });
 
-
-      $('.vacant_position').on('click', function(){
-          let vacant_position = $(this);
-          let discription = vacant_position.next('.discription');
-          let discription_list = $(discription).find('.discription_list');
-          $('.vacant_row').css({'flex-direction': 'row',
-                                'display': 'flex',
-                                'justify-content': 'space-between',
-                                'padding': '10px 30px'})
-          $('.vacant_position').removeClass('showed');
-          $(this).addClass('showed');
-          $('.vacant_position').css({'background':'#f3f3f3', 'color': '#333'});
-          // $('.showed').css({'background': '#ffaa27','color': '#fff'})
-          if ($('.vacant_position').hasClass('showed')){
-              $('.vacant_position').next().slideUp(500);
-              $('.showed').css({'background': '#ffaa27','color': '#fff'})
-          }      
-         else if (vacant_position.attr('data-attr') === '1') {
-              return;
-          }
-          vacant_position.attr('data-attr','1').next().stop(true).slideToggle(500,function () {
-              vacant_position.attr('data-attr','0');
-          });
-
-
-          let btnExist = $(discription).find('.add_discription_list_btn')
-
-          let send_body = {
-            discription: discription,
-            discription_list: discription_list
-          }
-
-          if(!btnExist.length){
-            _self.addDiscriptionList(send_body);
-
-          }
-      });
-
-      let context = null;   
-      _self.createActionPanel(context);
-      _self.activateStyles();
-
+      let context = null;
+debugger
+      if(_self.loggedIn){
+          _self.createActionPanel(context);
+      }
+      // end of IIFE
     });
   }
 
   createActionPanel(context){
     let _self = this;
+debugger
     if(!context){
       context = '.actionPanel'
     }
+
     $(function(){
 
-    $("<label/>", {
- 
-      // text: '+',
-      // id: "addNewVacancy",
-      "class": "switch",     
-      css: {           
-
-      },
-
-      on:{
-        click: function(){
-          let currentBlock =  $(this).parents('.item');
-          if($(this).find('input[type=checkbox]')[0]['checked']){
-            currentBlock.toggleClass('active')
-          }else{
-            currentBlock.toggleClass('inactive')
+      let preloader =  $('<div/>', {
+        'class': 'preloader',
+          css: {
+            background: 'rgba(255, 255, 255, 0.7)',
+            'z-index': '9999',
+            position: 'absolute',
+            width: '100%',
+            height: '100vh'
           }
-        }
-      },
+        })
 
-      append: '<input type="checkbox"><span class="slider round"></span>',
-      
-      appendTo: context
-      
-    }); 
+      $("<label/>", {
+        "class": "switch",     
+        on:{
+          click: function(event){
 
+            let currentBlock =  $(this).parents('.item');
+            if($(this).find('input[type=checkbox]')[0]['checked']){
+              currentBlock.addClass('active')
+              currentBlock.removeClass('inactive')
+            }else{
+              currentBlock.addClass('inactive')              
+              currentBlock.removeClass('active')
+            }
+            if(event.target.type === "checkbox"){
+              $(preloader).insertBefore('body')
+                setTimeout(() => {
+                _self.saveChanges();
+              }, 500);
+            }
+          }
+        },
+
+        append: '<input type="checkbox"><span class="slider round"></span>',
+        
+        appendTo: context
+      
+      }); 
     
-    let items = $('.item')
+      let items = $('.item')
 
-
-    for(let element of items) {
-      if($(element).hasClass('active')){
-        $(element).find('input[type=checkbox]').attr('checked', true);
-      }
-    }
-
-   $("<p/>", {
-
-      "class": "switch",     
-      css: {           
-        'cursor': 'pointer'
-      },
-      on: {
-        click: function(){
-          $(this).parents('.item').remove()
+      for(let element of items) {
+        if($(element).hasClass('active')){
+          $(element).find('input[type=checkbox]').attr('checked', true);
         }
-      },
+      }
 
-      append: '	<i class="material-icons delete_btn">delete_forever</i>',
-      appendTo: context
-      
-    }); 
+    $("<p/>", {
 
-    _self.activateStyles();
+        "class": "switch",     
+        css: {           
+          'cursor': 'pointer'
+        },
+        on: {
+          click: function(){
+            $(this).parents('.item').remove();
+            $(preloader).insertBefore('body')
+            setTimeout(() => {
+            _self.saveChanges();
+          }, 500);
+          }
+        },
 
+        append: '	<i class="material-icons delete_btn">delete_forever</i>',
+        appendTo: context
+        
+      }); 
 
-  });
+      _self.activateStyles();
+// end of IIFE
+    });
 
   }
 
@@ -524,96 +534,100 @@ export class CareerComponent implements OnInit {
 
     let _self = this;
     let append_block;
-    $(function(){
+
+    let addNewPosition = $("<div/>", {
+      "class": "addNewVacancy",
+      on: {
+        click: function() {
+       
+          let addNewPosition = $("<div/>", {
+ 
+            "class": "item",     
+            css: {
+              'position': 'relative',           
+              'margin': '20px 0px',
+              'border': '1px solid #d0d0d0',
+            },
     
-      let addNewPosition = $("<div/>", {
- 
-        "class": "item",     
-        css: {
-          'position': 'relative',           
-          'margin': '20px 0px',
-          'border': '1px solid #d0d0d0',
-        },
-
-        append: `<div class="col-md-2 actionPanel row">
-        
-        </div>`,
-        
-      }); 
-
-      let new_position = $("<div/>", {
- 
-        text: 'New Vacancy',
-        "class": "vacant_position click2edit col-md-9",
-        css: {           
-          'font-size': '30px',
-          'cursor': 'pointer', 
-          'padding': '10px',
-          'background': '#f3f3f3'
-        },
-        on: {
-          click: function() {
-         
-            let vacant_position = append_block = $(this);
-          $('.vacant_row').css({'flex-direction': 'row',
-                                'display': 'flex',
-                                'justify-content': 'space-between',
-                                'padding': '10px 30px'})
-          $('.vacant_position').removeClass('showed');
-          $(this).addClass('showed');
-          $('.vacant_position').css({'background':'#f3f3f3', 'color': '#333'});
-          // $('.showed').css({'background': '#ffaa27','color': '#fff'})
-          if ($('.vacant_position').hasClass('showed')){
-              $('.vacant_position').next().slideUp(500);
-              $('.showed').css({'background': '#ffaa27','color': '#fff'})
-          }      
-         else if (vacant_position.attr('data-attr') === '1') {
-              return;
-          }
-          vacant_position.attr('data-attr','1').next().stop(true).slideToggle(500,function () {
-              vacant_position.attr('data-attr','0');
-          });
-          }
-        },
-
-        appendTo: addNewPosition
-        
-      }); 
-
-
-      $(addNewPosition).insertAfter($('.addNewVacancy'));
-
-      let vacancy_discription = $("<div/>", {
- 
-        "class": "discription",
-        css: {           
-         
-        },
-        on: {
-          click: function() {
-         
+            append: `<div class="col-md-2 actionPanel row">
             
-          }
-        },
-        append: `<p class="click2edit">Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate voluptas modi sapiente tempore maxime fuga eos iusto distinctio, nemo vel nam unde ea nostrum aut reprehenderit voluptatibus beatae impedit? Ab explicabo omnis deserunt dicta aperiam deleniti, dignissimos qui consequuntur, modi sed iusto quam minus doloribus at praesentium animi in necessitatibus tempora. Veritatis deleniti aut ratione blanditiis. Aliquid facilis architecto numquam </p>`,
-        appendTo:  addNewPosition
-        
-      });
+            </div>`,
+            
+          }); 
+    
+          let new_position = $("<div/>", {
+     
+            text: 'New Vacancy',
+            "class": "vacant_position new_position click2edit col-md-9",
+            css: {           
+              'font-size': '30px',
+              'cursor': 'pointer', 
+              'padding': '10px',
+              'background': '#f3f3f3'
+            },
+            on: {
+              click: function() {
+             
+                let vacant_position = append_block = $(this);
+              $('.vacant_row').css({'flex-direction': 'row',
+                                    'display': 'flex',
+                                    'justify-content': 'space-between',
+                                    'padding': '10px 30px'})
+              $('.vacant_position').removeClass('showed');
+              $(this).addClass('showed');
+              $('.vacant_position').css({'background':'#f3f3f3', 'color': '#333'});
+              // $('.showed').css({'background': '#ffaa27','color': '#fff'})
+              if ($('.vacant_position').hasClass('showed')){
+                  $('.vacant_position').next().slideUp(500);
+                  $('.showed').css({'background': '#ffaa27','color': '#fff'})
+              }      
+             else if (vacant_position.attr('data-attr') === '1') {
+                  return;
+              }
+              vacant_position.attr('data-attr','1').next().stop(true).slideToggle(500,function () {
+                  vacant_position.attr('data-attr','0');
+              });
+              }
+            },
+    
+            appendTo: addNewPosition
+            
+          }); 
+          setTimeout(() => {
+            $('.new_position').css('background', '#c1ffc3');
+          }, 100)
 
-     let send_body = {
-       discription: vacancy_discription
-     }
-      _self.addDiscriptionList(send_body)
-      let context = $(addNewPosition).find('.actionPanel');
-      _self.createActionPanel(context);
-      _self.addEditButton();
+          setTimeout(() => {
+            $('.vacant_position').removeClass('new_position')
+          },2000)
+    
+          $(addNewPosition).insertAfter($('.addNewVacancy'));
+    
+          let vacancy_discription = $("<div/>", {
+     
+            "class": "discription",
 
+            append: `<p class="click2edit">Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate voluptas modi sapiente tempore maxime fuga eos iusto distinctio, nemo vel nam unde ea nostrum aut reprehenderit voluptatibus beatae impedit? Ab explicabo omnis deserunt dicta aperiam deleniti, dignissimos qui consequuntur, modi sed iusto quam minus doloribus at praesentium animi in necessitatibus tempora. Veritatis deleniti aut ratione blanditiis. Aliquid facilis architecto numquam </p>`,
+            appendTo:  addNewPosition
+            
+          });
+    
+         let send_body = {
+           discription: vacancy_discription
+         }
+          _self.addDiscriptionList(send_body)
+          let context = $(addNewPosition).find('.actionPanel');
+          _self.createActionPanel(context);
+          _self.addEditButton();
+          
+        }
+      },
+      append: "<p>+</p>",
+      
+    });
 
-      // end of IIF
-    }); 
-
-
-
+    $(addNewPosition).insertBefore($('.item')[0]);
+ 
   }
 
   addDiscriptionList(body){
@@ -681,7 +695,11 @@ export class CareerComponent implements OnInit {
 
           $(discription_list).summernote({
             // width: editorWidth,
-
+            popover: {
+              image: [],
+              link: [],
+              air: []
+            },
             toolbar: [
               ['font-style', ['bold', 'italic', 'underline', 'strikethrough', 'clear']],
               ['para', ['ul', 'ol']],
@@ -705,7 +723,9 @@ export class CareerComponent implements OnInit {
 
     // for only just added vacancy
 
-    $(add_discription_list_btn).appendTo($(body.discription));
+    if(this.loggedIn){
+      $(add_discription_list_btn).appendTo($(body.discription));
+    }
 
     // for multi vacancy
     // $(discription_list).appendTo($('.discription_list'));
@@ -734,7 +754,43 @@ export class CareerComponent implements OnInit {
     $(body.elem).summernote('insertCode', body.initialText);
     $(body.elem).summernote('destroy');
   }
+  
+  saveChanges(){
+    let _self = this;
+    let body;
+    let pageTitle = localStorage.location;
+    let lang  = localStorage.language;
 
+    if(this.template){
+      body= document.querySelector('#body');
+    }else{
+      body= document.querySelector('#default');
+    }
+    let permalink = localStorage.permalink
+    let originBody = body;
+    // if($('.discription_list').text())
+    $('.switch').remove();
+    $('.discription_list').find('p').remove()
+    $('.add_discription_list_btn').remove();
+    $('.addNewVacancy').remove();
+     $('.blockForBtnEdit').remove();
+    this._templatesService.sendTemplate(body.innerHTML, pageTitle, lang, permalink).subscribe((error) => {
+      console.log(error)
+      localStorage.removeItem('addNewLang');
+    });
+
+    this._templatesService.send_permalink(pageTitle, permalink).subscribe(res => {  localStorage.permalink = res['permalink']});
+
+    setTimeout(() => {
+      this.createAccordion();
+      this.createNewVacancy();
+      setTimeout(() => {
+        $('.preloader').remove();
+      }, 100)
+     
+    }, 100)
+
+  }
 
   activateStyles(){
     $(function(){
@@ -885,64 +941,6 @@ export class CareerComponent implements OnInit {
       }</style>`);
 
     });
-  }
-  
-  saveChanges(){
-    let _self = this;
-    let body;
-    let pageTitle = localStorage.location;
-    let lang  = localStorage.language;
-
-    if(this.template){
-      body= document.querySelector('#body');
-    }else{
-      body= document.querySelector('#default');
-    }
-    let permalink = localStorage.permalink
-    let originBody = body;
-    debugger
-    // if($('.discription_list').text())
-    $('.switch').remove();
-    // if()
-    $('.discription_list').find('p').remove()
-    $('.add_discription_list_btn').remove();
-    $('.addNewVacancy').remove();
-    this._templatesService.sendTemplate(body.innerHTML, pageTitle, lang, permalink).subscribe((error) => {
-      console.log(error)
-      localStorage.removeItem('addNewLang');
-    
-    });
-
-    this._templatesService.send_permalink(pageTitle, permalink).subscribe(res => {  localStorage.permalink = res['permalink']});
-debugger
-
-
-let addNewPosition = $("<div/>", {
- 
-  // PROPERTIES HERE
-  // text: '+',
-  // id: "addNewVacancy",
-  "class": "addNewVacancy",      // ('class' is still better in quotes)
-  css: {           
-   
-  },
-  on: {
-    click: function() {
-   
-      _self.createNewVacancy();
-      
-    }
-  },
-  append: "<p>+</p>",
-  // appendTo: ".positions_list"      // Finally, append to any selector
-  
-});
-
-$(addNewPosition).insertBefore($('.item')[0]);
-
-    let context = '.actionPanel'
-    this.createActionPanel(context)
-
   }
 
   editInner(event){
