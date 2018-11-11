@@ -24,7 +24,7 @@ export class NavbarComponent implements OnInit {
   // faUser  = faUser;
   home = 'Home';
   contacts = 'Contacts';
-  carrer = 'Carrer';
+  career = 'Career';
   lang_items: LangPanel[] = [];
   template: any;
   formInput: string;
@@ -290,12 +290,16 @@ let _self = this;
            
            localStorage.location = path;
           _self.permalink = `/${res['permalink']}`;
-           this._router.navigate([`${lang}/${res['permalink']}`]);
+          _self._router.navigate([`${lang}/${res['permalink']}`]);
         }else{
           console.log('empty permalink');
           localStorage.permalink = path;
-          this._router.navigate([`${lang}/${path}`]);
-          // _self._location.go(`${localStorage.language}/${path}`)
+          setTimeout(() => {
+            _self._router.navigate([`${lang}/${path}`]);
+            setTimeout(() => {
+              _self._location.go(`${lang}/${path}`)
+            }, 100);
+          }, 100);
         }
       },
       (err) => {

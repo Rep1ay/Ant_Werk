@@ -62,8 +62,9 @@ export class CareerComponent implements OnInit {
               ).subscribe((routeData: any) => {
                 this.winOrigin = window.location.origin;
                 this.winPathname = window.location.pathname;
-  
-                this.changeOfRoutes(routeData.url);
+                // if(window.location.pathname.split('/')[2] === 'career'){
+                  this.changeOfRoutes(routeData.url);
+                // }
 
               })
           }
@@ -218,7 +219,8 @@ export class CareerComponent implements OnInit {
         this.showPreloader = false;
         setTimeout(() => {
           this.addEditButton();
-          this.createNewVacancy();
+         $('.addNewVacancy').remove();
+             this.createNewVacancy();
         }, 100)
      }, 1000)
     }
@@ -297,7 +299,7 @@ export class CareerComponent implements OnInit {
         $(target).keypress(function(event) {
           var keycode = (event.keyCode ? event.keyCode : event.which);
           if (keycode == '13') {
-            debugger
+            
             event.preventDefault();
             $(this).focusout();
             $(this).attr('contenteditable','false');
@@ -439,7 +441,7 @@ export class CareerComponent implements OnInit {
       });
 
       let context = null;
-debugger
+
       if(_self.loggedIn){
           _self.createActionPanel(context);
       }
@@ -449,7 +451,7 @@ debugger
 
   createActionPanel(context){
     let _self = this;
-debugger
+
     if(!context){
       context = '.actionPanel'
     }

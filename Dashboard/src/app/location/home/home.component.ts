@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { TemplatesService } from '../../templates.service';
 import { FormBuilder, FormGroup, NgForm } from '@angular/forms';
 import { AuthService } from '../../auth.service';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { ActivatedRoute, Router, UrlTree, UrlSegmentGroup, UrlSegment, NavigationEnd } from '@angular/router';
 import { Location } from '@angular/common';
 // import { filter } from 'rxjs/operators';
@@ -9,7 +10,7 @@ import { Observable, Subject, asapScheduler, pipe, of, from,
   interval, merge, fromEvent } from 'rxjs';
   import { map, filter, scan } from 'rxjs/operators';
 // Jquery declaration
-declare var $: any;
+declare let $: any;
 
 @Component({
   selector: 'app-home',
@@ -46,6 +47,7 @@ export class HomeComponent implements OnInit {
   showAfterLogin:any
   currentLang: string;
   permalinkURL: string;
+  currentLocation: string;
   constructor(private _templatesService: TemplatesService, 
             formBuilder: FormBuilder,
             private _auth: AuthService,
@@ -61,8 +63,9 @@ export class HomeComponent implements OnInit {
               ).subscribe((routeData: any) => {
                 this.winOrigin = window.location.origin;
                 this.winPathname = window.location.pathname;
-  
-                this.changeOfRoutes(routeData.url);
+                // if(window.location.pathname.split('/')[2] === 'home'){
+                  this.changeOfRoutes(routeData.url);
+                // }
 
               })
           }
@@ -86,7 +89,6 @@ export class HomeComponent implements OnInit {
 
   };
 
-
   changeOfRoutes(url){
 
     let title;
@@ -109,6 +111,7 @@ export class HomeComponent implements OnInit {
    
     let _self = this;
     let prefix = localStorage.language;
+   
     this._templatesService.getTemplate(title, prefix)
     .subscribe(
       (res) => {
@@ -136,6 +139,7 @@ export class HomeComponent implements OnInit {
             }
           )
         }else{
+          localStorage.location = this.currentLocation = title;
           _self.getTemplateByPermalink();
         }
       },
@@ -160,11 +164,12 @@ export class HomeComponent implements OnInit {
           _self.permalink = `/${res['permalink']}`;
           _self.getTemplate(pageTitle)
 
-
         }else{
           
           let template = undefined;
+          localStorage.location = _self.currentLocation;
           _self.renderTemplate(template);
+
           // let pageTitle = window.location.pathname.split('/')[2];
           // _self.getTemplate(pageTitle);
         }
@@ -208,13 +213,17 @@ export class HomeComponent implements OnInit {
 
   renderTemplate(template){
     this.template = template;
-
     if(this.loggedIn) {
       setTimeout(() => {
         this.showPreloader = false;
         setTimeout(() => {
           this.addEditButton();
         }, 100)
+     }, 1000)
+    }
+    else{
+      setTimeout(() => {
+        this.showPreloader = false;
      }, 1000)
     }
   }
@@ -275,12 +284,27 @@ export class HomeComponent implements OnInit {
       blockForBtnEdit.setAttribute('class', 'blockForBtnEdit');
      
       $(blockForBtnEdit).css({'left': `${left}px`, 
-                          'top': `${top - 70}px`, 
+                          'top': `${top - 75}px`, 
                           'position': 'absolute',
                           'font-size':'16px',
                           });
 
       $(btnEdit).off('click').on('click', (event) =>{
+
+
+        $(target).keypress(function(event) {
+          var keycode = (event.keyCode ? event.keyCode : event.which);
+          if (keycode == '13') {
+            
+            event.preventDefault();
+            $(this).focusout();
+            $(this).attr('contenteditable','false');
+            $('.blockForBtnEdit').remove();
+            $('.blockForBtnSave').remove();
+            $('.blockForBtnCancel').remove();
+            // event.preventDefault();
+          }
+      });
 
         this.savedContent = target.innerText;
         target.setAttribute('contenteditable', 'true');
@@ -305,10 +329,10 @@ export class HomeComponent implements OnInit {
 
         $(blockForBtnSave).insertBefore(target)
         $(blockForBtnSave).css({'left': `${left}px`, 
-                          'top': `${top - 70}px`, 
+                          'top': `${top - 75}px`, 
                           'position': 'absolute',
                           'font-size':'16px',
-                          'z-index': '1'
+                          'z-index': '1000'
                           });
         blockForBtnSave.setAttribute('class', 'blockForBtnSave');
 
@@ -317,10 +341,10 @@ export class HomeComponent implements OnInit {
         blockForBtnCancel.appendChild(btnCancel);
         $(blockForBtnCancel).insertBefore(target)
         $(blockForBtnCancel).css({'left': `${left + 70}px`, 
-                          'top': `${top - 70}px`, 
+                          'top': `${top - 75}px`, 
                           'position': 'absolute',
                           'font-size':'16px',
-                          'z-index': '1'
+                          'z-index': '1000'
                           });
         blockForBtnCancel.setAttribute('class', 'blockForBtnCancel');
        
@@ -342,11 +366,11 @@ export class HomeComponent implements OnInit {
         }
       })
       });
-
+     
   }
-
+  
   saveChanges(){
-    
+    let _self = this;
     let body;
     let pageTitle = localStorage.location;
     let lang  = localStorage.language;
@@ -357,6 +381,8 @@ export class HomeComponent implements OnInit {
       body= document.querySelector('#default');
     }
     let permalink = localStorage.permalink
+
+     $('.blockForBtnEdit').remove();
     this._templatesService.sendTemplate(body.innerHTML, pageTitle, lang, permalink).subscribe((error) => {
       console.log(error)
       localStorage.removeItem('addNewLang');

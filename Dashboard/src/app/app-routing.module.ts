@@ -25,7 +25,7 @@ const routes: Routes = [
       { path: `login`, component : LoginComponent},
       { path: `register`, component : RegisterComponent},
       { path: `contacts`, component: ContactsComponent},
-      { path: `carrer`, component: CareerComponent},
+      { path: `career`, component: CareerComponent},
 
     ]},
     { path: '**', redirectTo:`/${prefix}/home`, pathMatch: 'full'},
