@@ -37,19 +37,15 @@
         <a class="nav-link" href=""><span class="sr-only">awhuifha</span></a>
     </li>
    
-    <li routerLinkActive="active"  (click)="followLink('home')">{{home}}</li>
-    
-    
-    <!-- <li routerLinkActive="active"  class="menu_toggle" (click)="showProductsCollection(productCollection)">Products</li> -->
-    <li routerLinkActive="active" (click)="followLink('contacts')">{{contacts}}</li>
-    <li routerLinkActive="active" (click)="followLink('career')" >{{career}}</li>
+    <li routerLinkActive="active" class="editNavbar" (click)="followLink('home')">{{home}}</li>
+    <li routerLinkActive="active" class="editNavbar" (click)="followLink('contacts')">{{contacts}}</li>
+    <li routerLinkActive="active" class="editNavbar" (click)="followLink('career')" >{{career}}</li>
 
-    
-    <li *ngIf='!loggedIn' routerLinkActive="active"  (click)="followLink('login')">Login</li>
+    <li *ngIf='!loggedIn' class="editNavbar" routerLinkActive="active"  (click)="followLink('login')">Login</li>
     
     <!-- <li *ngIf='loggedIn' routerLinkActive="active"  routerLink="/adminPanel"><fa-icon [icon]="faUser"></fa-icon></li> -->
    
-    <li (click)="logoutUser()" *ngIf='loggedIn' routerLinkActive="active"  >Logout</li>
+    <li (click)="logoutUser()" class="editNavbar" *ngIf='loggedIn' routerLinkActive="active"  >Logout</li>
 
   </ul>
 </nav>
@@ -69,7 +65,7 @@
       +
       <!-- add_new_lang_to_panel(); -->
     </li>
-       <li [attr.data-lang]="lang.prefix" *ngFor="let lang of lang_items" (click)="changeLanguage(lang.prefix)">{{lang.prefix}}</li>
+       <li [attr.data-lang]="lang.prefix" routerLinkActive="active" *ngFor="let lang of lang_items" (click)="changeLanguage(lang.prefix)">{{lang.prefix}}</li>
       <!-- <li class="lang_menu_item" data-lang="en" routerLinkActive="active"  >eng</li> -->
 
     

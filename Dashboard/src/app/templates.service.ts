@@ -22,6 +22,7 @@ private _lang_panelURL = 'http://localhost:3000/api/lang_panel'
 private _permalinkUrl = 'http://localhost:3000/api/permalink'
 private _pageTitleUrl = 'http://localhost:3000/api/pageTitle'
 private _langListURL = 'http://localhost:3000/api/lang_list'
+private _navbarURL = 'http://localhost:3000/api/navbar'
 
 // private _templatesUrl = 'http://68.183.30.119/api/templates'
 
@@ -33,6 +34,19 @@ private _langListURL = 'http://localhost:3000/api/lang_list'
   // .subscribe((res: any) => {
   //   this.persons = res;
   // });
+
+  get_navbar(lang){
+    let headerJson = {
+      'Content-Type': 'application/json',
+      'Accept' : 'application/json',
+      'lang': lang,
+    }
+
+    const headers = new HttpHeaders(headerJson);
+
+    return this._http.get(this._navbarURL, {headers}).pipe(map((responce:any) => responce));
+  }
+
   editInner(event: Event){
 
     this.eventValue.next(event)
@@ -44,7 +58,7 @@ private _langListURL = 'http://localhost:3000/api/lang_list'
 
 
   getTemplate(title, prefix): Observable<Template>{
-    let pageTitle = localStorage.location;
+    // let pageTitle = localStorage.location;
     // let titleId = 'home';
     let headerJson = {
       'Content-Type': 'application/json',

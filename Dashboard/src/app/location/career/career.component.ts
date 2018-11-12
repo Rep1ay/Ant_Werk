@@ -46,7 +46,9 @@ export class CareerComponent implements OnInit {
   showAfterLogin:any
   currentLang: string;
   permalinkURL: string;
-  currentLocation: string;
+  currentLocation = 'career';
+  counterEnter = false;
+
   constructor(private _templatesService: TemplatesService, 
             formBuilder: FormBuilder,
             private _auth: AuthService,
@@ -58,21 +60,26 @@ export class CareerComponent implements OnInit {
               this.winPathname = window.location.pathname;
 
               this._router.events.pipe(
-                filter((event:Event) => event instanceof NavigationEnd)
+                filter((event:Event) => (event instanceof NavigationEnd))
               ).subscribe((routeData: any) => {
                 this.winOrigin = window.location.origin;
                 this.winPathname = window.location.pathname;
-                // if(window.location.pathname.split('/')[2] === 'career'){
-                  this.changeOfRoutes(routeData.url);
-                // }
+                if(this.currentLocation === localStorage.permalink || this.currentLocation === localStorage.location){
+                if(!this.counterEnter){
+                    this.changeOfRoutes(routeData.url);
+                    this.counterEnter = true;
+                  }
+                }
+                // event.target.response.search("career")
+                
 
               })
           }
 
   ngOnInit() {
-
+    // $('.load').remove();
     this._router.routerState
-    
+    this.showPreloader = true;
     let snapshotURL = this._activeRoute.snapshot.url;
     // localStorage.location = this.title = snapshotURL[0].path;
     let title = localStorage.location;
@@ -85,28 +92,26 @@ export class CareerComponent implements OnInit {
       }
     )
   let _self = this;
+  // let title = localStorage.location;
+  // $('.preloader').remove();
+  // this.routeUrl = url;
+  // this.showPreloader = true;
 
+    // this.getTemplate(title);
   };
 
   changeOfRoutes(url){
 
-    let title;
-
+    let title = localStorage.location;
+    // $('.preloader').remove();
     this.routeUrl = url;
     this.showPreloader = true;
-    let _self = this;
-    let prefix = localStorage.language;
-    // let title = localStorage.location;
-    if(title){
-      title = url.split('/')[2];
+
       this.getTemplate(title);
-    }else{
-      title = window.location.pathname.split('/')[2];
-      this.getTemplate(title);
-    }
+
   }
 
- getTemplate(title){
+  getTemplate(title){
    
     let _self = this;
     let prefix = localStorage.language;
@@ -115,31 +120,9 @@ export class CareerComponent implements OnInit {
     .subscribe(
       (res) => {
         if(res){
-          _self.currentLang = localStorage.language = res['prefix']; 
           let template = res['template'];
-          localStorage.location = res['pageTitle'];
-          _self._templatesService.getPermalink(res['pageTitle'])
-          .subscribe(
-            (res) => {
-            let permalink = res['permalink'];
-              let lang = localStorage.language;
-
-              _self.renderTemplate(template);
-              
-              let origin = window.location.origin;
-              _self.permalinkURL = `${origin}/${lang}/${permalink}`
-
-              localStorage.permalink = permalink;
-              _self.permalink = `/${permalink}`;
-              _self._location.go(`${lang}/${permalink}`);
-            },
-            (err) => {
-              console.log('Error form HomeComp get template' + err);
-            }
-          )
-        }else{
-          localStorage.location = this.currentLocation = title;
-          _self.getTemplateByPermalink();
+          _self.permalink = `/${localStorage.permalink}`;
+          _self.renderTemplate(template);
         }
       },
       (err) => {
@@ -148,36 +131,6 @@ export class CareerComponent implements OnInit {
     );
   }
 
-  getTemplateByPermalink(){
-    let _self = this;
-
-    let permalink = this.routeUrl.split('/')[2];
-
-    this._templatesService.get_pageTitle(permalink)
-    .subscribe(
-      (res) => {
-        if(res){
-          
-          // _self.showPreloader = false;
-          let pageTitle = localStorage.location = res['pageTitle'];
-          _self.permalink = `/${res['permalink']}`;
-          _self.getTemplate(pageTitle)
-
-        }else{
-          
-          let template = undefined;
-          localStorage.location = _self.currentLocation;
-          _self.renderTemplate(template);
-
-          // let pageTitle = window.location.pathname.split('/')[2];
-          // _self.getTemplate(pageTitle);
-        }
-      },
-      (err) => {
-        console.log('Error form getting permalink' + err);
-      }
-    )
-  }
 
   editPermalink(inputURL: NgForm){
     
@@ -222,12 +175,45 @@ export class CareerComponent implements OnInit {
          $('.addNewVacancy').remove();
              this.createNewVacancy();
         }, 100)
+
+        let preloader =  $('<div/>', {
+          'class': 'preloader',
+            css: {
+              background: 'rgba(255, 255, 255, 0.7)',
+              'z-index': '9999',
+              position: 'absolute',
+              width: '100%',
+              height: '100vh'
+            }
+          })
+
+          $(preloader).insertBefore('body')
+
+        setTimeout(() => {
+          $('.preloader').remove();
+        }, 500)
      }, 1000)
     }
     else{
       setTimeout(() => {
         this.showPreloader = false;
         this.createAccordion();
+         let preloader =  $('<div/>', {
+            'class': 'preloader',
+              css: {
+                background: 'rgba(255, 255, 255, 0.7)',
+                'z-index': '9999',
+                position: 'absolute',
+                width: '100%',
+                height: '100vh'
+              }
+            })
+
+            $(preloader).insertBefore('body')
+
+          setTimeout(() => {
+            $('.preloader').remove();
+          }, 1000)
      }, 1000)
     }
   }
@@ -235,7 +221,7 @@ export class CareerComponent implements OnInit {
   addEditButton(){
     let _self = this;
       setTimeout(() => {
-        // this.showPreloader = false;
+        this.showPreloader = false;
       }, 1500);
 
       $('.click2edit').off('mouseover').on('mouseover', function(event){
@@ -374,8 +360,9 @@ export class CareerComponent implements OnInit {
   }
 
   createAccordion(){
+    $('.switch ').remove();
     let _self = this;
-
+    this.counterEnter = false;
     $(function(){
 
       let vacant_position = $(this);
@@ -551,9 +538,7 @@ export class CareerComponent implements OnInit {
               'border': '1px solid #d0d0d0',
             },
     
-            append: `<div class="col-md-2 actionPanel row">
-            
-            </div>`,
+            append: `<div class="col-md-2 actionPanel row"></div>`,
             
           }); 
     
@@ -687,8 +672,8 @@ export class CareerComponent implements OnInit {
                   elem: $(discription_list),
                   initialText: $(discription_list).summernote('code')
                 }
-      
-            _self.cancel(send_body);
+                $(add_discription_list_btn).toggle();
+                _self.cancel(send_body);
               }
             });
           
@@ -718,6 +703,7 @@ export class CareerComponent implements OnInit {
           $('.cancelBtn').css({'background': '#ff3131','color': '#fff'})
           $('.saveBtn').css({'background': '#10b510','color': '#fff'})
 
+          $(add_discription_list_btn).toggle();
         }
       }
     
