@@ -16,6 +16,9 @@ import { LocationComponent } from './location/location.component';
 import { CareerComponent } from './location/career/career.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MaterialModule} from './material';
+import { NewsComponent } from './location/news/news.component';
+import { NewArticleComponent } from './location/new-article/new-article.component';
+import { SingleArticleComponent } from './location/single-article/single-article.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +30,10 @@ import {MaterialModule} from './material';
     ContactsComponent,
     LocationComponent,
     PreloaderComponent,
-    CareerComponent
+    CareerComponent,
+    NewsComponent,
+    NewArticleComponent,
+    SingleArticleComponent
   ],
   
   imports: [

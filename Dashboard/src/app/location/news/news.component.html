@@ -1,0 +1,78 @@
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="row">
+				<div class="col-md-3">
+					<ul class="nav flex-column nav-pills">
+						<li class="nav-item">
+							<a class="nav-link active" href="#">Home</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="#">Profile</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link disabled" href="#">Messages</a>
+						</li>
+					</ul>
+				</div>
+				<div class="col-md-9">
+					<div class="row">
+						<div class="col-md-4" *ngFor="let article of newsCollection">
+							<div class="media">
+								<img class="mr-3" alt="Bootstrap Media Preview" src="https://www.layoutit.com/img/sports-q-c-64-64-8.jpg" />
+								<div class="media-body">
+									<h5 (click)="onSelect(article.id)" style="cursor:pointer" class="mt-0">
+										{{article.title}}
+									</h5> 
+									<h6>{{article.categoty}}</h6>
+									<p>
+										{{article.discription}}
+									</p> 
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row newArticleBlock mt-5">
+						<div class="addNewArticle">
+							<p (click)="createNewArticle()">+</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="row mt-5">
+				<div class="col-md-4">
+				</div>
+				<div class="col-md-4">
+					<nav>
+						<ul class="pagination">
+							<li class="page-item">
+								<a class="page-link" href="#">Previous</a>
+							</li>
+							<li class="page-item">
+								<a class="page-link" href="#">1</a>
+							</li>
+							<li class="page-item">
+								<a class="page-link" href="#">2</a>
+							</li>
+							<li class="page-item">
+								<a class="page-link" href="#">3</a>
+							</li>
+							<li class="page-item">
+								<a class="page-link" href="#">4</a>
+							</li>
+							<li class="page-item">
+								<a class="page-link" href="#">5</a>
+							</li>
+							<li class="page-item">
+								<a class="page-link" href="#">Next</a>
+							</li>
+						</ul>
+					</nav>
+				</div>
+				<div class="col-md-4">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

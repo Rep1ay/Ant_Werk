@@ -3,7 +3,7 @@
 <app-preloader *ngIf="showPreloader"></app-preloader>
 <nav class="main_navbar">
   <ul class="navbar_container">
-      <li  *ngIf="!showPreloader" style="width: 60vw;font-size: 20px;font-weight: 300;">                       <!--*ngIf="loggedIn"-->
+      <!-- <li  *ngIf="!showPreloader" style="width: 60vw;font-size: 20px;font-weight: 300;">                       *ngIf="loggedIn" -->
         <!-- <form *ngIf="loggedIn"  #inputURL='ngForm' class="form-inline">
           <label for="input">Permalink: </label>
           <a style="margin-left: 5px" href='{{winOrigin}}'> {{winOrigin}}{{permalink}}</a>
@@ -26,7 +26,7 @@
             Cancel
           </button>
         </form> -->
-    </li>
+    <!-- </li> -->
     <button class="navbar-toggler" type="button" 
         data-toggle="collapse" data-target="#navbarSupportedContent" 
         aria-controls="navbarSupportedContent" aria-expanded="false" 
@@ -40,6 +40,8 @@
     <li routerLinkActive="active" class="editNavbar" (click)="followLink('home')">{{home}}</li>
     <li routerLinkActive="active" class="editNavbar" (click)="followLink('contacts')">{{contacts}}</li>
     <li routerLinkActive="active" class="editNavbar" (click)="followLink('career')" >{{career}}</li>
+    <li routerLinkActive="active" class="editNavbar" (click)="followLink('news')" >{{news}}</li>
+
 
     <li *ngIf='!loggedIn' class="editNavbar" routerLinkActive="active"  (click)="followLink('login')">Login</li>
     

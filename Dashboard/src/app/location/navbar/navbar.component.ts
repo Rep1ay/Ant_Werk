@@ -25,6 +25,7 @@ export class NavbarComponent implements OnInit {
   home = 'Home';
   contacts = 'Contacts';
   career = 'Career';
+  news = 'News';
   lang_items: LangPanel[] = [];
   template: any;
   formInput: string;
@@ -49,6 +50,8 @@ export class NavbarComponent implements OnInit {
   enterCounter = 0;
   currentTitle: string;
   currentPrefix: string;
+  langChanging = false;
+  templateRendered = false;
   constructor(
 
 
@@ -157,9 +160,12 @@ let _self = this;
     this.currentPrefix = localStorage.language =  url.split('/')[1];
     // let title = localStorage.location;
     // if(title){
-      
+      this.langChanging = false;
       this.currentTitle = url.split('/')[2];
-      this.getTemplate(this.currentTitle, this.currentPrefix);
+      if(!this.templateRendered){
+        this.getTemplate(this.currentTitle, this.currentPrefix);
+        this.templateRendered = false;
+      }
     // }else{
       // title = window.location.pathname.split('/')[2];
       // this.getTemplate(this.currentTitle);
@@ -176,7 +182,7 @@ let _self = this;
       (res) => {
         if(res){
           let pageTitle;
-          
+          _self.currentLocation = pageTitle;
           _self.currentLang = localStorage.language = res['prefix']; 
           let template = res['template'];
           localStorage.location = pageTitle = res['pageTitle'];
@@ -210,7 +216,7 @@ let _self = this;
 
                     localStorage.permalink = permalink;
                     _self.permalink = `/${permalink}`;
-                    
+                    _self.templateRendered = true;
                     _self._router.navigate([`${lang}/${res['permalink']}`]);
                     _self._location.go(`${lang}/${permalink}`);
 
@@ -222,13 +228,17 @@ let _self = this;
             }
           )
         }else{
-          localStorage.location = this.currentLocation = title;
+          // localStorage.location = this.currentLocation;
           _self.enterCounter++;
-          if(_self.enterCounter > 2){
-            localStorage.language = _self.currentPrefix =  'en'
+          debugger
+          if(_self.enterCounter === 2){
+            localStorage.language = _self.currentPrefix =  'en';
             _self.enterCounter = 0;
+            // _self.addingLangBody = localStorage.language;
+            _self.acceptAddingNewLang = true;
+          }else{
+            _self.getTemplateByPermalink();
           }
-          _self.getTemplateByPermalink();
         }
       },
       (err) => {
@@ -252,12 +262,19 @@ let _self = this;
 
           let pageTitle = localStorage.location = res['pageTitle'];
           _self.permalink = `/${res['permalink']}`;
-          _self.getTemplate(pageTitle, _self.currentPrefix)
-
+          if(_self.langChanging){
+            let permalink =  _self.permalink.replace('/', '');
+            _self.getTemplate( permalink, _self.addingLangBody)
+            _self.langChanging = false;
+          }else{
+            _self.getTemplate(pageTitle, _self.currentPrefix)
+            _self.langChanging = false;
+          }
         }else{
-          
           let template = undefined;
-          localStorage.location = _self.currentLocation;
+          if( _self.currentLocation){
+            localStorage.location = _self.currentLocation;
+          }
           // _self.renderTemplate(template);
 
           // let pageTitle = window.location.pathname.split('/')[2];
@@ -271,23 +288,49 @@ let _self = this;
   }
 
   changeLanguage(lang){
+    let title = localStorage.location;
     this.acceptAddingNewLang = false;
     let _self = this;
+    this.langChanging = true;
     this.addingLangBody = lang;
     // this.showPreloader = true;
         // let lang = event.target.dataset.lang;
-        let title = localStorage.location;
-        // let prefix = localStorage.language;
-    this.getTemplate(title, lang);
+        this.getTemplate(title, lang);
+    if(title !== 'news'){
+     
+    }else{
+
+    }
 
   }
 
   followLink(path){
-    let lang = localStorage.language;
-    let snapshot = this._activatedRoute.snapshot;
-    let _self = this;
-    this._location.go(`${lang}/${path}`);
-    this.getTemplate(path, this.currentPrefix);
+    this.langChanging = false;
+
+      let lang = localStorage.language;
+      let snapshot = this._activatedRoute.snapshot;
+      let _self = this;
+    if(path !== 'news'){
+      this._location.go(`${lang}/${path}`);
+      this.getTemplate(path, this.currentPrefix);
+    }
+    else{
+
+      this._templatesService.getNews(lang).subscribe(
+        (res) => {
+          if(res){
+            _self._router.navigate([`${lang}/${path}`]);
+          }else{
+
+          }
+
+          // this.showPreloader = false; 
+        },
+        (error) => {
+          console.log('Error from news page' + error)
+        }
+      )
+    }
   }
 
   addEditButton(){
@@ -445,6 +488,7 @@ let _self = this;
   }
 
   acceptLangBlock(){
+    localStorage.language = this.addingLangBody;
     let _self = this;
     this.alertAddingLang = !this.alertAddingLang;
     this.acceptAddingNewLang = !this.acceptAddingNewLang;
