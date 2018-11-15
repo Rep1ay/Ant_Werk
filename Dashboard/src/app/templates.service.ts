@@ -61,7 +61,7 @@ private _articleURL = 'http://localhost:3000/api/article'
   }
 
   getNews(prefix){
-    debugger
+    
     // return this._http.get<NewsCollection[]>(this._newsURL, lang);
 
     let headerJson = {
@@ -87,7 +87,7 @@ private _articleURL = 'http://localhost:3000/api/article'
   }
 
   sendArticle(template, id, prefix){
-debugger
+
     // this.add_new_lang_panel(prefix);
     let  templateBody: Article = {
       body: {

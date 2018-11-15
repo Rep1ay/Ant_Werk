@@ -1,4 +1,45 @@
-<div class="container-fluid">
+<app-preloader *ngIf="showPreloader"></app-preloader>
+
+<!-- ============ permalink block start ======================  -->
+
+
+<div *ngIf="!showPreloader && loggedIn" style="height: 80px;" class="container-fluid">
+	<div style="height: 100px;" class="row">
+		<div class="permalinkForm">
+			<form *ngIf="loggedIn"  #inputURL='ngForm' class="form-inline">
+				<label for="input">Permalink: </label>
+				<a style="margin-left: 5px" href='{{permalinkURL}}'> {{winOrigin}}{{permalink}}</a>
+				<input *ngIf="edition" #input="ngModel" [(ngModel)]='permalinkEdit' name="input" ngModel class="form-control col-md-3">
+				
+				<button *ngIf="!edition" style="margin: 10px" 
+				(click)='editPermalink(inputURL); edition = !edition' 
+				class="btn btn-primary btn-large" 
+				type="submit">
+				Edit
+				</button>
+				
+				<button *ngIf="edition" style="margin: 10px 5px;" (click)='savePermalink(inputURL); edition = !edition' 
+				class="btn btn-success btn-large">
+				Save
+				</button>
+	
+				<button *ngIf="edition" style="margin: 10px 2px;" (click)='cancelPermalink(); edition = !edition' 
+				class="btn btn-danger btn-large">
+				Cancel
+				</button>
+		  	</form>
+		</div>
+
+		<div *ngIf="newLanguageAdded" class="col-md-3">
+			<p>added new language {{localhost.language}} to this page</p>
+		</div>
+	</div>
+	
+</div>
+
+<!-- ============ permalink block end ======================  -->
+
+<div *ngIf="!showPreloader" class="container-fluid">
 	<div class="row">
 		<div class="col-md-12">
 			<div class="row">

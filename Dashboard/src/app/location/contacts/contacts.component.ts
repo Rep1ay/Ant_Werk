@@ -119,7 +119,7 @@ export class ContactsComponent implements OnInit {
     .subscribe(
       (res) => {
         if(res){
-          let template = res['template'];
+          let template =  res['data']['template'];
           _self.permalink = `/${localStorage.permalink}`;
           _self.renderTemplate(template);
         }
@@ -340,8 +340,12 @@ export class ContactsComponent implements OnInit {
       localStorage.removeItem('addNewLang');
     });
 
-    this._templatesService.send_permalink(pageTitle, permalink).subscribe(res => {  localStorage.permalink = res['permalink']});
-
+    this._templatesService.send_permalink(pageTitle, permalink)
+      .subscribe(res => 
+        {
+          localStorage.permalink = res['permalink']
+        }
+      );
   }
 
   editInner(event){

@@ -52,6 +52,8 @@ export class NavbarComponent implements OnInit {
   currentPrefix: string;
   langChanging = false;
   templateRendered = false;
+  title: string;
+
   constructor(
 
 
@@ -120,7 +122,7 @@ let _self = this;
 
     this.loggedIn = this._authService.loggedIn();
     this.loggedIn = !!localStorage.getItem('token');
-    this.navbarBehavior();   
+    this.navbarBehavior();
 
    this._templatesService.get_lang_panel().subscribe(
       (res) => {
@@ -162,10 +164,38 @@ let _self = this;
     // if(title){
       this.langChanging = false;
       this.currentTitle = url.split('/')[2];
+
       if(!this.templateRendered){
         this.getTemplate(this.currentTitle, this.currentPrefix);
         this.templateRendered = false;
+
+      }else if(this.currentTitle === 'news'){
+        localStorage.location = 'news';
+        localStorage.permalink = 'news';
+        debugger
+        let lang = localStorage.language;
+        this._templatesService.getNews(lang).subscribe(
+          (res) => {
+            if(res.length === 0){
+              _self.acceptAddingNewLang = true;
+            }
+            _self._router.config[0].path = lang;
+            _self._router.config[1].redirectTo = `${lang}/home`;
+  
+          
+  
+            _self._location.go(`${lang}/news`);
+            _self._router.navigate([`${lang}/news`]);
+          },
+          (error) => {
+            console.log('Error from news page' + error)
+          }
+        )
       }
+          
+          (error) => {
+            console.log('Error from news page' + error)
+          }
     // }else{
       // title = window.location.pathname.split('/')[2];
       // this.getTemplate(this.currentTitle);
@@ -176,116 +206,63 @@ let _self = this;
    
     let _self = this;
     // let prefix = localStorage.language;
-   
-    this._templatesService.getTemplate(title, lang)
-    .subscribe(
-      (res) => {
-        if(res){
-          let pageTitle;
-          _self.currentLocation = pageTitle;
-          _self.currentLang = localStorage.language = res['prefix']; 
-          let template = res['template'];
-          localStorage.location = pageTitle = res['pageTitle'];
-          _self._templatesService.getPermalink(res['pageTitle'])
-          .subscribe(
-            (res) => {
-              // if(res){
-                _self.enterCounter = 0;
-              let permalink;
-              if(res){
-                permalink = res['permalink'];
-              }else{
-                permalink = localStorage.location; 
+    this.title = title;
+    if(title !== 'news'){
+
+      this._templatesService.getTemplate(title, lang)
+      .subscribe(
+        (res) => {
+          if(res){
+            let pageTitle;
+            _self.currentLang = localStorage.language = res['data']['prefix']; 
+            // _self.template = res['data']['template'];
+            localStorage.location = pageTitle = res['data']['pageTitle'];
+            _self.currentLocation = pageTitle;
+
+            let permalink = res['permalink'];
+            let lang = localStorage.language;
+
+            let origin = window.location.origin;
+            _self.permalinkURL = `${origin}/${lang}/${permalink}`
+            _self._router.config[0].children.forEach((route) => {
+              if(route.path === pageTitle){
+                // route.path = `${localStorage.language}/${res['permalink']}`;
+                route.path = permalink;
               }
+            })
+
+            _self._router.config[0].path = lang;
+
+            localStorage.permalink = permalink;
+            _self.permalink = `/${permalink}`;
+            _self.templateRendered = true;
+            _self._router.navigate([`${lang}/${permalink}`]);
+            _self._location.go(`${lang}/${permalink}`);
+
+          }else{
+            if(_self.langChanging){
+              // let langDefault = localStorage.language;
+              // _self.getTemplate( title, langDefault);
               let lang = localStorage.language;
 
-              // _self.renderTemplate(template);
-              
-              let origin = window.location.origin;
-              _self.permalinkURL = `${origin}/${lang}/${permalink}`
-
-
-                    _self._router.config[0].children.forEach((route) => {
-                      if(route.path === pageTitle){
-                        // route.path = `${localStorage.language}/${res['permalink']}`;
-                        route.path = `${res['permalink']}`;
-                      }
-                    })
-
-                    _self._router.config[0].path = lang;
-
-                    localStorage.permalink = permalink;
-                    _self.permalink = `/${permalink}`;
-                    _self.templateRendered = true;
-                    _self._router.navigate([`${lang}/${res['permalink']}`]);
-                    _self._location.go(`${lang}/${permalink}`);
-
-                    // window.location.reload();
-
-            },
-            (err) => {
-              console.log('Error form HomeComp get template' + err);
+              _self.acceptAddingNewLang = true;
+              _self.langChanging = false;
+            }else{
+              let langDefault = 'en';
+              _self.langChanging = false;
+            
+              _self.getTemplate(title, langDefault);   
             }
-          )
-        }else{
-          // localStorage.location = this.currentLocation;
-          _self.enterCounter++;
-          debugger
-          if(_self.enterCounter === 2){
-            localStorage.language = _self.currentPrefix =  'en';
-            _self.enterCounter = 0;
-            // _self.addingLangBody = localStorage.language;
-            _self.acceptAddingNewLang = true;
-          }else{
-            _self.getTemplateByPermalink();
           }
+        },
+        (err) => {
+          console.log(err);
         }
-      },
-      (err) => {
-        console.log(err);
-      }
-    );
+      );
+    }
   }
 
-  getTemplateByPermalink(){
-    let _self = this;
-
-    let permalink = this.routeUrl.split('/')[2];
-
-    this._templatesService.get_pageTitle(permalink)
-    .subscribe(
-      (res) => {
-        if(res){
-          setTimeout(() => {
-            _self.showPreloader = false;
-          }, 1500);
-
-          let pageTitle = localStorage.location = res['pageTitle'];
-          _self.permalink = `/${res['permalink']}`;
-          if(_self.langChanging){
-            let permalink =  _self.permalink.replace('/', '');
-            _self.getTemplate( permalink, _self.addingLangBody)
-            _self.langChanging = false;
-          }else{
-            _self.getTemplate(pageTitle, _self.currentPrefix)
-            _self.langChanging = false;
-          }
-        }else{
-          let template = undefined;
-          if( _self.currentLocation){
-            localStorage.location = _self.currentLocation;
-          }
-          // _self.renderTemplate(template);
-
-          // let pageTitle = window.location.pathname.split('/')[2];
-          // _self.getTemplate(pageTitle);
-        }
-      },
-      (err) => {
-        console.log('Error form getting permalink' + err);
-      }
-    )
-  }
+// 
 
   changeLanguage(lang){
     let title = localStorage.location;
@@ -295,11 +272,28 @@ let _self = this;
     this.addingLangBody = lang;
     // this.showPreloader = true;
         // let lang = event.target.dataset.lang;
-        this.getTemplate(title, lang);
+       
     if(title !== 'news'){
-     
+      this.getTemplate(title, lang);
     }else{
+      localStorage.location = 'news';
+      localStorage.permalink = 'news';
+      this._templatesService.getNews(lang).subscribe(
+        (res) => {
+          if(res.length === 0){
+            _self.acceptAddingNewLang = true;
+          }
+          _self._router.config[0].path = lang;
+          _self._router.config[1].redirectTo = `${lang}/home`;
 
+
+          _self._location.go(`${lang}/news`);
+          _self._router.navigate([`${lang}/news`]);
+        },
+        (error) => {
+          console.log('Error from news page' + error)
+        }
+      )
     }
 
   }
@@ -315,16 +309,21 @@ let _self = this;
       this.getTemplate(path, this.currentPrefix);
     }
     else{
+      debugger
+      localStorage.location = 'news';
+      localStorage.permalink = 'news';
 
+      let lang = localStorage.language;
       this._templatesService.getNews(lang).subscribe(
         (res) => {
-          if(res){
-            _self._router.navigate([`${lang}/${path}`]);
-          }else{
-
+          if(res.length === 0){
+            _self.acceptAddingNewLang = true;
           }
+          _self._router.config[0].path = lang;
+          _self._router.config[1].redirectTo = `${lang}/home`;
 
-          // this.showPreloader = false; 
+          _self._location.go(`${lang}/news`);
+          _self._router.navigate([`${lang}/news`]);
         },
         (error) => {
           console.log('Error from news page' + error)
@@ -599,4 +598,45 @@ let _self = this;
     // this.loggedIn = localStorage.getItem('token');
   }
 
+
+
+  // getTemplateByPermalink(){
+    //     let _self = this;
+    // 
+    //     let permalink = this.routeUrl.split('/')[2];
+    
+    //     this._templatesService.get_pageTitle(permalink)
+    //     .subscribe(
+    //       (res) => {
+    //         if(res){
+    //           setTimeout(() => {
+    //             _self.showPreloader = false;
+    //           }, 1500);
+    
+    //           let pageTitle = localStorage.location = res['pageTitle'];
+    //           _self.permalink = `/${res['permalink']}`;
+    //           if(_self.langChanging){
+    //             let permalink =  _self.permalink.replace('/', '');
+    //             _self.getTemplate( permalink, _self.addingLangBody)
+    //             _self.langChanging = false;
+    //           }else{
+    //             _self.getTemplate(pageTitle, _self.currentPrefix)
+    //             _self.langChanging = false;
+    //           }
+    //         }else{
+    //           let template = undefined;
+    //           if( _self.currentLocation){
+    //             localStorage.location = _self.currentLocation;
+    //           }
+    //           // _self.renderTemplate(template);
+    
+    //           // let pageTitle = window.location.pathname.split('/')[2];
+    //           // _self.getTemplate(pageTitle);
+    //         }
+    //       },
+    //       (err) => {
+    //         console.log('Error form getting permalink' + err);
+    //       }
+    //     )
+    //   }
 }

@@ -67,22 +67,45 @@ export class NewsComponent implements OnInit {
       ).subscribe((routeData: any) => {
         this.winOrigin = window.location.origin;
         this.winPathname = window.location.pathname;
-// debugger
+// 
         if(this.currentLocation === localStorage.permalink || this.currentLocation === localStorage.location){
-          if(!this.counterEnter){
-              // this.changeOfRoutes(routeData.url);
+          // if(!this.counterEnter){
+              this.changeOfRoutes();
               this.counterEnter = true;
-            }
+              this.showPreloader = true;
+
+            // }
           }
 
       })
   }
 
   ngOnInit() {
+  
+  // setTimeout(() => {
+  //   this.showPreloader = false;
+  // }, 1500)
+    this.loggedIn = this._auth.loggedIn();
+
+
+  }
+
+  changeOfRoutes(){
+    let _self = this;
     let lang  = localStorage.language;
+    debugger
     this._templatesService.getNews(lang).subscribe(
       (data) => {
-        this.newsCollection = data;
+        if(data.length > 0){
+          _self.newsCollection = data;
+        }else{
+          _self.newsCollection = [];
+        }
+        setTimeout(() => {
+          this.showPreloader = false;
+        }, 1500)
+        localStorage.location = 'news';
+        localStorage.permalink = 'news'
         // this.showPreloader = false; 
       },
       (error) => {

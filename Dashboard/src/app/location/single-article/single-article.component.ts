@@ -66,7 +66,7 @@ export class SingleArticleComponent implements OnInit {
                 this.winOrigin = window.location.origin;
                 this.winPathname = window.location.pathname;
                 let path = this.winPathname.split('/')[2];
-debugger
+
                 if(this.currentLocation === localStorage.permalink || this.currentLocation === localStorage.location || this.currentLocation === path){
                   if(!this.counterEnter){
                       this.changeOfRoutes(routeData.url);
@@ -121,7 +121,7 @@ debugger
     .subscribe(
       (res) => {
         if(res){
-          debugger
+          
           let template = res['template'];
           // _self.permalink = `/${localStorage.permalink}`;
           _self.renderTemplate(template);

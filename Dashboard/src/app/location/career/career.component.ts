@@ -120,7 +120,7 @@ export class CareerComponent implements OnInit {
     .subscribe(
       (res) => {
         if(res){
-          let template = res['template'];
+          let template =  res['data']['template'];
           _self.permalink = `/${localStorage.permalink}`;
           _self.renderTemplate(template);
         }

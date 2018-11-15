@@ -64,10 +64,10 @@ export class NewArticleComponent implements OnInit {
               ).subscribe((routeData: any) => {
                 this.winOrigin = window.location.origin;
                 this.winPathname = window.location.pathname;
-// debugger
+// 
                 if(this.currentLocation === localStorage.permalink || this.currentLocation === localStorage.location){
                   if(!this.counterEnter){
-                    debugger
+                    
                       // this.changeOfRoutes(routeData.url);
                       this.counterEnter = true;
                     }
