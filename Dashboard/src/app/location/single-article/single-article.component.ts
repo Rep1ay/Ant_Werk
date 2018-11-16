@@ -121,7 +121,7 @@ export class SingleArticleComponent implements OnInit {
     .subscribe(
       (res) => {
         if(res){
-          
+          debugger
           let template = res['template'];
           // _self.permalink = `/${localStorage.permalink}`;
           _self.renderTemplate(template);
@@ -342,16 +342,35 @@ export class SingleArticleComponent implements OnInit {
     let body;
     let pageTitle = localStorage.location;
     let lang  = localStorage.language;
+    let id =  this.articleId;
 
     if(this.template){
       body= document.querySelector('#body');
     }else{
       body= document.querySelector('#default');
     }
+    let discription =  document.querySelector('.discription')['innerText'];
+    let title = document.querySelector('.articleTitle')['innerText'];
     let permalink = localStorage.permalink
 
      $('.blockForBtnEdit').remove();
-    this._templatesService.sendArticle(body.innerHTML, this.articleId, lang).subscribe((error) => {
+    let image = '';
+    let category = 'work';
+
+    let date = new Date().toISOString().slice(0, 10);
+
+     let body_send = {
+      'id': id,
+      'image': image,
+      'prefix': lang,
+      'category': category,
+      'title': title,
+      'discription': discription,
+      'date': date,
+      'template': body.innerHTML
+    }
+
+    this._templatesService.sendArticle(body_send).subscribe((error) => {
       console.log(error)
       localStorage.removeItem('addNewLang');
     });

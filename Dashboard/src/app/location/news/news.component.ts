@@ -20,7 +20,6 @@ declare let $: any;
 })
 export class NewsComponent implements OnInit {
 
-    
   loggedIn: boolean;
   lastTarget: any;
   title: string;
@@ -120,8 +119,15 @@ export class NewsComponent implements OnInit {
   }
 
   createNewArticle(){
+    debugger
     let lang = localStorage.language;
-    this._router.navigate([`/${lang}/new-article`])
-  }
+    localStorage.location = 'new-article';
+
+    this._router.config[0].path = lang;
+    this._router.config[1].redirectTo = `${lang}/home`;
+
+    this._location.go(`${lang}/new-article`);
+    this._router.navigate([`${lang}/new-article`]);
+    }
   
 }

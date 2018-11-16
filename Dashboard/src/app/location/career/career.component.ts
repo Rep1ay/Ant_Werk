@@ -68,6 +68,7 @@ export class CareerComponent implements OnInit {
                 if(!this.counterEnter){
                     this.changeOfRoutes(routeData.url);
                     this.counterEnter = true;
+                    this.showPreloader = true;
                   }
                 }
                 // event.target.response.search("career")
@@ -192,7 +193,7 @@ export class CareerComponent implements OnInit {
         setTimeout(() => {
           $('.preloader').remove();
         }, 500)
-     }, 1000)
+     }, 1500)
     }
     else{
       setTimeout(() => {
@@ -214,15 +215,12 @@ export class CareerComponent implements OnInit {
           setTimeout(() => {
             $('.preloader').remove();
           }, 1000)
-     }, 1000)
+     }, 1500)
     }
   }
 
   addEditButton(){
     let _self = this;
-      setTimeout(() => {
-        this.showPreloader = false;
-      }, 1500);
 
       $('.click2edit').off('mouseover').on('mouseover', function(event){
       // let savedContent;

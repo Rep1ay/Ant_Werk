@@ -70,6 +70,7 @@ export class HomeComponent implements OnInit {
                   if(!this.counterEnter){
                       this.changeOfRoutes(routeData.url);
                       this.counterEnter = true;
+                      this.showPreloader = true;
                     }
                   }
 
@@ -94,9 +95,6 @@ export class HomeComponent implements OnInit {
   let _self = this;
  
 
-  setTimeout(() => {
-    _self.showPreloader = false;
-}, 1500)
 
   // this.getTemplate(title);
   };
@@ -118,11 +116,16 @@ export class HomeComponent implements OnInit {
     this._templatesService.getTemplate(title, prefix)
     .subscribe(
       (res) => {
+        let template;
+        
         if(res){
-          let template =  res['data']['template'];         
-          _self.permalink = `/${localStorage.permalink}`;
-          _self.renderTemplate(template);
+          template =  res['data']['template'];         
+        }else{
+          template = null;
         }
+
+        _self.permalink = `/${localStorage.permalink}`;
+        _self.renderTemplate(template);
       },
       (err) => {
         console.log(err);

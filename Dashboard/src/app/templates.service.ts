@@ -86,14 +86,19 @@ private _articleURL = 'http://localhost:3000/api/article'
     return this._http.get(this._articleURL, {headers}).pipe(map((response: any) => response)); 
   }
 
-  sendArticle(template, id, prefix){
-
+  sendArticle(body){
+debugger
     // this.add_new_lang_panel(prefix);
     let  templateBody: Article = {
       body: {
-        'id': id,
-        'prefix': prefix,
-        'template': template
+        'id': body.id,
+        'image': body.image,
+        'prefix': body.prefix,
+        'category': body.category,
+        'title': body.title,
+        'discription': body.discription,
+        'date': body.date,
+        'template': body.template
       }
     } 
    

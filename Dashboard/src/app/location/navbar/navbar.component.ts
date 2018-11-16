@@ -31,7 +31,7 @@ export class NavbarComponent implements OnInit {
   formInput: string;
   loggedIn: boolean;
   templateSending:any;
-  showPreloader = false;
+  // showPreloader = false;
   routeUrl: string;
   permalink: string;
   permalinkEdit: string;
@@ -53,9 +53,9 @@ export class NavbarComponent implements OnInit {
   langChanging = false;
   templateRendered = false;
   title: string;
+  tryDefaultEng = false;
 
   constructor(
-
 
     private _templatesService: TemplatesService,
               private _authService: AuthService,
@@ -145,7 +145,7 @@ let _self = this;
     )
 
     setTimeout(() => {
-      _self.showPreloader = false;
+      // _self.showPreloader = false;
   }, 1500)
   }
   isLoggedIn(state) {
@@ -156,8 +156,8 @@ let _self = this;
   changeOfRoutes(url){
     
     this.routeUrl = url;
-    this.showPreloader = false;
-    
+    // this.showPreloader = false;
+    this.tryDefaultEng = false;
     let _self = this;
     this.currentPrefix = localStorage.language =  url.split('/')[1];
     // let title = localStorage.location;
@@ -177,7 +177,7 @@ let _self = this;
         this._templatesService.getNews(lang).subscribe(
           (res) => {
             if(res.length === 0){
-              _self.acceptAddingNewLang = true;
+              _self.acceptAddingNewLang = false;
             }
             _self._router.config[0].path = lang;
             _self._router.config[1].redirectTo = `${lang}/home`;
@@ -192,6 +192,14 @@ let _self = this;
           }
         )
       }
+      // else if(this.currentTitle === 'new-article'){
+      //   let lang = localStorage.language;
+      //   _self._router.config[0].path = lang;
+      //   _self._router.config[1].redirectTo = `${lang}/home`;
+
+      //   _self._location.go(`${lang}/news`);
+      //   _self._router.navigate([`${lang}/news`]);
+      // }
           
           (error) => {
             console.log('Error from news page' + error)
@@ -207,54 +215,85 @@ let _self = this;
     let _self = this;
     // let prefix = localStorage.language;
     this.title = title;
-    if(title !== 'news'){
-
+    if(title !== 'news' && title !== 'new-article'){
+      this.currentLang = lang;
       this._templatesService.getTemplate(title, lang)
       .subscribe(
         (res) => {
           if(res){
-            let pageTitle;
-            _self.currentLang = localStorage.language = res['data']['prefix']; 
-            // _self.template = res['data']['template'];
-            localStorage.location = pageTitle = res['data']['pageTitle'];
-            _self.currentLocation = pageTitle;
-
-            let permalink = res['permalink'];
-            let lang = localStorage.language;
-
-            let origin = window.location.origin;
-            _self.permalinkURL = `${origin}/${lang}/${permalink}`
-            _self._router.config[0].children.forEach((route) => {
-              if(route.path === pageTitle){
-                // route.path = `${localStorage.language}/${res['permalink']}`;
-                route.path = permalink;
-              }
-            })
-
-            _self._router.config[0].path = lang;
-
-            localStorage.permalink = permalink;
-            _self.permalink = `/${permalink}`;
-            _self.templateRendered = true;
-            _self._router.navigate([`${lang}/${permalink}`]);
-            _self._location.go(`${lang}/${permalink}`);
-
-          }else{
-            if(_self.langChanging){
-              // let langDefault = localStorage.language;
-              // _self.getTemplate( title, langDefault);
-              let lang = localStorage.language;
-
-              _self.acceptAddingNewLang = true;
-              _self.langChanging = false;
-            }else{
-              let langDefault = 'en';
-              _self.langChanging = false;
+            if(res['data']['template']){
             
-              _self.getTemplate(title, langDefault);   
+              let pageTitle;
+                if(res['data']['prefix']){
+                  _self.currentLang = localStorage.language = res['data']['prefix']; 
+                }else{
+                  localStorage.language = _self.currentLang;
+                }
+                // _self.currentLang = localStorage.language = 'en';
+                // _self.template = res['data']['template'];
+                localStorage.location = pageTitle = res['data']['pageTitle'];
+                _self.currentLocation = pageTitle;
+                let permalink;
+                if(res['permalink']){
+                  permalink = res['permalink'];
+                }else{
+                  permalink = res['data']['permalink'];
+                }
+                
+                let lang = localStorage.language;
+
+                let origin = window.location.origin;
+                _self.permalinkURL = `${origin}/${lang}/${permalink}`
+                _self._router.config[0].children.forEach((route) => {
+                  if(route.path === pageTitle){
+                    // route.path = `${localStorage.language}/${res['permalink']}`;
+                    route.path = permalink;
+                  }
+                })
+
+              _self._router.config[0].path = lang;
+              _self._router.config[1].redirectTo = `/${lang}/home`
+
+              localStorage.permalink = permalink;
+              _self.permalink = `/${permalink}`;
+              _self.templateRendered = true;
+              _self._router.navigate([`${localStorage.language}/${localStorage.permalink}`])
+              // _self._router.navigate([`${lang}/${permalink}`]);
+              // _self._location.go(`${lang}/${permalink}`);
+              }else{
+                _self.acceptAddingNewLang = true;
+              }
+            }else{
+              if(_self.langChanging){
+                // let langDefault = localStorage.language;
+                // _self.getTemplate( title, langDefault);
+                let lang = localStorage.language;
+
+                if(title === 'news' || title === 'new-article'){
+                  _self.acceptAddingNewLang = false;
+                }else{
+                  _self.acceptAddingNewLang = true;
+                }
+                _self.langChanging = false;
+              }else{
+                if(!_self.tryDefaultEng){
+                  _self.tryDefaultEng = true;
+                  let langDefault = 'en';
+                _self.langChanging = false;
+              
+                _self.getTemplate(title, langDefault);  
+                }
+                // else{
+                //   _self.tryDefaultEng = false;
+                //   debugger
+                //   let path = res['gotObj']['pageTitle']
+
+                //   // _self.template = null
+                // }
+                
+                }
             }
-          }
-        },
+      },
         (err) => {
           console.log(err);
         }
@@ -266,6 +305,10 @@ let _self = this;
 
   changeLanguage(lang){
     let title = localStorage.location;
+    
+    if(!title){
+      title = this._router.config[1].redirectTo.split('/')[2];
+    }
     this.acceptAddingNewLang = false;
     let _self = this;
     this.langChanging = true;
@@ -273,9 +316,10 @@ let _self = this;
     // this.showPreloader = true;
         // let lang = event.target.dataset.lang;
        
-    if(title !== 'news'){
-      this.getTemplate(title, lang);
-    }else{
+    // if(title !== 'news'){
+    //   this.getTemplate(title, lang);
+    // }else
+    if(title === 'news'){
       localStorage.location = 'news';
       localStorage.permalink = 'news';
       this._templatesService.getNews(lang).subscribe(
@@ -294,6 +338,12 @@ let _self = this;
           console.log('Error from news page' + error)
         }
       )
+    }
+    else if(title === 'new-article'){
+      debugger
+    }
+    else{
+      this.getTemplate(title, lang);
     }
 
   }
@@ -490,8 +540,8 @@ let _self = this;
     localStorage.language = this.addingLangBody;
     let _self = this;
     this.alertAddingLang = !this.alertAddingLang;
-    this.acceptAddingNewLang = !this.acceptAddingNewLang;
-    this.showPreloader = true;
+    this.acceptAddingNewLang = false;
+    // this.showPreloader = true;
     setTimeout(() => {
       this.alertAddingLang = false;
     }, 10000)
@@ -509,7 +559,7 @@ let _self = this;
         _self._location.go(`${lang}/${permalink}`);
 
         setTimeout(() => {
-          _self.showPreloader = false;
+          // _self.showPreloader = false;
         }, 1500)
       },
       (err) => {
@@ -519,7 +569,7 @@ let _self = this;
   }
 
   cancelLangBlock(){
-    this.acceptAddingNewLang = !this.acceptAddingNewLang;
+    this.acceptAddingNewLang = false;
   }
   
   editPageURL(inputURL: NgForm){

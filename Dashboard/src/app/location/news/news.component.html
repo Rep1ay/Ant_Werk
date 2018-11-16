@@ -60,14 +60,16 @@
 					<div class="row">
 						<div class="col-md-4" *ngFor="let article of newsCollection">
 							<div class="media">
-								<img class="mr-3" alt="Bootstrap Media Preview" src="https://www.layoutit.com/img/sports-q-c-64-64-8.jpg" />
+								<h5>{{article.category}}</h5>
+								<img alt="Bootstrap Media Preview" src="http://www.aviwebsolutions.co.uk/new-images/news-feed-img.jpg" />
 								<div class="media-body">
+									<h5>{{article.date}}</h5>
 									<h5 (click)="onSelect(article.id)" style="cursor:pointer" class="mt-0">
 										{{article.title}}
 									</h5> 
 									<h6>{{article.categoty}}</h6>
 									<p>
-										{{article.discription}}
+										{{article.discription | slice:0:150}}
 									</p> 
 								</div>
 							</div>

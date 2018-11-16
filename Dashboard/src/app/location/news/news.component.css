@@ -2,6 +2,10 @@
     flex-direction: column;
 }
 
+img {
+    width: 100%;
+}
+
 .newArticleBlock{
     justify-content: center;
 }
