@@ -7,27 +7,36 @@
 <div *ngIf="!showPreloader && loggedIn" style="height: 80px;" class="container-fluid">
 	<div style="height: 100px;" class="row">
 		<div class="permalinkForm">
-			<form *ngIf="loggedIn"  #inputURL='ngForm' class="form-inline">
-				<label for="input">Permalink: </label>
-				<a style="margin-left: 5px" href='{{permalinkURL}}'> {{winOrigin}}{{permalink}}</a>
-				<input *ngIf="edition" #input="ngModel" [(ngModel)]='permalinkEdit' name="input" ngModel class="form-control col-md-3">
-				
-				<button *ngIf="!edition" style="margin: 10px" 
-				(click)='editPermalink(inputURL); edition = !edition' 
+			<form *ngIf="loggedIn"  #inputValue='ngForm' class="form-inline">
+				<label for="input">Category: </label>
+		    <h5 style="margin:2px 10px;" *ngIf="!edition">{{category}}</h5>
+      
+        <select *ngIf="edition" style="width: 200px;" (change)='chooseCategory($event)' class="custom-select">
+            <option value="Other" selected>Choose category...</option>
+            <option value="{{category.category}}" *ngFor="let category of news_categories">{{category.category}}</option>
+          </select>
+
+				<button *ngIf="edition" style="margin: 10px" 
+				(click)='acceptCategory(); edition = !edition' 
+				class="btn btn-info btn-large" 
+				type="submit">
+				Save
+        </button>
+
+        <button *ngIf="!edition" style="margin: 10px" 
+				(click)='editCategory(category); edition = !edition' 
 				class="btn btn-primary btn-large" 
 				type="submit">
 				Edit
-				</button>
-				
-				<button *ngIf="edition" style="margin: 10px 5px;" (click)='savePermalink(inputURL); edition = !edition' 
-				class="btn btn-success btn-large">
-				Save
-				</button>
-	
-				<button *ngIf="edition" style="margin: 10px 2px;" (click)='cancelPermalink(); edition = !edition' 
-				class="btn btn-danger btn-large">
-				Cancel
-				</button>
+        </button>
+        
+        <!-- <div id="addNewLangToPanel" *ngIf="addingNewLan" class="input-group mb-3 col-md-3"> -->
+            
+            <!-- <div class="input-group-append">
+              <button (click)="languageAdding()" class="btn btn-info" type="button">OK</button>
+              <button (click)='addingNewLan = !addingNewLan' class="btn btn-danger" type="button">Close</button>
+            </div> -->
+          <!-- </div> -->
 		  	</form>
 		</div>
 

@@ -45,17 +45,27 @@
 			<div class="row">
 				<div class="col-md-3">
 					<ul class="nav flex-column nav-pills">
-						<li class="nav-item">
-							<a class="nav-link active" href="#">Home</a>
+						<li style="cursor:pointer" class="nav-item">
+							<p (click)='creatingCategory = true' class="nav-link active" >+</p>
 						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="#">Profile</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link disabled" href="#">Messages</a>
+						<li *ngFor="let item of news_categories" class="nav-item">
+							<p class="nav-link active">{{item.category}}</p>
 						</li>
 					</ul>
 				</div>
+				<form 	style="position: absolute;top: 40px;left: 10px;"
+						*ngIf="creatingCategory" 
+						class="form-inline"  
+						#categoryInput="ngForm" 
+						(ngSubmit)="saveCategory(categoryInput)" novalidate>
+
+					<label class="sr-only" for="inlineFormInputName2">Name</label>
+					<input style="margin: 8px;" name="category" ngModel required #first="ngModel" type="text" class="form-control mb-2 mr-sm-2 col-md-6" id="inlineFormInputName2" placeholder="New category...">
+					<!-- <button type="submit" class="btn btn-primary mb-2">Save</button>
+					<button type="submit" class="btn btn-primary mb-2">Cancel</button> -->
+					<button  class="btn btn-info mr-2" type="submit">OK</button>
+					<button (click)='creatingCategory = false' class="btn btn-danger" type="button">Close</button>
+				</form>
 				<div class="col-md-9">
 					<div class="row">
 						<div class="col-md-4" *ngFor="let article of newsCollection">

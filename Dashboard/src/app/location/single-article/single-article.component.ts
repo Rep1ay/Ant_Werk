@@ -9,6 +9,7 @@ import { Location } from '@angular/common';
 import { Observable, Subject, asapScheduler, pipe, of, from,
   interval, merge, fromEvent } from 'rxjs';
   import { map, filter, scan } from 'rxjs/operators';
+import { NewsCategories } from 'src/app/news_category';
 // Jquery declaration
 declare let $: any;
 
@@ -49,7 +50,10 @@ export class SingleArticleComponent implements OnInit {
   currentLocation = 'article';
   counterEnter = false;
   articleId: string;
-
+  category: string;
+  editingCategory = false;
+  news_categories: NewsCategories[];
+  
   constructor(private _templatesService: TemplatesService, 
             formBuilder: FormBuilder,
             private _auth: AuthService,
@@ -122,6 +126,7 @@ export class SingleArticleComponent implements OnInit {
       (res) => {
         if(res){
           debugger
+          _self.category = res['category'];
           let template = res['template'];
           // _self.permalink = `/${localStorage.permalink}`;
           _self.renderTemplate(template);
@@ -147,43 +152,45 @@ export class SingleArticleComponent implements OnInit {
     );
   }
 
-  editPermalink(inputURL: NgForm){
-    
-    this.permalink = '/';
-    this.permalinkEdit = `${localStorage.permalink}`;
-    console.log(inputURL.value);
+  editCategory(inputValue: NgForm){
+  
+    console.log(inputValue.value);
   }
 
-  savePermalink(permalink: NgForm){
+  saveCategory (category: NgForm){
     let _self = this;
-    let permalinkToSend = permalink.value.input;
-    this.permalink = `/${permalink.value.input}`;
-    localStorage.permalink = permalink.value.input;
-    this._templatesService.send_permalink(localStorage.location, permalinkToSend).subscribe(
-      (res) => {
-        // _self._router.navigate([`${localStorage.language}/${res['permalink']}`]);
-        _self._location.go(`${localStorage.language}/${res['permalink']}`)
-        window.location.reload();
-      },
-      (err) => {
-        console.log('Error from permalink send from navbar' + '</br>' + err);
-      }
-    )
+  debugger
+    this.category = category.value.input;
 
-    this.permalinkEdit = '';
   }
 
-  cancelPermalink(){
-    this.permalink = `/${localStorage.permalink}`
-    this.permalinkEdit = '';
+  chooseCategory(event){
+    this.category = event.currentTarget.value;
+  }
+  acceptCategory(){
+    this.saveChanges();
   }
 
   renderTemplate(template){
+  let lang = localStorage.language;
+   let _self = this;
     this.template = template;
     this.counterEnter = false;
     if(this.loggedIn) {
       setTimeout(() => {
         this.showPreloader = false;
+
+        this._templatesService.getNewsCategory(lang)
+        .subscribe(
+          (res) => {
+            debugger
+            _self.news_categories = res
+          },
+          (err) =>{
+            console.log('Error from get news category' + err);
+          }
+        )
+
         setTimeout(() => {
           this.addEditButton();
         }, 100)
@@ -355,7 +362,7 @@ export class SingleArticleComponent implements OnInit {
 
      $('.blockForBtnEdit').remove();
     let image = '';
-    let category = 'work';
+    let category = this.category;
 
     let date = new Date().toISOString().slice(0, 10);
 

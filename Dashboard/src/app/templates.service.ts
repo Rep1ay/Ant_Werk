@@ -9,6 +9,7 @@ import { Permalink } from './permalink';
 import { LangList } from './lang-list';
 import { Article } from './article';
 import { NewsCollection } from './news-collection';
+import { Category } from './category';
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +29,7 @@ private _navbarURL = 'http://localhost:3000/api/navbar'
 private _newsURL = 'http://localhost:3000/api/news'
 private _articleURL = 'http://localhost:3000/api/article'
 private _3_articlesURL = 'http://localhost:3000/api/3_articles'
+private _newsCategoryURL = 'http://localhost:3000/api/news_category'
 
 
 // private _templatesUrl = 'http://68.183.30.119/api/templates'
@@ -100,8 +102,6 @@ private _3_articlesURL = 'http://localhost:3000/api/3_articles'
   }
 
   sendArticle(body){
-debugger
-    // this.add_new_lang_panel(prefix);
     let  templateBody: Article = {
       body: {
         'id': body.id,
@@ -134,8 +134,6 @@ debugger
   }
 
   sendTemplate(template, title, prefix, permalink){
-
-    // this.add_new_lang_panel(prefix);
     let  templateBody: Template = {
       body: {
         'prefix': prefix,
@@ -143,10 +141,34 @@ debugger
         'pageTitle': title,
         'template': template
       }
-    
     } 
    
     return this._http.put<any>(this._templatesUrl, templateBody);  
+  }
+
+  getNewsCategory(lang){
+    
+    let headerJson = {
+      'Content-Type': 'application/json',
+      'Accept' : 'application/json',
+      'prefix': lang
+    }
+
+    const headers = new HttpHeaders(headerJson);
+    
+   return this._http.get(this._newsCategoryURL, {headers}).pipe(map((responce: any) => responce))
+  }
+
+  saveNewsCategory(category, prefix){
+    debugger
+    let  templateBody: Category = {
+      body: {
+        'prefix': prefix,
+        'category': category,
+      }
+    } 
+   
+    return this._http.put<any>(this._newsCategoryURL, templateBody);  
   }
 
   getPermalink(title){

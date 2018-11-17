@@ -10,6 +10,7 @@ import { Observable, Subject, asapScheduler, pipe, of, from,
   interval, merge, fromEvent } from 'rxjs';
   import { map, filter, scan } from 'rxjs/operators';
 import { NewsCollection } from '../../news-collection';
+import { NewsCategories } from 'src/app/news_category';
 // Jquery declaration
 declare let $: any;
 
@@ -50,7 +51,8 @@ export class NewsComponent implements OnInit {
   currentLocation = 'news';
   counterEnter = false;
   newsCollection: NewsCollection[];
-
+  creatingCategory = false;
+  news_categories: NewsCategories[];
   constructor(private _templatesService: TemplatesService, 
     formBuilder: FormBuilder,
     private _auth: AuthService,
@@ -111,6 +113,16 @@ export class NewsComponent implements OnInit {
         console.log('Error from news page' + error)
       }
     )
+    this._templatesService.getNewsCategory(lang)
+      .subscribe(
+        (res) => {
+          debugger
+          _self.news_categories = res
+        },
+        (err) =>{
+          console.log('Error from get news category' + err);
+        }
+      )
   }
 
   onSelect(id){
@@ -129,5 +141,34 @@ export class NewsComponent implements OnInit {
     this._location.go(`${lang}/new-article`);
     this._router.navigate([`${lang}/new-article`]);
     }
+
+    saveCategory(inputValue: NgForm){
+      debugger
+      let _self = this;
+      let category = inputValue.value.category;
+      let lang = localStorage.language;
+      this.creatingCategory = false;
+      this._templatesService.saveNewsCategory(category, lang)
+        .subscribe(
+          (res) => {
+            this._templatesService.getNewsCategory(lang)
+            .subscribe(
+              (res) => {
+                debugger
+                _self.news_categories = res
+              },
+              (err) =>{
+                console.log('Error from get news category' + err);
+              }
+            )
+            // res = this.news_categories
+          },
+          (err) => {
+            console.log('Error from save category');
+          }
+        )
+    }
+
+    cancel
   
 }
