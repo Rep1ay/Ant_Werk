@@ -5,7 +5,7 @@ export interface Article {
         prefix: String,
         category: String,
         title: String,
-        discription: String,
+        description: String,
         date: String,
         template: String
     }

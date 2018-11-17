@@ -349,7 +349,7 @@ export class SingleArticleComponent implements OnInit {
     }else{
       body= document.querySelector('#default');
     }
-    let discription =  document.querySelector('.discription')['innerText'];
+    let description =  document.querySelector('.description')['innerText'];
     let title = document.querySelector('.articleTitle')['innerText'];
     let permalink = localStorage.permalink
 
@@ -365,7 +365,7 @@ export class SingleArticleComponent implements OnInit {
       'prefix': lang,
       'category': category,
       'title': title,
-      'discription': discription,
+      'description': description,
       'date': date,
       'template': body.innerHTML
     }

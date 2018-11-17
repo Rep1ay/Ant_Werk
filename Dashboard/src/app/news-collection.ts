@@ -3,7 +3,7 @@ export interface NewsCollection {
     image: string,
     category: string,
     title: string,
-    discription: string,
+    description: string,
     date: string,
     template: string,
 }

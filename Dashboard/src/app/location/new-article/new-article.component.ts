@@ -326,7 +326,7 @@ export class NewArticleComponent implements OnInit {
 
     let id = new Date().toISOString().replace(/[^0-9]/g, '');
     
-    let discription = document.querySelector('.discription')['innerText'];
+    let description = document.querySelector('.description')['innerText'];
 
     let body = document.querySelector('#body');
     let title = document.querySelector('.articleTitle')['innerText'];
@@ -343,7 +343,7 @@ export class NewArticleComponent implements OnInit {
       'prefix': lang,
       'category': category,
       'title': title,
-      'discription': discription,
+      'description': description,
       'date': date,
       'template': body.innerHTML
     }

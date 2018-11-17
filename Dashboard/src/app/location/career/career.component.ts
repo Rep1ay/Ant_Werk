@@ -389,8 +389,8 @@ export class CareerComponent implements OnInit {
         }
 
         let vacant_position = $(this);
-        let discription = vacant_position.next('.discription');
-        let discription_list = $(discription).find('.discription_list');
+        let description = vacant_position.next('.description');
+        let description_list = $(description).find('.description_list');
         $('.vacant_row').css({'flex-direction': 'row',
                               'display': 'flex',
                               'justify-content': 'space-between',
@@ -413,15 +413,15 @@ export class CareerComponent implements OnInit {
           vacant_position.attr('data-attr','0');
         });
 
-        let btnExist = $(discription).find('.add_discription_list_btn')
+        let btnExist = $(description).find('.add_description_list_btn')
 
         let send_body = {
-          discription: discription,
-          discription_list: discription_list
+          description: description,
+          description_list: description_list
         }
 
         if(!btnExist.length){
-          _self.addDiscriptionList(send_body);
+          _self.addDescriptionList(send_body);
         }
       });
 
@@ -455,7 +455,7 @@ export class CareerComponent implements OnInit {
         })
 
       $("<label/>", {
-        "class": "switch",     
+        "class": "switch",
         on:{
           click: function(event){
 
@@ -588,9 +588,9 @@ export class CareerComponent implements OnInit {
     
           $(addNewPosition).insertAfter($('.addNewVacancy'));
     
-          let vacancy_discription = $("<div/>", {
+          let vacancy_description = $("<div/>", {
      
-            "class": "discription",
+            "class": "description",
 
             append: `<p class="click2edit">Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate voluptas modi sapiente tempore maxime fuga eos iusto distinctio, nemo vel nam unde ea nostrum aut reprehenderit voluptatibus beatae impedit? Ab explicabo omnis deserunt dicta aperiam deleniti, dignissimos qui consequuntur, modi sed iusto quam minus doloribus at praesentium animi in necessitatibus tempora. Veritatis deleniti aut ratione blanditiis. Aliquid facilis architecto numquam </p>`,
             appendTo:  addNewPosition
@@ -598,9 +598,9 @@ export class CareerComponent implements OnInit {
           });
     
          let send_body = {
-           discription: vacancy_discription
+           description: vacancy_description
          }
-          _self.addDiscriptionList(send_body)
+          _self.addDescriptionList(send_body)
           let context = $(addNewPosition).find('.actionPanel');
           _self.createActionPanel(context);
           _self.addEditButton();
@@ -615,21 +615,21 @@ export class CareerComponent implements OnInit {
  
   }
 
-  addDiscriptionList(body){
+  addDescriptionList(body){
 
     let _self = this;
-    let discription_list;
+    let description_list;
     
-    if(!body.discription_list){
-      discription_list = $("<div/>", {"class": "discription_list",}); 
-      $(discription_list).appendTo($(body.discription));
+    if(!body.description_list){
+      description_list = $("<div/>", {"class": "description_list",}); 
+      $(description_list).appendTo($(body.description));
     }else{
-      discription_list = body.discription_list
+      description_list = body.description_list
     }
   
-    let add_discription_list_btn = $("<button/>", {
+    let add_description_list_btn = $("<button/>", {
       text: 'Edit list',
-      "class": "btn btn-success add_discription_list_btn",
+      "class": "btn btn-success add_description_list_btn",
     css: {
       'margin': '15px'
     },
@@ -646,7 +646,7 @@ export class CareerComponent implements OnInit {
               click: function () {
       
                 let send_body = {
-                  elem: $(discription_list),
+                  elem: $(description_list),
                 }
       
             _self.save(send_body);
@@ -667,10 +667,10 @@ export class CareerComponent implements OnInit {
               click: function () {
       
                 let send_body = {
-                  elem: $(discription_list),
-                  initialText: $(discription_list).summernote('code')
+                  elem: $(description_list),
+                  initialText: $(description_list).summernote('code')
                 }
-                $(add_discription_list_btn).toggle();
+                $(add_description_list_btn).toggle();
                 _self.cancel(send_body);
               }
             });
@@ -678,7 +678,7 @@ export class CareerComponent implements OnInit {
             return button.render();
           }
 
-          $(discription_list).summernote({
+          $(description_list).summernote({
             // width: editorWidth,
             popover: {
               image: [],
@@ -701,7 +701,7 @@ export class CareerComponent implements OnInit {
           $('.cancelBtn').css({'background': '#ff3131','color': '#fff'})
           $('.saveBtn').css({'background': '#10b510','color': '#fff'})
 
-          $(add_discription_list_btn).toggle();
+          $(add_description_list_btn).toggle();
         }
       }
     
@@ -710,12 +710,12 @@ export class CareerComponent implements OnInit {
     // for only just added vacancy
 
     if(this.loggedIn){
-      $(add_discription_list_btn).appendTo($(body.discription));
+      $(add_description_list_btn).appendTo($(body.description));
     }
 
     // for multi vacancy
-    // $(discription_list).appendTo($('.discription_list'));
-    // $(add_discription_list_btn).appendTo($('.discription_list'));
+    // $(description_list).appendTo($('.description_list'));
+    // $(add_description_list_btn).appendTo($('.description_list'));
 
   }
 
@@ -754,10 +754,10 @@ export class CareerComponent implements OnInit {
     }
     let permalink = localStorage.permalink
     let originBody = body;
-    // if($('.discription_list').text())
+    // if($('.description_list').text())
     $('.switch').remove();
-    $('.discription_list').find('p').remove()
-    $('.add_discription_list_btn').remove();
+    $('.description_list').find('p').remove()
+    $('.add_description_list_btn').remove();
     $('.addNewVacancy').remove();
      $('.blockForBtnEdit').remove();
     this._templatesService.sendTemplate(body.innerHTML, pageTitle, lang, permalink).subscribe((error) => {
@@ -815,7 +815,7 @@ export class CareerComponent implements OnInit {
       background: #f3f3f3
     }
 
-    .positions_list .item .discription{
+    .positions_list .item .description{
      background: #fff;
       overflow : hidden;
       display: none;
@@ -823,7 +823,7 @@ export class CareerComponent implements OnInit {
     }
 
 
-    .discription p{
+    .description p{
       margin-top: 0px;
       margin-bottom: 0px;
       padding: 10px;
