@@ -1,10 +1,46 @@
 
-<!-- <app-preloader *ngIf="showPreloader"></app-preloader> -->
+<app-preloader *ngIf="showPreloader"></app-preloader>
 
-<!-- <h4>Posted below: </h4> -->
-<!-- <p [innerHTML]="postText | escapeHtml"></p> -->
+<!-- ============ permalink block start ======================  -->
 
-<div class="container-fluid">
+
+<div *ngIf="!showPreloader && loggedIn" style="height: 80px;" class="container-fluid">
+	<div style="height: 100px;" class="row">
+		<div class="permalinkForm">
+			<form *ngIf="loggedIn"  #inputURL='ngForm' class="form-inline">
+				<label for="input">Permalink: </label>
+				<a style="margin-left: 5px" href='{{permalinkURL}}'> {{winOrigin}}{{permalink}}</a>
+				<input *ngIf="edition" #input="ngModel" [(ngModel)]='permalinkEdit' name="input" ngModel class="form-control col-md-3">
+				
+				<button *ngIf="!edition" style="margin: 10px" 
+				(click)='editPermalink(inputURL); edition = !edition' 
+				class="btn btn-primary btn-large" 
+				type="submit">
+				Edit
+				</button>
+				
+				<button *ngIf="edition" style="margin: 10px 5px;" (click)='savePermalink(inputURL); edition = !edition' 
+				class="btn btn-success btn-large">
+				Save
+				</button>
+	
+				<button *ngIf="edition" style="margin: 10px 2px;" (click)='cancelPermalink(); edition = !edition' 
+				class="btn btn-danger btn-large">
+				Cancel
+				</button>
+		  	</form>
+		</div>
+
+		<div *ngIf="newLanguageAdded" class="col-md-3">
+			<p>added new language {{localhost.language}} to this page</p>
+		</div>
+	</div>
+	
+</div>
+
+<!-- ============ permalink block end ======================  -->
+
+<div *ngIf="!showPreloader" class="container-fluid">
 
 	<div  *ngIf="template" id="body"  class="container-fluid body_container">
 		<div [innerHTML]='template'></div>
@@ -21,7 +57,7 @@
 	<section  class="areaBeforeBlock">
 		<div class="jumbotron">
 			<h2 class="click2edit" contenteditable="false" id="hello">
-				Hello, world!
+				Hllo, world!
 			</h2>
 			<p class="click2edit" contenteditable="false">
 				This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique.
@@ -138,57 +174,18 @@
 	</div>
 </div>
 </section>
-<section  class="areaBeforeBlock">
-
-  <div class="row">
-		<div class="jumbotron ">
-			<h2 class="click2edit">
-				Hello, world!
-			</h2>
-			<p class="click2edit">
-				This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique.
-			</p>
-			<p>
-				<a class="btn btn-primary btn-large click2edit" href="#">Learn more</a>
-			</p>
-  </div>
-  </div>
-  </section>
-  <section  class="areaBeforeBlock">
-
-		<div class="row">
-			<div class="col-md-8">
-				<div class="media">
-					<img class="mr-3" alt="Bootstrap Media Preview" src="https://www.layoutit.com/img/sports-q-c-64-64-8.jpg" />
-					<div class="media-body">
-						<h5 class="mt-0">
-							Nested media heading
-						</h5> Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.
-						<div class="media mt-3">
-							 <a class="pr-3" href="#"><img alt="Bootstrap Media Another Preview" src="https://www.layoutit.com/img/sports-q-c-64-64-2.jpg" /></a>
-							<div class="media-body">
-								<h5 class="mt-0">
-									Nested media heading
-								</h5> Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-4">
-				<h2>
-					Heading
-				</h2>
-				<p>
-					Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
-				</p>
-				<p>
-					<a class="btn" href="#">View details »</a>
-				</p>
-			</div>
+<hr style="border-top: 14px solid rgb(255, 184, 76);">
+<section style="background: #eee;" class="news">
+	<h2>News</h2>
+	<div class="row">
+		<div class="col-md-1">
 		</div>
-		</section>
+		<div class="newsBlock row col-md-10">
+		</div>
+		<div class="col-md-1">
+		</div>
 	</div>
+</section>
 </div>
 
 

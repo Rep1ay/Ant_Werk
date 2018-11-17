@@ -1,0 +1,121 @@
+<app-preloader *ngIf="showPreloader"></app-preloader>
+
+<!-- ============ permalink block start ======================  -->
+
+
+<div *ngIf="!showPreloader && loggedIn" style="height: 80px;" class="container-fluid">
+	<div style="height: 100px;" class="row">
+		<div class="permalinkForm">
+			<form *ngIf="loggedIn"  #inputURL='ngForm' class="form-inline">
+				<label for="input">Permalink: </label>
+				<a style="margin-left: 5px" href='{{permalinkURL}}'> {{winOrigin}}{{permalink}}</a>
+				<input *ngIf="edition" #input="ngModel" [(ngModel)]='permalinkEdit' name="input" ngModel class="form-control col-md-3">
+				
+				<button *ngIf="!edition" style="margin: 10px" 
+				(click)='editPermalink(inputURL); edition = !edition' 
+				class="btn btn-primary btn-large" 
+				type="submit">
+				Edit
+				</button>
+				
+				<button *ngIf="edition" style="margin: 10px 5px;" (click)='savePermalink(inputURL); edition = !edition' 
+				class="btn btn-success btn-large">
+				Save
+				</button>
+	
+				<button *ngIf="edition" style="margin: 10px 2px;" (click)='cancelPermalink(); edition = !edition' 
+				class="btn btn-danger btn-large">
+				Cancel
+				</button>
+		  	</form>
+		</div>
+
+		<div *ngIf="newLanguageAdded" class="col-md-3">
+			<p>added new language {{localhost.language}} to this page</p>
+		</div>
+	</div>
+	
+</div>
+
+<!-- ============ permalink block end ======================  -->
+
+<div *ngIf="!showPreloader" class="container-fluid">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="row">
+				<div class="col-md-3">
+					<ul class="nav flex-column nav-pills">
+						<li class="nav-item">
+							<a class="nav-link active" href="#">Home</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="#">Profile</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link disabled" href="#">Messages</a>
+						</li>
+					</ul>
+				</div>
+				<div class="col-md-9">
+					<div class="row">
+						<div class="col-md-4" *ngFor="let article of newsCollection">
+							<div class="media">
+								<h5>{{article.category}}</h5>
+								<img alt="Bootstrap Media Preview" src="http://www.aviwebsolutions.co.uk/new-images/news-feed-img.jpg" />
+								<div class="media-body">
+									<h5>{{article.date}}</h5>
+									<h5 (click)="onSelect(article.id)" style="cursor:pointer" class="mt-0">
+										{{article.title}}
+									</h5> 
+									<h6>{{article.categoty}}</h6>
+									<p>
+										{{article.description | slice:0:150}}
+									</p> 
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row newArticleBlock mt-5">
+						<div class="addNewArticle">
+							<p (click)="createNewArticle()">+</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="row mt-5">
+				<div class="col-md-4">
+				</div>
+				<div class="col-md-4">
+					<nav>
+						<ul class="pagination">
+							<li class="page-item">
+								<a class="page-link" href="#">Previous</a>
+							</li>
+							<li class="page-item">
+								<a class="page-link" href="#">1</a>
+							</li>
+							<li class="page-item">
+								<a class="page-link" href="#">2</a>
+							</li>
+							<li class="page-item">
+								<a class="page-link" href="#">3</a>
+							</li>
+							<li class="page-item">
+								<a class="page-link" href="#">4</a>
+							</li>
+							<li class="page-item">
+								<a class="page-link" href="#">5</a>
+							</li>
+							<li class="page-item">
+								<a class="page-link" href="#">Next</a>
+							</li>
+						</ul>
+					</nav>
+				</div>
+				<div class="col-md-4">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

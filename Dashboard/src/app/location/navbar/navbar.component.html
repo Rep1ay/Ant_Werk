@@ -1,0 +1,98 @@
+
+
+<app-preloader *ngIf="showPreloader"></app-preloader>
+<nav class="main_navbar">
+  <ul class="navbar_container">
+      <!-- <li  *ngIf="!showPreloader" style="width: 60vw;font-size: 20px;font-weight: 300;">                       *ngIf="loggedIn" -->
+        <!-- <form *ngIf="loggedIn"  #inputURL='ngForm' class="form-inline">
+          <label for="input">Permalink: </label>
+          <a style="margin-left: 5px" href='{{winOrigin}}'> {{winOrigin}}{{permalink}}</a>
+          <input *ngIf="edition" #input="ngModel" [(ngModel)]='permalinkEdit' name="input" ngModel class="form-control col-md-3">
+          
+          <button *ngIf="!edition" style="margin: 10px;padding: 0px 17px;font-size: 17px;" 
+            (click)='editPageURL(inputURL); edition = !edition' 
+            class="btn btn-primary btn-large searchBtn" 
+            type="submit">
+            Edit
+          </button>
+          
+          <button *ngIf="edition" style="margin: 10px 5px;" (click)='savePermalink(inputURL); edition = !edition' 
+            class="btn btn-success btn-large">
+            Save
+          </button>
+
+          <button *ngIf="edition" style="margin: 10px 2px;" (click)='cancelPermalink(); edition = !edition' 
+            class="btn btn-danger btn-large">
+            Cancel
+          </button>
+        </form> -->
+    <!-- </li> -->
+    <button class="navbar-toggler" type="button" 
+        data-toggle="collapse" data-target="#navbarSupportedContent" 
+        aria-controls="navbarSupportedContent" aria-expanded="false" 
+        aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <li class="nav-item">
+        <a class="nav-link" href=""><span class="sr-only">awhuifha</span></a>
+    </li>
+   
+    <li routerLinkActive="active" class="editNavbar" (click)="followLink('home')">{{home}}</li>
+    <li routerLinkActive="active" class="editNavbar" (click)="followLink('contacts')">{{contacts}}</li>
+    <li routerLinkActive="active" class="editNavbar" (click)="followLink('career')" >{{career}}</li>
+    <li routerLinkActive="active" class="editNavbar" (click)="followLink('news')" >{{news}}</li>
+
+
+    <li *ngIf='!loggedIn' class="editNavbar" routerLinkActive="active"  (click)="followLink('login')">Login</li>
+    
+    <!-- <li *ngIf='loggedIn' routerLinkActive="active"  routerLink="/adminPanel"><fa-icon [icon]="faUser"></fa-icon></li> -->
+   
+    <li (click)="logoutUser()" class="editNavbar" *ngIf='loggedIn' routerLinkActive="active"  >Logout</li>
+
+  </ul>
+</nav>
+
+<nav id="rightsidebar_main_block" class="main_navbar ">
+  <ul id="language_panel" class="navbar_container "> 
+   
+      <li class="lang_menu_item"
+      style="
+        color: #fff;
+        font-size: 30px;
+        border: 1px solid #2ec52e;
+        background: #10b510;
+        padding:2px 15px;" 
+
+      data-lang="add" routerLinkActive="active" (click)=" addingNewLan = !addingNewLan">
+      +
+      <!-- add_new_lang_to_panel(); -->
+    </li>
+       <li [attr.data-lang]="lang.prefix" routerLinkActive="active" *ngFor="let lang of lang_items" (click)="changeLanguage(lang.prefix)">{{lang.prefix}}</li>
+      <!-- <li class="lang_menu_item" data-lang="en" routerLinkActive="active"  >eng</li> -->
+
+    
+    </ul>
+   
+</nav>
+
+  <div *ngIf="alertAddingLang" class="blockForEditLang" style="position: fixed; top: 90px; right: 0px; background: rgba(245, 73, 73, 0.47); font-size: 20px; color: rgb(255, 255, 255); padding: 12px;">
+    <p>Adding {{addingLangBody}} language, dont forget save changes</p>
+    <button (click)="alertAddingLang = !alertAddingLang" class="btn btn-primary">OK</button>
+  </div>
+
+  <div *ngIf="acceptAddingNewLang" style="position: fixed; top: 300px; right: 70px; background: yellowgreen; font-size: 20px; color: rgb(255, 255, 255); padding: 12px;z-index:8000">
+    <p>Add {{addingLangBody}} language for this page?</p>
+    <button (click)="acceptLangBlock()" class="btn btn-warning">Accept</button>
+    <button (click)="cancelLangBlock()" class="btn btn-danger" style="margin-left: 10px;">Cancel</button>
+  </div>
+
+  <div id="addNewLangToPanel" *ngIf="addingNewLan" class="input-group mb-3 col-md-3">
+  <select (change)='chooseLanguage($event)' class="custom-select" id="inputGroupSelect04">
+    <option selected>Choose...</option>
+    <option value="{{lang.short}}" *ngFor="let lang of lang_list">{{lang.short}} - {{lang.nativeName}}</option>
+  </select>
+  <div class="input-group-append">
+    <button (click)="languageAdding()" class="btn btn-info" type="button">OK</button>
+    <button (click)='addingNewLan = !addingNewLan' class="btn btn-danger" type="button">Close</button>
+  </div>
+</div>

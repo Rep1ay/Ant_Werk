@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from './../auth.service';
+import { AuthService } from './../../auth.service';
 import { Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
 @Component({
@@ -18,11 +18,13 @@ export class RegisterComponent implements OnInit {
 
   registerUser(form: NgForm) {
     // this.registerUserData
+    
     this._auth.registerNewUser(form.value).subscribe(
       (res) => {
-        //
+        
         localStorage.setItem('token', res.token);
-        this.router.navigate([`${localStorage.language}/home`]);
+        this.router.navigate([`${localStorage.language}/${localStorage.location}`]);
+        
         window.location.reload();
       },
       (error) => console.error(error)

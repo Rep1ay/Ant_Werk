@@ -1,0 +1,243 @@
+
+<app-preloader *ngIf="showPreloader"></app-preloader>
+
+<!-- ============ permalink block start ======================  -->
+
+
+<div *ngIf="!showPreloader && loggedIn" style="height: 80px;" class="container-fluid">
+	<div style="height: 100px;" class="row">
+		<div class="permalinkForm">
+			<form *ngIf="loggedIn"  #inputURL='ngForm' class="form-inline">
+				<label for="input">Permalink: </label>
+				<a style="margin-left: 5px" href='{{permalinkURL}}'> {{winOrigin}}{{permalink}}</a>
+				<input *ngIf="edition" #input="ngModel" [(ngModel)]='permalinkEdit' name="input" ngModel class="form-control col-md-3">
+				
+				<button *ngIf="!edition" style="margin: 10px" 
+				(click)='editPermalink(inputURL); edition = !edition' 
+				class="btn btn-primary btn-large" 
+				type="submit">
+				Edit
+				</button>
+				
+				<button *ngIf="edition" style="margin: 10px 5px;" (click)='savePermalink(inputURL); edition = !edition' 
+				class="btn btn-success btn-large">
+				Save
+				</button>
+	
+				<button *ngIf="edition" style="margin: 10px 2px;" (click)='cancelPermalink(); edition = !edition' 
+				class="btn btn-danger btn-large">
+				Cancel
+				</button>
+		  	</form>
+		</div>
+
+		<div *ngIf="newLanguageAdded" class="col-md-3">
+			<p>added new language {{localhost.language}} to this page</p>
+		</div>
+	</div>
+	
+</div>
+
+<!-- ============ permalink block end ======================  -->
+
+<div *ngIf="!showPreloader" class="container-fluid">
+
+	<div  *ngIf="template" id="body"  class="container-fluid body_container">
+		<div [innerHTML]='template'></div>
+	</div>
+
+	
+	<!-- ============================================================================================= -->
+  <!-- (mouseover)='editElement($event, editBlock)' -->
+
+  <div  *ngIf="!template" id="default" class="container-fluid body_container">
+    <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-2 mb-3">
+              </div>
+              <div  class="col-md-8">
+                <h3 class="text-center articleTitle click2edit">
+                  Lorem ipsum dolor sit amet,consectetur adipiscing elit. Aliquam eget sapien sapien.
+                </h3>
+              </div>
+              <div class="col-md-2">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-2">
+              </div>
+              <div class="col-md-8">
+                <p class="text-center lead description click2edit">
+                  Lorem ipsum dolor sit amet,consectetur adipiscing elit. Aliquam eget sapien sapien. Curabitur in metus urna. In hac habitasse platea dictumst. Phasellus eu sem sapien, sed vestibulum velit. Nam purus nibh, lacinia non faucibus et, pharetra in dolor. Sed iaculis posuere diam ut cursus.Morbi commodo sodales nisi id sodales. Proin consectetur, nisi id commodo imperdiet, metus nunc consequat lectus, id bibendum diam velit et dui. Proin massa magna, vulputate nec bibendum nec, posuere nec lacus. Aliquam mi erat, aliquam vel luctus eu, pharetra quis elit. Nulla euismod ultrices massa, et feugiat ipsum consequat eu.
+                </p>
+              </div>
+              <div class="col-md-2">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <img alt="Bootstrap Image Preview" src="http://mmpj.com.pl/wp-content/uploads/2017/02/mmpj2.jpg">
+              </div>
+            </div>
+
+             <div class="row mt-5">
+              <div class="col-md-1">
+              </div>
+              <div class="col-md-10 mt-5">
+                  <p>
+                    Lorem ipsum dolor sit amet,consectetur adipiscing elit. Aliquam eget sapien sapien. Curabitur in metus urna. In hac habitasse platea dictumst. Phasellus eu sem sapien, sed vestibulum velit. Nam purus nibh, lacinia non faucibus et, pharetra in dolor. Sed iaculis posuere diam ut cursus.Morbi commodo sodales nisi id sodales. Proin consectetur, nisi id commodo imperdiet, metus nunc consequat lectus, id bibendum diam velit et dui. Proin massa magna, vulputate nec bibendum nec, posuere nec lacus. Aliquam mi erat, aliquam vel luctus eu, pharetra quis elit. Nulla euismod ultrices massa, et feugiat ipsum consequat eu.
+                  </p>
+              </div>
+              <div class="col-md-1">
+              </div>
+            </div>
+            <div class="row mt-5">
+                <div class="col-md-1">
+                  </div>
+              <div class="col-md-5 mt-5">
+                <dl>
+                  <dt>
+                    Description lists
+                  </dt>
+                  <dd>
+                    A description list is perfect for defining terms.
+                  </dd>
+                  <dt>
+                    Euismod
+                  </dt>
+                  <dd>
+                    Vestibulum id ligula porta felis euismod semper eget lacinia odio sem nec elit.
+                  </dd>
+                  <dd>
+                    Donec id elit non mi porta gravida at eget metus.
+                  </dd>
+                  <dt>
+                    Malesuada porta
+                  </dt>
+                  <dd>
+                    Etiam porta sem malesuada magna mollis euismod.
+                  </dd>
+                  <dt>
+                    Felis euismod semper eget lacinia
+                  </dt>
+                  <dd>
+                    Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.
+                  </dd>
+                </dl>
+              </div>
+              <div class="col-md-5 mt-10">
+                <img alt="Bootstrap Image Preview" src="http://www.truck-spotters.eu/attachments/18447_0184da4cd7adff6b844aa2e609bc69ffcbe7d838">
+              </div>
+              <div class="col-md-1">
+              </div>
+            </div>
+            <div style="margin-top:50px" class="row">
+              <div class="col-md-2">
+              </div>
+              <div class="col-md-8">
+                <blockquote class="blockquote">
+                  <p class="mb-0">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.
+                  </p>
+                  <footer class="blockquote-footer">
+                    Someone famous in <cite>Source Title</cite>
+                  </footer>
+                </blockquote>
+              </div>
+              <div class="col-md-2">
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+  </div>
+</div>
+
+
+	<!-- <div class="container-fluid" [innerHTML]='template'></div> -->
+
+			
+	<!-- </div> -->
+
+
+
+<!-- <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-2">
+          </div>
+          <div class="col-md-8">
+            <p class="text-center lead">
+              {{article.description}}
+            </p>
+          </div>
+          <div class="col-md-2">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <img alt="Bootstrap Image Preview" src="http://mmpj.com.pl/wp-content/uploads/2017/02/mmpj2.jpg">
+          </div>
+        </div>
+        <div class="row mt-5" >
+          <div class="col-md-2">
+          </div>
+          <div class="col-md-5">
+            <p>
+              Lorem ipsum dolor sit amet,consectetur adipiscing elit. Aliquam eget sapien sapien. Curabitur in metus urna. In hac habitasse platea dictumst. Phasellus eu sem sapien, sed vestibulum velit. Nam purus nibh, lacinia non faucibus et, pharetra in dolor. Sed iaculis posuere diam ut cursus.Morbi commodo sodales nisi id sodales. Proin consectetur, nisi id commodo imperdiet, metus nunc consequat lectus, id bibendum diam velit et dui. Proin massa magna, vulputate nec bibendum nec, posuere nec lacus. Aliquam mi erat, aliquam vel luctus eu, pharetra quis elit. Nulla euismod ultrices massa, et feugiat ipsum consequat eu.
+            </p>
+            <dl>
+              <dt>
+                Description lists
+              </dt>
+              <dd>
+                A description list is perfect for defining terms.
+              </dd>
+              <dt>
+                Euismod
+              </dt>
+              <dd>
+                Vestibulum id ligula porta felis euismod semper eget lacinia odio sem nec elit.
+              </dd>
+              <dd>
+                Donec id elit non mi porta gravida at eget metus.
+              </dd>
+              <dt>
+                Malesuada porta
+              </dt>
+              <dd>
+                Etiam porta sem malesuada magna mollis euismod.
+              </dd>
+              <dt>
+                Felis euismod semper eget lacinia
+              </dt>
+              <dd>
+                Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.
+              </dd>
+            </dl>
+          </div>
+          <div class="col-md-5 mt-10 mb-5">
+            <img alt="Bootstrap Image Preview" src="https://www.skat.com.pl/slir/w1280-q100//images/galerie/transport-multimodalny/IMG_3462.jpg">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-2">
+          </div>
+          <div class="col-md-8">
+            <blockquote class="blockquote">
+              <p class="mb-0">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.
+              </p>
+              <footer class="blockquote-footer">
+                Someone famous in <cite>Source Title</cite>
+              </footer>
+            </blockquote>
+          </div>
+          <div class="col-md-2">
+          </div>
+        </div>
+      </div>    </div>
+  </div> -->

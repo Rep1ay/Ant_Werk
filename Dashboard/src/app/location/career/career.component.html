@@ -1,0 +1,110 @@
+<app-preloader *ngIf="showPreloader"></app-preloader>
+
+<!-- ============ permalink block start ======================  -->
+
+
+<div *ngIf="!showPreloader && loggedIn" style="height: 80px;" class="container-fluid">
+	<div style="height: 100px;" class="row">
+		<div class="permalinkForm">
+			<form *ngIf="loggedIn"  #inputURL='ngForm' class="form-inline">
+				<label for="input">Permalink: </label>
+				<a style="margin-left: 5px" href='{{permalinkURL}}'> {{winOrigin}}{{permalink}}</a>
+				<input *ngIf="edition" #input="ngModel" [(ngModel)]='permalinkEdit' name="input" ngModel class="form-control col-md-3">
+				
+				<button *ngIf="!edition" style="margin: 10px" 
+				(click)='editPermalink(inputURL); edition = !edition' 
+				class="btn btn-primary btn-large" 
+				type="submit">
+				Edit
+				</button>
+				
+				<button *ngIf="edition" style="margin: 10px 5px;" (click)='savePermalink(inputURL); edition = !edition' 
+				class="btn btn-success btn-large">
+				Save
+				</button>
+	
+				<button *ngIf="edition" style="margin: 10px 2px;" (click)='cancelPermalink(); edition = !edition' 
+				class="btn btn-danger btn-large">
+				Cancel
+				</button>
+		  	</form>
+		</div>
+
+		<div *ngIf="newLanguageAdded" class="col-md-3">
+			<p>added new language {{localhost.language}} to this page</p>
+		</div>
+	</div>
+	
+</div>
+
+<!-- ============ permalink block end ======================  -->
+
+<div *ngIf="!showPreloader" class="container-fluid">
+
+	<div  *ngIf="template" id="body"  class="container-fluid body_container">
+		<div [innerHTML]='template'></div>
+	</div>
+<div  *ngIf="!template" id="default" class="container-fluid body_container">
+
+
+<div class="row mt-5 mb-3">
+	<h4>We are looking for:</h4>
+
+</div>
+<div class="positions_list">
+	<div style="    position: relative;" class="item">
+		
+			<!-- <div class="row vacant_row"> -->
+				<!-- <div class="function_panel"> -->
+							
+				<div class="col-md-2 actionPanel row">
+
+						</div>
+				
+						<div class="vacant_position click2edit col-md-9">Manager</div>
+						<!-- </div> -->
+						<div class="description" style="display: block;">
+							<div class="blockForBtnEdit" style="left: 15px; top: 28px; position: absolute; font-size: 16px;">
+								<button class="btn btn-info btn-large btnEdit">Edit</button>
+							</div>
+							<p class="click2edit">Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate voluptas modi sapiente tempore maxime fuga eos iusto distinctio, nemo vel nam unde ea nostrum aut reprehenderit voluptatibus beatae impedit? Ab explicabo omnis deserunt dicta aperiam deleniti, dignissimos qui consequuntur, modi sed iusto quam minus doloribus at praesentium animi in necessitatibus tempora. Veritatis deleniti aut ratione blanditiis. Aliquid facilis architecto numquam </p>
+								<div class="description_list">
+									<ul>
+										<li>fwawf</li>
+									</ul>
+								</div>
+							</div>
+				
+			<!-- </div> -->
+	
+
+	</div>
+	
+</div>
+
+<div style="margin-bottom: 80px" class="row mb-8">
+	<div class="col-md-6">
+		<h3>Get in touch</h3>
+<form>
+  <div class="form-group">
+    <label for="exampleInputEmail1">Email address</label>
+    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+  </div>
+  <div class="form-group">
+    <label for="exampleInputPassword1">Password</label>
+    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+  </div>
+  <div class="form-check">
+    <input type="checkbox" class="form-check-input" id="exampleCheck1">
+    <label class="form-check-label" for="exampleCheck1">Check me out</label>
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+	</div>
+</div>
+
+
+
+  </div>
+</div>

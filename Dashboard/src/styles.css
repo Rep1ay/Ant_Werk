@@ -1,1 +1,10 @@
 /* You can add global styles to this file, and also import other style files */
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+
+.permalinkForm{
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    background: #eee;
+    padding: 10px 50px;
+}

@@ -1,19 +1,24 @@
 import { Component, OnInit } from '@angular/core';
-import { TemplatesService } from '../templates.service';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { AuthService } from '../auth.service';
+import { TemplatesService } from '../../templates.service';
+import { FormBuilder, FormGroup, NgForm } from '@angular/forms';
+import { AuthService } from '../../auth.service';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { ActivatedRoute, Router, UrlTree, UrlSegmentGroup, UrlSegment, NavigationEnd } from '@angular/router';
 import { Location } from '@angular/common';
+// import { filter } from 'rxjs/operators';
+import { Observable, Subject, asapScheduler, pipe, of, from,
+  interval, merge, fromEvent } from 'rxjs';
+  import { map, filter, scan } from 'rxjs/operators';
 // Jquery declaration
-declare var $: any;
+declare let $: any;
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  selector: 'app-contacts',
+  templateUrl: './contacts.component.html',
+  styleUrls: ['./contacts.component.css']
 })
-
-export class HomeComponent implements OnInit {
+export class ContactsComponent implements OnInit {
+  
   loggedIn: boolean;
   lastTarget: any;
   title: string;
@@ -31,119 +36,154 @@ export class HomeComponent implements OnInit {
   event: any;
   savedContent: string;
   showPreloader = true;
+  winOrigin:string;
+  winPathname:string;
+  permalink: string;
+  permalinkEdit: string;
+  newLanguageAdded = false;
+  routeUrl: string;
+  showBeforeLogin:any = true;
+  showAfterLogin:any
+  currentLang: string;
+  permalinkURL: string;
+  currentLocation = 'contacts';
+  counterEnter = false;
 
   constructor(private _templatesService: TemplatesService, 
             formBuilder: FormBuilder,
             private _auth: AuthService,
             private _activeRoute: ActivatedRoute,
-            private _router: Router,
+            public _router: Router,
             private _location: Location
             ) { 
+              this.winOrigin = window.location.origin;
+              this.winPathname = window.location.pathname;
 
-            //   _router.events.subscribe((val) => {
-            //     // see also 
-            //     
-            //     console.log(val instanceof NavigationEnd) 
-            // });
-          //   let loc =_location.path().replace('/', '');
-          //   let windPath = window.location.pathname.split('/')[1];
-          //   let routConf = _router.config[1].path.split('/')[0];
-          //   let empty = '';
-          //   if(!localStorage.language){
-          //     if(loc !== empty){
-          //       localStorage.language = loc.split('/')[0];
-          //       _router.config[1].path = loc;
-          //     }
-          //   }else{
-          //     _router.config[1].path = `${localStorage.language}/${loc.split('/')[1]}`
-          //   }
+              this._router.events.pipe(
+                filter((event:Event) => event instanceof NavigationEnd)
+              ).subscribe((routeData: any) => {
+                this.winOrigin = window.location.origin;
+                this.winPathname = window.location.pathname;
 
+                if(this.currentLocation === localStorage.permalink || this.currentLocation === localStorage.location){
+                  if(!this.counterEnter){
+                      this.changeOfRoutes(routeData.url);
+                      this.counterEnter = true;
+                    }
+                  }
 
-          //   // window.location.pathname = _router.config[1].path
-
-          // //   if(localStorage.language !== locPath){
-          // //     routConf = locPath;
-          // //  }
-          // // if( _router.config[1].path.split('/')[0] === "undefined"){
-          //   // _router.config[1].path = loc;
-          // // }
-         
-
-
-          // this._location.go(_router.config[1].path);
-            // window.location.pathname = _router.config[1].path
-          //   if(localStorage.language !== locPath){
-          //     routConf = locPath;
-          //  }
-
-          //  this._location.go(_router.config[1].path);
+              })
           }
 
   ngOnInit() {
 
-    // let urlCollect = this._activeRoute.snapshot.url;
-    // urlCollect.forEach( url => {
-    //   //
-    // });
-
-    localStorage.location = this._activeRoute.snapshot.url[1].path;
+    this._router.routerState
     
-    localStorage.language =  this._activeRoute.snapshot.url[0].path;
-    
-    this.title = this._activeRoute.snapshot.url[1].path;
-
-    if(!localStorage.language){
-      
-      localStorage.language = 'EN';
-      this.prefix = localStorage.language;
-    }else{
-      this.prefix = localStorage.language;
-    }
+    let snapshotURL = this._activeRoute.snapshot.url;
+    // localStorage.location = this.title = snapshotURL[0].path;
+    let title = localStorage.location;
 
     this.loggedIn = this._auth.loggedIn();
-    
+
     this._templatesService._event.subscribe(
       event => {
-        debugger
-        this.editInner(event);}
+        this.editInner(event)
+      }
     )
-  if(this.loggedIn){
-    $( document ).ready(()=> {
+  let _self = this;
+  this.showPreloader = true;
 
-      let event, body = null;
-      this.addEditButton(event, body);
-    });
+  this.getTemplate(title);
+  };
+
+  changeOfRoutes(url){
+
+    let title = localStorage.location;
+
+    this.routeUrl = url;
+    this.showPreloader = true;
+    // let _self = this;
+    // let prefix = localStorage.language;
+
+    //   // title = window.location.pathname.split('/')[2];
+      this.getTemplate(title);
+
   }
 
-   this._templatesService.getTemplate(this.title, this.prefix)
+  getTemplate(title){
+   
+    let _self = this;
+    let prefix = localStorage.language;
+   
+    this._templatesService.getTemplate(title, prefix)
     .subscribe(
       (res) => {
         if(res){
-          let prefix = this.prefix;
-          this.template = res['template'];
-          setTimeout(() => {
-            this.showPreloader = false;
-          }, 3000);
-        }else{
-          
-          localStorage.language = 'EN'
-          this.template = null;
+          let template =  res['data']['template'];
+          _self.permalink = `/${localStorage.permalink}`;
+          _self.renderTemplate(template);
         }
       },
       (err) => {
-        // this.showPreloader = true;
         console.log(err);
       }
     );
+  }
+  
 
-    // const headers = ['H1', 'H2', 'H3', 'H4',]
+  editPermalink(inputURL: NgForm){
+    
+    this.permalink = '/';
+    this.permalinkEdit = `${localStorage.permalink}`;
+    console.log(inputURL.value);
+  }
 
-  };
-
-  addEditButton(event, body){
+  savePermalink(permalink: NgForm){
     let _self = this;
+    let permalinkToSend = permalink.value.input;
+    this.permalink = `/${permalink.value.input}`;
+    localStorage.permalink = permalink.value.input;
+    this._templatesService.send_permalink(localStorage.location, permalinkToSend).subscribe(
+      (res) => {
+        // _self._router.navigate([`${localStorage.language}/${res['permalink']}`]);
+        _self._location.go(`${localStorage.language}/${res['permalink']}`)
+        window.location.reload();
+      },
+      (err) => {
+        console.log('Error from permalink send from navbar' + '</br>' + err);
+      }
+    )
+
+    this.permalinkEdit = '';
+  }
+
+  cancelPermalink(){
+    this.permalink = `/${localStorage.permalink}`
+    this.permalinkEdit = '';
+  }
+
+  renderTemplate(template){
+    this.template = template;
+    this.counterEnter = false;
+    if(this.loggedIn) {
       setTimeout(() => {
         this.showPreloader = false;
+        setTimeout(() => {
+          this.addEditButton();
+        }, 100)
+     }, 1000)
+    }
+    else{
+      setTimeout(() => {
+        this.showPreloader = false;
+     }, 1000)
+    }
+  }
+
+  addEditButton(){
+    let _self = this;
+      setTimeout(() => {
+        // this.showPreloader = false;
       }, 1500);
 
       $('.click2edit').off('mouseover').on('mouseover', function(event){
@@ -196,12 +236,27 @@ export class HomeComponent implements OnInit {
       blockForBtnEdit.setAttribute('class', 'blockForBtnEdit');
      
       $(blockForBtnEdit).css({'left': `${left}px`, 
-                          'top': `${top - 70}px`, 
+                          'top': `${top - 75}px`, 
                           'position': 'absolute',
                           'font-size':'16px',
                           });
 
       $(btnEdit).off('click').on('click', (event) =>{
+
+
+        $(target).keypress(function(event) {
+          var keycode = (event.keyCode ? event.keyCode : event.which);
+          if (keycode == '13') {
+            
+            event.preventDefault();
+            $(this).focusout();
+            $(this).attr('contenteditable','false');
+            $('.blockForBtnEdit').remove();
+            $('.blockForBtnSave').remove();
+            $('.blockForBtnCancel').remove();
+            // event.preventDefault();
+          }
+      });
 
         this.savedContent = target.innerText;
         target.setAttribute('contenteditable', 'true');
@@ -218,16 +273,18 @@ export class HomeComponent implements OnInit {
           $('.blockForBtnEdit').remove();
           $('.blockForBtnSave').remove();
           $('.blockForBtnCancel').remove();
-          _self.saveChangies();
+
+//========================   Save Method ======================
+
+          _self.saveChanges();
         }
-        
 
         $(blockForBtnSave).insertBefore(target)
         $(blockForBtnSave).css({'left': `${left}px`, 
-                          'top': `${top - 70}px`, 
+                          'top': `${top - 75}px`, 
                           'position': 'absolute',
                           'font-size':'16px',
-                          'z-index': '1'
+                          'z-index': '1000'
                           });
         blockForBtnSave.setAttribute('class', 'blockForBtnSave');
 
@@ -236,10 +293,10 @@ export class HomeComponent implements OnInit {
         blockForBtnCancel.appendChild(btnCancel);
         $(blockForBtnCancel).insertBefore(target)
         $(blockForBtnCancel).css({'left': `${left + 70}px`, 
-                          'top': `${top - 70}px`, 
+                          'top': `${top - 75}px`, 
                           'position': 'absolute',
                           'font-size':'16px',
-                          'z-index': '1'
+                          'z-index': '1000'
                           });
         blockForBtnCancel.setAttribute('class', 'blockForBtnCancel');
        
@@ -263,34 +320,32 @@ export class HomeComponent implements OnInit {
       });
      
   }
-
-  saveChangies(){
+  
+  saveChanges(){
+    let _self = this;
     let body;
     let pageTitle = localStorage.location;
-
-    let send_prefix;
-    if(localStorage.addNewLang){
-      send_prefix = localStorage.addNewLang;
-    }else{
-      send_prefix = this.prefix;
-    }
+    let lang  = localStorage.language;
 
     if(this.template){
       body= document.querySelector('#body');
     }else{
       body= document.querySelector('#default');
     }
-    this._templatesService.sendTemplate(body.innerHTML, pageTitle, send_prefix).subscribe((error) => {console.log(error)}
-    )
-    this._templatesService.add_new_lang_panel(send_prefix).subscribe(
-      (res) => {
-        //
-        alert('added new lang');
-      },
-      (err) => {
-        console.log(err);
-      }
-    );
+    let permalink = localStorage.permalink
+
+     $('.blockForBtnEdit').remove();
+    this._templatesService.sendTemplate(body.innerHTML, pageTitle, lang, permalink).subscribe((error) => {
+      console.log(error)
+      localStorage.removeItem('addNewLang');
+    });
+
+    this._templatesService.send_permalink(pageTitle, permalink)
+      .subscribe(res => 
+        {
+          localStorage.permalink = res['permalink']
+        }
+      );
   }
 
   editInner(event){
@@ -302,13 +357,14 @@ export class HomeComponent implements OnInit {
     }else{
       body= document.querySelector('#default');
     }
+    let permalink = localStorage.permalink
     let send_prefix;
     if(localStorage.addNewLang){
       send_prefix = localStorage.addNewLang;
     }else{
       send_prefix = this.prefix;
     }
-    this._templatesService.sendTemplate(body.innerHTML, pageTitle, send_prefix).subscribe(
+    this._templatesService.sendTemplate(body.innerHTML, pageTitle, send_prefix, permalink).subscribe(
       (res) => {
         this._templatesService.add_new_lang_panel(send_prefix).subscribe(
           (res) => {
