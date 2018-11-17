@@ -27,6 +27,8 @@ private _langListURL = 'http://localhost:3000/api/lang_list'
 private _navbarURL = 'http://localhost:3000/api/navbar'
 private _newsURL = 'http://localhost:3000/api/news'
 private _articleURL = 'http://localhost:3000/api/article'
+private _3_articlesURL = 'http://localhost:3000/api/3_articles'
+
 
 // private _templatesUrl = 'http://68.183.30.119/api/templates'
 
@@ -58,6 +60,17 @@ private _articleURL = 'http://localhost:3000/api/article'
 
   getLangList(){
     return this._http.get<LangList[]>(this._langListURL)
+  }
+
+  get_3_articles(prefix){
+    let headerJson = {
+      'Content-Type': 'application/json',
+      'Accept' : 'application/json',
+      'prefix': prefix
+    }
+    const headers = new HttpHeaders(headerJson);
+
+    return this._http.get<NewsCollection[]>(this._3_articlesURL, {headers}).pipe(map((response: any) => response)); 
   }
 
   getNews(prefix){
@@ -96,7 +109,7 @@ debugger
         'prefix': body.prefix,
         'category': body.category,
         'title': body.title,
-        'discription': body.discription,
+        'description': body.description,
         'date': body.date,
         'template': body.template
       }

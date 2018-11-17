@@ -221,48 +221,53 @@ let _self = this;
       .subscribe(
         (res) => {
           if(res){
-            if(res['data']['template']){
+
+            if(res['data']['prefix']){
+              _self.currentLang = localStorage.language = res['data']['prefix']; 
+            }else{
+              localStorage.language = _self.currentLang;
+            }
             
-              let pageTitle;
-                if(res['data']['prefix']){
-                  _self.currentLang = localStorage.language = res['data']['prefix']; 
-                }else{
-                  localStorage.language = _self.currentLang;
-                }
-                // _self.currentLang = localStorage.language = 'en';
-                // _self.template = res['data']['template'];
-                localStorage.location = pageTitle = res['data']['pageTitle'];
-                _self.currentLocation = pageTitle;
-                let permalink;
-                if(res['permalink']){
-                  permalink = res['permalink'];
-                }else{
-                  permalink = res['data']['permalink'];
-                }
-                
-                let lang = localStorage.language;
-
-                let origin = window.location.origin;
-                _self.permalinkURL = `${origin}/${lang}/${permalink}`
-                _self._router.config[0].children.forEach((route) => {
-                  if(route.path === pageTitle){
-                    // route.path = `${localStorage.language}/${res['permalink']}`;
-                    route.path = permalink;
-                  }
-                })
-
-              _self._router.config[0].path = lang;
-              _self._router.config[1].redirectTo = `/${lang}/home`
-
-              localStorage.permalink = permalink;
-              _self.permalink = `/${permalink}`;
-              _self.templateRendered = true;
-              _self._router.navigate([`${localStorage.language}/${localStorage.permalink}`])
-              // _self._router.navigate([`${lang}/${permalink}`]);
-              // _self._location.go(`${lang}/${permalink}`);
+            if(!res['data']['template']){
+              _self.acceptAddingNewLang = true;
+              _self.addingLangBody = _self.currentLang;
+            }
+            let pageTitle;
+              
+              // _self.currentLang = localStorage.language = 'en';
+              // _self.template = res['data']['template'];
+              localStorage.location = pageTitle = res['data']['pageTitle'];
+              _self.currentLocation = pageTitle;
+              let permalink;
+              if(res['permalink']){
+                permalink = res['permalink'];
+              }else if(res['data']['permalink']){
+                permalink = res['data']['permalink'];
               }else{
-                _self.acceptAddingNewLang = true;
+                 permalink = res['data']['pageTitle'];
               }
+              
+              let lang = localStorage.language;
+
+              let origin = window.location.origin;
+              _self.permalinkURL = `${origin}/${lang}/${permalink}`
+              _self._router.config[0].children.forEach((route) => {
+                if(route.path === pageTitle){
+                  // route.path = `${localStorage.language}/${res['permalink']}`;
+                  route.path = permalink;
+                }
+              })
+
+            _self._router.config[0].path = lang;
+            _self._router.config[1].redirectTo = `/${lang}/home`
+
+            localStorage.permalink = permalink;
+            _self.permalink = `/${permalink}`;
+            _self.templateRendered = true;
+            _self._router.navigate([`${localStorage.language}/${localStorage.permalink}`])
+            // _self._router.navigate([`${lang}/${permalink}`]);
+            // _self._location.go(`${lang}/${permalink}`);
+            
             }else{
               if(_self.langChanging){
                 // let langDefault = localStorage.language;

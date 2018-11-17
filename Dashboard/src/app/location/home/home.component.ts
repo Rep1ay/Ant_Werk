@@ -9,6 +9,7 @@ import { Location } from '@angular/common';
 import { Observable, Subject, asapScheduler, pipe, of, from,
   interval, merge, fromEvent } from 'rxjs';
   import { map, filter, scan } from 'rxjs/operators';
+import { NewsCollection } from 'src/app/news-collection';
 // Jquery declaration
 declare let $: any;
 
@@ -35,6 +36,7 @@ export class HomeComponent implements OnInit {
   savePostForm: FormGroup;
   saveBtnPublic: any;
   event: any;
+  newsCollection: NewsCollection[];
   savedContent: string;
   showPreloader = true;
   winOrigin:string;
@@ -100,12 +102,13 @@ export class HomeComponent implements OnInit {
   };
 
   changeOfRoutes(url){
-
+    let lang = localStorage.language;
     let title = localStorage.location;
 
     this.routeUrl = url;
     this.showPreloader = true;
     this.getTemplate(title);
+    this.getLastNews(lang);
   }
 
  getTemplate(title){
@@ -131,6 +134,22 @@ export class HomeComponent implements OnInit {
         console.log(err);
       }
     );
+  }
+
+  getLastNews(lang){
+    let _self = this;
+    this._templatesService.get_3_articles(lang)
+    .subscribe(
+      (res) => {
+        if(res.length > 0){
+          _self.newsCollection = res;
+        }else{
+          _self.newsCollection = [];
+        }
+      },
+    (err) => {
+      console.log('Error from get 3 articles' + err);
+    })
   }
 
   editPermalink(inputURL: NgForm){
@@ -170,8 +189,10 @@ export class HomeComponent implements OnInit {
     if(this.loggedIn) {
       setTimeout(() => {
         this.showPreloader = false;
+    
         setTimeout(() => {
           this.addEditButton();
+          this.renderNews();
         }, 100)
      }, 1000)
     }
@@ -180,6 +201,21 @@ export class HomeComponent implements OnInit {
         this.showPreloader = false;
      }, 1000)
     }
+  }
+
+  renderNews(){
+    $('.article').remove();
+    let newsBlock =$('.newsBlock');
+
+    this.newsCollection.forEach(article => {
+      let articleDescription = article.description.slice(0, 150)
+    $('<div/>', {
+      'class': 'col-md-4 article',
+      append: `<img style="width: 100%;" alt="Media Preview" src="http://www.aviwebsolutions.co.uk/new-images/news-feed-img.jpg"><h6>${article.title}</h6></br><p>${articleDescription}...</p>`,
+      appendTo: newsBlock
+    })
+
+    });
   }
 
   addEditButton(){
