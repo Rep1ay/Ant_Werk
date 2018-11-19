@@ -30,6 +30,8 @@ private _newsURL = 'http://localhost:3000/api/news'
 private _articleURL = 'http://localhost:3000/api/article'
 private _3_articlesURL = 'http://localhost:3000/api/3_articles'
 private _newsCategoryURL = 'http://localhost:3000/api/news_category'
+private _newsByCategoryURL = 'http://localhost:3000/api/news_by_category'
+
 
 
 // private _templatesUrl = 'http://68.183.30.119/api/templates'
@@ -87,6 +89,18 @@ private _newsCategoryURL = 'http://localhost:3000/api/news_category'
     const headers = new HttpHeaders(headerJson);
 
     return this._http.get<NewsCollection[]>(this._newsURL, {headers}).pipe(map((response: any) => response)); 
+  }
+
+  getNewsByCategory(category, lang){
+    let headerJson = {
+      'Content-Type': 'application/json',
+      'Accept' : 'application/json',
+      'prefix': lang,
+      'category': category
+    }
+    const headers = new HttpHeaders(headerJson);
+
+    return this._http.get<NewsCollection[]>(this._newsByCategoryURL, {headers}).pipe(map((response: any) => response)); 
   }
 
   getArticleTemplate(id, prefix){

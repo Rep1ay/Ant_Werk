@@ -204,8 +204,9 @@ export class HomeComponent implements OnInit {
   }
 
   renderNews(){
+    let _self = this;
     $('.article').remove();
-    let newsBlock =$('.newsBlock');
+    let newsBlock = $('.newsBlock');
 
     this.newsCollection.forEach(article => {
       let articleDescription = article.description.slice(0, 150)
@@ -213,6 +214,10 @@ export class HomeComponent implements OnInit {
       'class': 'col-md-4 article',
       append: `<img style="width: 100%;" alt="Media Preview" src="http://www.aviwebsolutions.co.uk/new-images/news-feed-img.jpg"><h6>${article.title}</h6></br><p>${articleDescription}...</p>`,
       appendTo: newsBlock
+    })
+
+    $('.newsLink').off('click').on('click', function(event) {
+      _self.routeToNews();
     })
 
     });
@@ -380,6 +385,13 @@ export class HomeComponent implements OnInit {
 
     this._templatesService.send_permalink(pageTitle, permalink).subscribe(res => {  localStorage.permalink = res['permalink']});
 
+  }
+
+
+  routeToNews(){
+    let lang = localStorage.language;
+
+    this._router.navigate([`${lang}/news`])
   }
 
   editInner(event){

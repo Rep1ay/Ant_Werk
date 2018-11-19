@@ -48,8 +48,11 @@
 						<li style="cursor:pointer" class="nav-item">
 							<p (click)='creatingCategory = true' class="nav-link active" >+</p>
 						</li>
-						<li *ngFor="let item of news_categories" class="nav-item">
-							<p class="nav-link active">{{item.category}}</p>
+						<li style="cursor:pointer" class="nav-item">
+							<p (click)='getAllNews()' class="nav-link active" >All news</p>
+						</li>
+						<li style="cursor:pointer" *ngFor="let item of news_categories" class="nav-item">
+							<p (click)="filterByCategory(item.category)" class="nav-link active">{{item.category}}</p>
 						</li>
 					</ul>
 				</div>
