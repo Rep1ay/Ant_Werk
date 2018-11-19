@@ -10,6 +10,7 @@ import { Observable, Subject, asapScheduler, pipe, of, from,
   interval, merge, fromEvent } from 'rxjs';
   import { map, filter, scan } from 'rxjs/operators';
 import { Article } from 'src/app/article';
+import { NewsCategories } from 'src/app/news_category';
 // Jquery declaration
 declare let $: any;
 
@@ -50,6 +51,10 @@ export class NewArticleComponent implements OnInit {
   permalinkURL: string;
   currentLocation = 'new-article';
   counterEnter = false;
+
+  category = 'Other';
+  editingCategory = false;
+  news_categories: NewsCategories[];
 
   constructor(private _templatesService: TemplatesService, 
             formBuilder: FormBuilder,
@@ -110,62 +115,62 @@ export class NewArticleComponent implements OnInit {
     // this.getTemplate(title);
   }
 
- getTemplate(title){
+//  getTemplate(title){
    
-    let _self = this;
-    let prefix = localStorage.language;
+//     let _self = this;
+//     let prefix = localStorage.language;
    
-    this._templatesService.getTemplate(title, prefix)
-    .subscribe(
-      (res) => {
-        if(res){
-          let template =  res['data']['template'];         
-          _self.permalink = `/${localStorage.permalink}`;
-          _self.renderTemplate();
-        }
-      },
-      (err) => {
-        console.log(err);
-      }
-    );
+//     this._templatesService.getTemplate(title, prefix)
+//     .subscribe(
+//       (res) => {
+//         if(res){
+//           let template =  res['data']['template'];         
+//           _self.permalink = `/${localStorage.permalink}`;
+//           _self.renderTemplate();
+//         }
+//       },
+//       (err) => {
+//         console.log(err);
+//       }
+//     );
+//   }
+
+  editCategory(){
+  
   }
 
-  editPermalink(inputURL: NgForm){
-    
-    this.permalink = '/';
-    this.permalinkEdit = `${localStorage.permalink}`;
-    console.log(inputURL.value);
-  }
-
-  savePermalink(permalink: NgForm){
+  saveCategory (category: NgForm){
     let _self = this;
-    let permalinkToSend = permalink.value.input;
-    this.permalink = `/${permalink.value.input}`;
-    localStorage.permalink = permalink.value.input;
-    this._templatesService.send_permalink(localStorage.location, permalinkToSend).subscribe(
-      (res) => {
-        // _self._router.navigate([`${localStorage.language}/${res['permalink']}`]);
-        _self._location.go(`${localStorage.language}/${res['permalink']}`)
-        window.location.reload();
-      },
-      (err) => {
-        console.log('Error from permalink send from navbar' + '</br>' + err);
-      }
-    )
+  debugger
+    this.category = category.value.input;
 
-    this.permalinkEdit = '';
   }
 
-  cancelPermalink(){
-    this.permalink = `/${localStorage.permalink}`
-    this.permalinkEdit = '';
+  chooseCategory(event){
+    this.category = event.currentTarget.value;
   }
-
+  acceptCategory(){
+    this.saveChanges();
+  }
   renderTemplate(){
+    let _self = this;
+    let lang = localStorage.language;
     this.counterEnter = false;
     if(this.loggedIn) {
       setTimeout(() => {
         this.showPreloader = false;
+
+        this._templatesService.getNewsCategory(lang)
+        .subscribe(
+          (res) => {
+            debugger
+            _self.news_categories = res
+          },
+          (err) =>{
+            console.log('Error from get news category' + err);
+          }
+        )
+
         setTimeout(() => {
           this.addEditButton();
         }, 100)
@@ -333,7 +338,7 @@ export class NewArticleComponent implements OnInit {
     let permalink = localStorage.permalink;
 
     let image = '';
-    let category = 'work';
+    let category = this.category;
    
     let date = new Date().toISOString().slice(0, 10);
 

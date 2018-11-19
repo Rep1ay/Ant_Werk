@@ -71,7 +71,7 @@ export class NewsComponent implements OnInit {
 // 
         if(this.currentLocation === localStorage.permalink || this.currentLocation === localStorage.location){
           // if(!this.counterEnter){
-              this.changeOfRoutes();
+              this.changeOfRoutes(routeData.url);
               this.counterEnter = true;
               this.showPreloader = true;
 
@@ -91,38 +91,79 @@ export class NewsComponent implements OnInit {
 
   }
 
-  changeOfRoutes(){
+  changeOfRoutes(url){
+
+
     let _self = this;
     let lang  = localStorage.language;
     debugger
-    this._templatesService.getNews(lang).subscribe(
-      (data) => {
-        if(data.length > 0){
-          _self.newsCollection = data;
-        }else{
-          _self.newsCollection = [];
-        }
-        setTimeout(() => {
-          this.showPreloader = false;
-        }, 1500)
-        localStorage.location = 'news';
-        localStorage.permalink = 'news'
-        // this.showPreloader = false; 
+    let title;
+    if(!url.split('/').includes('article') && !url.split('/').includes('new-article') ){
+      localStorage.location = title = 'news';
+    
+      // debugger
+      // let lang = localStorage.language;
+      this._templatesService.getNews(lang).subscribe(
+        (data) => {
+          if(data.length > 0){
+            _self.newsCollection = data;
+          }else{
+            _self.newsCollection = [];
+          }
+          _self._templatesService.getPermalink(title)
+            .subscribe(
+              (res) => {
+                debugger
+                let permalink;
+                let pageTitle  = localStorage.location;
+
+                localStorage.permalink = permalink = res['permalink'];
+                _self.permalink = `/${permalink}`;
+                _self._router.config[0].path = lang;
+                _self._router.config[1].redirectTo = `${lang}/home`;
+
+                let origin = window.location.origin;
+                _self.permalinkURL = `${origin}/${lang}/${permalink}`
+                _self._router.config[0].children.forEach((route) => {
+                  if(route.path === pageTitle){
+                    // route.path = `${localStorage.language}/${res['permalink']}`;
+                    route.path = permalink;
+                  }
+                })
+
+                _self._location.go(`${lang}/${permalink}`);
+                _self._router.navigate([`${lang}/${permalink}`]);
+                
+                _self.getNewsCategory(lang);
+
+                setTimeout(()=> {
+                  _self.showPreloader = false;
+                }, 1500)
+              },
+              (err) => {
+
+              }
+            )
       },
-      (error) => {
-        console.log('Error from news page' + error)
-      }
-    )
-    this._templatesService.getNewsCategory(lang)
-      .subscribe(
-        (res) => {
-          debugger
-          _self.news_categories = res
-        },
-        (err) =>{
-          console.log('Error from get news category' + err);
+        (error) => {
+          console.log('Error from news page' + error)
         }
       )
+    }
+  }
+
+  getNewsCategory(lang){
+    let _self = this;
+    this._templatesService.getNewsCategory(lang)
+    .subscribe(
+      (res) => {
+        debugger
+        _self.news_categories = res
+      },
+      (err) =>{
+        console.log('Error from get news category' + err);
+      }
+    )
   }
 
   onSelect(id){
@@ -169,6 +210,38 @@ export class NewsComponent implements OnInit {
         )
     }
 
-    cancel
+
+    editPermalink(inputURL: NgForm){
+    
+      this.permalink = '/';
+      this.permalinkEdit = `${localStorage.permalink}`;
+      console.log(inputURL.value);
+    }
+  
+    savePermalink(permalink: NgForm){
+      let _self = this;
+      let permalinkToSend = permalink.value.input;
+      this.permalink = `/${permalink.value.input}`;
+      localStorage.permalink = permalink.value.input;
+      this._templatesService.send_permalink(localStorage.location, permalinkToSend).subscribe(
+        (res) => {
+          // _self._router.navigate([`${localStorage.language}/${res['permalink']}`]);
+          _self._location.go(`${localStorage.language}/${res['permalink']}`)
+          window.location.reload();
+        },
+        (err) => {
+          console.log('Error from permalink send from navbar' + '</br>' + err);
+        }
+      )
+  
+      this.permalinkEdit = '';
+    }
+  
+    cancelPermalink(){
+      this.permalink = `/${localStorage.permalink}`
+      this.permalinkEdit = '';
+    }
+
+    // cancel
   
 }

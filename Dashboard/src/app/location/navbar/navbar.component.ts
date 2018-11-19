@@ -31,7 +31,7 @@ export class NavbarComponent implements OnInit {
   formInput: string;
   loggedIn: boolean;
   templateSending:any;
-  // showPreloader = false;
+  showPreloader = false;
   routeUrl: string;
   permalink: string;
   permalinkEdit: string;
@@ -170,8 +170,9 @@ let _self = this;
         this.templateRendered = false;
 
       }else if(this.currentTitle === 'news'){
-        localStorage.location = 'news';
-        localStorage.permalink = 'news';
+        let title;
+        localStorage.location = title = 'news';
+      
         debugger
         let lang = localStorage.language;
         this._templatesService.getNews(lang).subscribe(
@@ -179,13 +180,34 @@ let _self = this;
             if(res.length === 0){
               _self.acceptAddingNewLang = false;
             }
-            _self._router.config[0].path = lang;
-            _self._router.config[1].redirectTo = `${lang}/home`;
+            _self._templatesService.getPermalink(title)
+            .subscribe(
+              (res) => {
+                debugger
+                let permalink;
+                let pageTitle = localStorage.location;
   
+                localStorage.permalink = permalink = res['permalink'];
+                _self._router.config[0].path = lang;
+                _self._router.config[1].redirectTo = `${lang}/home`;
+  
+                let origin = window.location.origin;
+                _self.permalinkURL = `${origin}/${lang}/${permalink}`
+                _self._router.config[0].children.forEach((route) => {
+                  if(route.path === pageTitle){
+                    // route.path = `${localStorage.language}/${res['permalink']}`;
+                    route.path = permalink;
+                  }
+                })
+  
+                _self._location.go(`${lang}/${permalink}`);
+                _self._router.navigate([`${lang}/${permalink}`]);
+              },
+              (err) => {
+  
+              }
+            )
           
-  
-            _self._location.go(`${lang}/news`);
-            _self._router.navigate([`${lang}/news`]);
           },
           (error) => {
             console.log('Error from news page' + error)
@@ -325,24 +347,38 @@ let _self = this;
     //   this.getTemplate(title, lang);
     // }else
     if(title === 'news'){
-      localStorage.location = 'news';
-      localStorage.permalink = 'news';
-      this._templatesService.getNews(lang).subscribe(
-        (res) => {
-          if(res.length === 0){
-            _self.acceptAddingNewLang = true;
+      let title;
+        localStorage.location = title = 'news';
+      
+        debugger
+       
+        this._templatesService.getNews(lang).subscribe(
+          (res) => {
+            if(res.length === 0){
+              _self.acceptAddingNewLang = false;
+            }
+            _self._templatesService.getPermalink(title)
+              .subscribe(
+                (res) => {
+                  debugger
+                  localStorage.language = lang;
+                  let permalink;
+                  localStorage.permalink = permalink = res['permalink'];
+                  _self._router.config[0].path = lang;
+                  _self._router.config[1].redirectTo = `${lang}/home`;
+
+                  _self._location.go(`${lang}/${permalink}`);
+                  _self._router.navigate([`${lang}/${permalink}`]);
+                },
+                (err) => {
+
+                }
+              )
+          },
+          (error) => {
+            console.log('Error from news page' + error)
           }
-          _self._router.config[0].path = lang;
-          _self._router.config[1].redirectTo = `${lang}/home`;
-
-
-          _self._location.go(`${lang}/news`);
-          _self._router.navigate([`${lang}/news`]);
-        },
-        (error) => {
-          console.log('Error from news page' + error)
-        }
-      )
+        )
     }
     else if(title === 'new-article'){
       debugger
@@ -364,21 +400,32 @@ let _self = this;
       this.getTemplate(path, this.currentPrefix);
     }
     else{
+      let title;
+      localStorage.location = title = 'news';
+    
       debugger
-      localStorage.location = 'news';
-      localStorage.permalink = 'news';
-
       let lang = localStorage.language;
       this._templatesService.getNews(lang).subscribe(
         (res) => {
           if(res.length === 0){
-            _self.acceptAddingNewLang = true;
+            _self.acceptAddingNewLang = false;
           }
-          _self._router.config[0].path = lang;
-          _self._router.config[1].redirectTo = `${lang}/home`;
+          _self._templatesService.getPermalink(title)
+            .subscribe(
+              (res) => {
+                debugger
+                let permalink;
+                localStorage.permalink = permalink = res['permalink'];
+                _self._router.config[0].path = lang;
+                _self._router.config[1].redirectTo = `${lang}/home`;
 
-          _self._location.go(`${lang}/news`);
-          _self._router.navigate([`${lang}/news`]);
+                _self._location.go(`${lang}/${permalink}`);
+                _self._router.navigate([`${lang}/${permalink}`]);
+              },
+              (err) => {
+
+              }
+            )
         },
         (error) => {
           console.log('Error from news page' + error)
@@ -561,7 +608,26 @@ let _self = this;
         localStorage.language = lang;
         this._router.config[0].path = lang;
 
+        debugger
         _self._location.go(`${lang}/${permalink}`);
+
+        if(localStorage.location === 'news'){
+           _self._router.config[0].path = lang;
+                _self._router.config[1].redirectTo = `${lang}/home`;
+                let pageTitle  = localStorage.location;
+
+                let origin = window.location.origin;
+                _self.permalinkURL = `${origin}/${lang}/${permalink}`
+                _self._router.config[0].children.forEach((route) => {
+                  if(route.path === pageTitle){
+                    // route.path = `${localStorage.language}/${res['permalink']}`;
+                    route.path = permalink;
+                  }
+                })
+
+                _self._router.navigate([`${lang}/${permalink}`]);
+        }
+      
 
         setTimeout(() => {
           // _self.showPreloader = false;
