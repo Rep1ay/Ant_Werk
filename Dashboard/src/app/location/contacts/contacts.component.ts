@@ -24,6 +24,7 @@ export class ContactsComponent implements OnInit {
   title: string;
   prefix: string;
   template: any;
+  newTemplate: string;
   templateSending = false;
   postText: string = "";
   errorMessage: string;
@@ -48,6 +49,7 @@ export class ContactsComponent implements OnInit {
   permalinkURL: string;
   currentLocation = 'contacts';
   counterEnter = false;
+  rendered = false;
 
   constructor(private _templatesService: TemplatesService, 
             formBuilder: FormBuilder,
@@ -93,7 +95,7 @@ export class ContactsComponent implements OnInit {
   let _self = this;
   this.showPreloader = true;
 
-  this.getTemplate(title);
+  // this.getTemplate(title);
   };
 
   changeOfRoutes(url){
@@ -110,24 +112,53 @@ export class ContactsComponent implements OnInit {
 
   }
 
+  // getTemplate(title){
+   
+  //   let _self = this;
+  //   let prefix = localStorage.language;
+   
+  //   this._templatesService.getTemplate(title, prefix)
+  //   .subscribe(
+  //     (res) => {
+  //       if(res){
+  //         debugger
+  //         let template =  res['data']['template'].replace(/"/g, "'");
+  //         _self.permalink = `/${localStorage.permalink}`;
+  //         _self.renderTemplate(template);
+  //       }
+  //     },
+  //     (err) => {
+  //       console.log(err);
+  //     }
+  //   );
+  // }
+
   getTemplate(title){
    
     let _self = this;
     let prefix = localStorage.language;
-   
-    this._templatesService.getTemplate(title, prefix)
-    .subscribe(
-      (res) => {
-        if(res){
-          let template =  res['data']['template'];
+    // if(!this.rendered){
+    //   this.rendered = true;
+      this._templatesService.getTemplate(title, prefix)
+      .subscribe(
+        (res) => {
+          let template;
+          
+          if(!res['data']['template']){
+            template = false;
+          }else{
+            template = res['data']['template'];
+          }
+  
           _self.permalink = `/${localStorage.permalink}`;
           _self.renderTemplate(template);
+        },
+        (err) => {
+          console.log(err);
         }
-      },
-      (err) => {
-        console.log(err);
-      }
-    );
+      );
+    // }
+
   }
   
 
@@ -163,20 +194,56 @@ export class ContactsComponent implements OnInit {
   }
 
   renderTemplate(template){
+    let _self = this;
+    this.newTemplate = template;
     this.template = template;
+    // let find = "\"/";
+    // let regex = new RegExp(find, "g");
+    debugger
+    // alert(template.replace(regex, "'"));
+   
     this.counterEnter = false;
+
     if(this.loggedIn) {
+      
       setTimeout(() => {
         this.showPreloader = false;
-        setTimeout(() => {
-          this.addEditButton();
-        }, 100)
-     }, 1000)
-    }
-    else{
+        if(_self.template){
+
+          setTimeout(() => {
+            let body = document.getElementById('body');
+            if(body){
+              body.insertAdjacentHTML('beforeend', _self.newTemplate);
+            }
+
+            setTimeout(() => {
+              this.addEditButton();
+            }, 100)
+
+          }, 100)
+
+        }else{
+          _self.template = false;
+
+          setTimeout(() => {
+            this.addEditButton();
+          }, 100)
+        }
+
+      }, 1000)
+
+    }else{
+
+      setTimeout(() => {
+        let body = document.getElementById('body');
+        if(body){
+          body.insertAdjacentHTML('beforeend', _self.newTemplate);
+        }
+      }, 100)
+
       setTimeout(() => {
         this.showPreloader = false;
-     }, 1000)
+      }, 1000)
     }
   }
 
@@ -327,15 +394,21 @@ export class ContactsComponent implements OnInit {
     let pageTitle = localStorage.location;
     let lang  = localStorage.language;
 
-    if(this.template){
-      body= document.querySelector('#body');
-    }else{
-      body= document.querySelector('#default');
-    }
-    let permalink = localStorage.permalink
+    let s = new XMLSerializer();
+    // let str = s.serializeToString(body);
 
+    if(this.template){
+      let doc = document.querySelector('#body');
+      body = s.serializeToString(doc);
+    }else{
+      let doc = document.querySelector('#default');
+      body = s.serializeToString(doc);
+    }
+
+    let permalink = localStorage.permalink
+debugger
      $('.blockForBtnEdit').remove();
-    this._templatesService.sendTemplate(body.innerHTML, pageTitle, lang, permalink).subscribe((error) => {
+    this._templatesService.sendTemplate(body, pageTitle, lang, permalink).subscribe((error) => {
       console.log(error)
       localStorage.removeItem('addNewLang');
     });
