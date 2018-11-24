@@ -350,16 +350,20 @@ export class SingleArticleComponent implements OnInit {
     let pageTitle = localStorage.location;
     let lang  = localStorage.language;
     let id =  this.articleId;
+    let s = new XMLSerializer();
+    // let str = s.serializeToString(body);
 
     if(this.template){
-      body= document.querySelector('#body');
+      let doc = document.querySelector('#body');
+      body = s.serializeToString(doc);
     }else{
-      body= document.querySelector('#default');
+      let doc = document.querySelector('#default');
+      body = s.serializeToString(doc);
     }
     let description =  document.querySelector('.description')['innerText'];
     let title = document.querySelector('.articleTitle')['innerText'];
     let permalink = localStorage.permalink
-
+    
      $('.blockForBtnEdit').remove();
     let image = '';
     let category = this.category;
@@ -374,7 +378,7 @@ export class SingleArticleComponent implements OnInit {
       'title': title,
       'description': description,
       'date': date,
-      'template': body.innerHTML
+      'template': body
     }
 
     this._templatesService.sendArticle(body_send).subscribe((error) => {
