@@ -1,32 +1,10 @@
 
 
 <app-preloader *ngIf="showPreloader"></app-preloader>
+
 <nav class="main_navbar">
   <ul class="navbar_container">
-      <!-- <li  *ngIf="!showPreloader" style="width: 60vw;font-size: 20px;font-weight: 300;">                       *ngIf="loggedIn" -->
-        <!-- <form *ngIf="loggedIn"  #inputURL='ngForm' class="form-inline">
-          <label for="input">Permalink: </label>
-          <a style="margin-left: 5px" href='{{winOrigin}}'> {{winOrigin}}{{permalink}}</a>
-          <input *ngIf="edition" #input="ngModel" [(ngModel)]='permalinkEdit' name="input" ngModel class="form-control col-md-3">
-          
-          <button *ngIf="!edition" style="margin: 10px;padding: 0px 17px;font-size: 17px;" 
-            (click)='editPageURL(inputURL); edition = !edition' 
-            class="btn btn-primary btn-large searchBtn" 
-            type="submit">
-            Edit
-          </button>
-          
-          <button *ngIf="edition" style="margin: 10px 5px;" (click)='savePermalink(inputURL); edition = !edition' 
-            class="btn btn-success btn-large">
-            Save
-          </button>
 
-          <button *ngIf="edition" style="margin: 10px 2px;" (click)='cancelPermalink(); edition = !edition' 
-            class="btn btn-danger btn-large">
-            Cancel
-          </button>
-        </form> -->
-    <!-- </li> -->
     <button class="navbar-toggler" type="button" 
         data-toggle="collapse" data-target="#navbarSupportedContent" 
         aria-controls="navbarSupportedContent" aria-expanded="false" 
@@ -44,15 +22,164 @@
 
 
     <li *ngIf='!loggedIn' class="editNavbar" routerLinkActive="active"  (click)="followLink('login')">Login</li>
-    
-    <!-- <li *ngIf='loggedIn' routerLinkActive="active"  routerLink="/adminPanel"><fa-icon [icon]="faUser"></fa-icon></li> -->
-   
-    <li (click)="logoutUser()" class="editNavbar" *ngIf='loggedIn' routerLinkActive="active"  >Logout</li>
+       
+    <li (click)="logoutUser()" class="editNavbar" *ngIf='loggedIn' routerLinkActive="active">Logout</li>
 
   </ul>
 </nav>
 
-<nav id="rightsidebar_main_block" class="main_navbar ">
+<header>
+  <div class="side-fixed-block">
+    <div class="burger-btn" id="menu-open">
+      <div>
+        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30" height="16" viewBox="0 0 30 16"><defs><path id="bcvea" d="M1855 44v-2h18v2zm0 14v-2h24v2zm0-7v-2h30v2z"/></defs><g><g transform="translate(-1855 -42)"><use fill="#fff" xlink:href="#bcvea"/></g></g></svg>
+      </div>
+    </div>
+    <ul class="lang-switch p-0 m-0">
+        <!-- <li><a href="">ned</a></li>
+        <li><a href="">eng</a></li>
+        <li><a href="" class="current-language">рус</a></li>
+        <li><a href="">tur</a></li>
+        <li><a href="">esp</a></li> -->
+        
+        <li class="lang_menu_item"
+        style="
+          color: #fff;
+          font-size: 30px;
+          border: 1px solid #2ec52e;
+          background: #10b510;
+          padding:2px 15px;" 
+  
+        data-lang="add" routerLinkActive="active" (click)=" addingNewLan = !addingNewLan">
+        +
+      </li>
+         <li [attr.data-lang]="lang.prefix" routerLinkActive="active" *ngFor="let lang of lang_items" (click)="changeLanguage(lang.prefix)">{{lang.prefix}}</li>
+  
+    </ul>
+    
+    <div *ngIf="alertAddingLang" class="blockForEditLang" style="position: fixed; top: 90px; right: 0px; background: rgba(245, 73, 73, 0.47); font-size: 20px; color: rgb(255, 255, 255); padding: 12px;">
+      <p>Adding {{addingLangBody}} language, dont forget save changes</p>
+      <button (click)="alertAddingLang = !alertAddingLang" class="btn btn-primary">OK</button>
+    </div>
+  
+    <div *ngIf="acceptAddingNewLang" style="position: fixed; top: 300px; right: 70px; background: yellowgreen; font-size: 20px; color: rgb(255, 255, 255); padding: 12px;z-index:8000">
+      <p>Add {{addingLangBody}} language for this page?</p>
+      <button (click)="acceptLangBlock()" class="btn btn-warning">Accept</button>
+      <button (click)="cancelLangBlock()" class="btn btn-danger" style="margin-left: 10px;">Cancel</button>
+    </div>
+  
+    <div id="addNewLangToPanel" *ngIf="addingNewLan" class="input-group mb-3 col-md-3">
+    <select (change)='chooseLanguage($event)' class="custom-select" id="inputGroupSelect04">
+      <option selected>Choose...</option>
+      <option value="{{lang.short}}" *ngFor="let lang of lang_list">{{lang.short}} - {{lang.nativeName}}</option>
+    </select>
+    <div class="input-group-append">
+      <button (click)="languageAdding()" class="btn btn-info" type="button">OK</button>
+      <button (click)='addingNewLan = !addingNewLan' class="btn btn-danger" type="button">Close</button>
+    </div>
+    </div>
+
+    <a class="nav-arrow back" style="display: none; transform: rotate(180deg);">
+      <div>
+        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40" viewBox="0 0 40 40"><defs><path id="zlxda" d="M1870 880c11.046 0 20 8.954 20 20s-8.954 20-20 20-20-8.954-20-20 8.954-20 20-20zm-19.188 20c0 10.597 8.591 19.187 19.188 19.187s19.187-8.59 19.187-19.187c0-10.597-8.59-19.187-19.187-19.187-10.597 0-19.188 8.59-19.188 19.187z"/><path id="zlxdb" d="M1870.011 903.427l6.644-6.217c.254-.322.666-.322.922 0l.23.293a.994.994 0 0 1 0 1.171l-7.091 6.786c-.003.007-.004.013-.01.019l-.23.293a.583.583 0 0 1-.465.241.579.579 0 0 1-.46-.241l-.232-.293c-.005-.006-.006-.013-.01-.02l-7.09-6.785a.997.997 0 0 1 0-1.17l.23-.294c.256-.322.668-.322.923 0z"/></defs><g><g transform="translate(-1850 -880)"><use fill="#fff" xlink:href="#zlxda"/></g><g transform="translate(-1850 -880)"><use fill="#fff" xlink:href="#zlxdb"/></g></g></svg></div>
+    </a>
+    <a class="nav-arrow next" href="#anchor-sect" style="display: block">
+      <div>
+        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40" viewBox="0 0 40 40"><defs><path id="zlxda" d="M1870 880c11.046 0 20 8.954 20 20s-8.954 20-20 20-20-8.954-20-20 8.954-20 20-20zm-19.188 20c0 10.597 8.591 19.187 19.188 19.187s19.187-8.59 19.187-19.187c0-10.597-8.59-19.187-19.187-19.187-10.597 0-19.188 8.59-19.188 19.187z"/><path id="zlxdb" d="M1870.011 903.427l6.644-6.217c.254-.322.666-.322.922 0l.23.293a.994.994 0 0 1 0 1.171l-7.091 6.786c-.003.007-.004.013-.01.019l-.23.293a.583.583 0 0 1-.465.241.579.579 0 0 1-.46-.241l-.232-.293c-.005-.006-.006-.013-.01-.02l-7.09-6.785a.997.997 0 0 1 0-1.17l.23-.294c.256-.322.668-.322.923 0z"/></defs><g><g transform="translate(-1850 -880)"><use fill="#fff" xlink:href="#zlxda"/></g><g transform="translate(-1850 -880)"><use fill="#fff" xlink:href="#zlxdb"/></g></g></svg></div>
+    </a>
+    <div class="main-menu-wrapper">
+      <div class="main-menu">
+        <div class="container">
+          <div class="row justify-content-between">
+            <div class="col-lg-9 menu-list-wrapper">
+              <ul class="menu-list p-0">
+                <li><a href="">О нас</a></li>
+                <li class="li-has-child"><a href="">Сервисы</a>
+                  <ul class="submenu p-0">
+                    <li><a href="">Транспортные грузоперевозки</a></li>
+                    <li><a href="">Железнодорожные грузоперевозки</a></li>
+                    <li><a href="">Воздушные грузоперевозки</a></li>
+                    <li><a href="">Морские грузоперевозки</a></li>
+                    <li><a href="">Дополниельные услуги</a></li>
+                  </ul>
+                </li>
+                <li><a href="">Отраслевые решения</a></li>
+                <li><a href="">Комплескные решения</a></li>
+                <li><a href="">Карьера</a></li>
+                <li><a href="">Связаться с нами</a></li>
+                <li><a href="">Контакты</a></li>
+                <li><a href="">Новости</a></li>
+              </ul>
+            </div>
+            <div class="col-lg-3 contacts-header-wrapper">
+              <div class="row">
+                <div class="col-6 col-lg-12 footer-item contacts-header-block">
+                  <p>Контакты</p>
+                  <div class="contacts-list">
+                    <a href="mailto:example@logistic.com" class="mail-link">example@logistic.com</a>
+                    <a href="tel:18001231234" class="tel-link">Телефон: 1-800-123-1234</a>
+                    <a href="" class="location-link">Россия, г. Москва, ул. Мартынова,<br>д. 327, оф. 57</a>
+                  </div>
+                </div>
+                <div class="social-bar-footer col-6 col-lg-12 footer-item">
+                  <p>Мы в соц. сетях:</p>
+                  <ul class="social-icon-list d-flex p-0">
+                    <li>
+                      <a href="">
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="19" viewBox="0 0 9 19"><defs><path id="ucjda" d="M1451.988 8525.013H1448v-9.502h-1.992v-3.274h1.992v-1.965c0-2.671 1.125-4.26 4.323-4.26h2.662v3.275h-1.664c-1.245 0-1.326.458-1.326 1.31l-.006 1.64h3.015l-.352 3.274h-2.663v9.503z"/></defs><g><g transform="translate(-1446 -8506)"><use fill="#333" xlink:href="#ucjda"/></g></g>
+                        </svg>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="">
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="17" height="13" viewBox="0 0 17 13"><defs><path id="w0o8a" d="M1491.002 8510.792c-.64.27-1.894.381-2.482.415 1.065-.548 1.612-1.19 1.87-1.956-.667.375-1.494.54-2.282.688-.63-.638-1.44-.928-2.435-.928-1.908 0-3.455 1.469-3.455 3.28 0 .257.03.507.09.747-2.873-.137-5.42-1.442-7.124-3.426a3.137 3.137 0 0 0-.468 1.648c0 1.138 1.37 2.25 2.298 2.838-.567-.017-1.86-.272-2.326-.518v.041c0 1.589 1.922 2.942 3.503 3.243-.29.075-1.326.088-1.642.088-.222 0-.439-.021-.65-.059.44 1.304 1.716 2.25 3.228 2.278a7.174 7.174 0 0 1-4.292 1.404c-.279 0-.553-.016-.824-.046 1.53.93 3.346 1.473 5.298 1.473 6.356 0 9.832-4.997 9.832-9.33 0-.143.056-.042.049-.182.675-.462 1.349-1.04 1.812-1.698z"/></defs><g><g transform="translate(-1474 -8509)"><use fill="#333" xlink:href="#w0o8a"/></g></g>
+                        </svg>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="">
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="17" height="16" viewBox="0 0 17 16"><defs><path id="e238a" d="M1511.203 8513.212h3.651v10.776h-3.651zm3.892-3.334c0 1.035-.793 1.863-2.066 1.863h-.025c-1.224 0-2.016-.828-2.016-1.863 0-1.056.816-1.86 2.065-1.86s2.017.804 2.042 1.86zm12.924 14.11h-3.65v-5.765c0-1.449-.529-2.436-1.85-2.436-1.009 0-1.61.665-1.874 1.309-.096.23-.12.552-.12.874v6.018h-3.65s.047-9.765 0-10.776h3.65v1.526c.486-.734 1.353-1.78 3.291-1.78 2.402 0 4.203 1.541 4.203 4.851zm-7.494-9.213v-.037c-.007.013-.016.024-.024.037z"/></defs><g><g transform="translate(-1511 -8508)"><use fill="#333" xlink:href="#e238a"/></g></g></svg>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="">
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="19" height="19" viewBox="0 0 19 19"><defs><path id="aglza" d="M1567 8511.243v8.514a5.25 5.25 0 0 1-5.244 5.243h-8.513a5.25 5.25 0 0 1-5.243-5.243v-8.514a5.25 5.25 0 0 1 5.243-5.244h8.513a5.25 5.25 0 0 1 5.244 5.244zm-1.686 8.514v-8.514a3.562 3.562 0 0 0-3.558-3.558h-8.513a3.562 3.562 0 0 0-3.557 3.558v8.514a3.562 3.562 0 0 0 3.557 3.557h8.513a3.562 3.562 0 0 0 3.558-3.557zm-2.918-4.257a4.9 4.9 0 0 1-4.896 4.895 4.901 4.901 0 0 1-4.896-4.895c0-2.7 2.196-4.896 4.896-4.896 2.7 0 4.896 2.197 4.896 4.896zm-1.686 0c0-1.77-1.44-3.21-3.21-3.21s-3.21 1.44-3.21 3.21 1.44 3.21 3.21 3.21 3.21-1.44 3.21-3.21zm2.765-5.963c.23.229.362.548.362.874 0 .325-.131.643-.362.874-.23.23-.548.362-.874.362-.325 0-.644-.132-.873-.362-.23-.23-.363-.55-.363-.874a1.241 1.241 0 0 1 1.236-1.236c.326 0 .645.131.874.362z"/></defs><g><g transform="translate(-1548 -8506)"><use fill="#333" xlink:href="#aglza"/></g></g>
+                        </svg>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="">
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="20" viewBox="0 0 16 20"><defs><path id="ilg7a" d="M1595.472 8505.929c-5.5 0-8.274 3.943-8.274 7.231 0 1.992.754 3.763 2.371 4.423.265.108.503.004.58-.29.053-.202.18-.715.236-.929.078-.29.048-.391-.166-.645-.467-.55-.765-1.261-.765-2.27 0-2.926 2.19-5.545 5.7-5.545 3.11 0 4.817 1.9 4.817 4.436 0 3.338-1.477 6.156-3.67 6.156-1.211 0-2.118-1.001-1.827-2.23.348-1.467 1.022-3.049 1.022-4.109 0-.947-.509-1.737-1.561-1.737-1.238 0-2.233 1.28-2.233 2.997 0 1.093.37 1.832.37 1.832l-1.49 6.308c-.442 1.872-.066 4.168-.035 4.399.019.137.195.17.276.067.113-.149 1.588-1.97 2.09-3.79.142-.514.814-3.181.814-3.181.402.768 1.578 1.443 2.828 1.443 3.721 0 6.246-3.393 6.246-7.934 0-3.434-2.908-6.632-7.329-6.632z"/></defs><g><g transform="translate(-1587 -8506)"><use fill="#333" xlink:href="#ilg7a"/></g></g>
+                        </svg>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="close-btn burger-btn" id="menu-close">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" viewBox="0 0 24 24"><defs><path id="w0fka" d="M1881.699 39.654L1871.361 50l10.338 10.345a.97.97 0 0 1-.685 1.656.965.965 0 0 1-.685-.284L1869.99 51.37l-10.338 10.346a.965.965 0 0 1-1.37 0 .97.97 0 0 1 0-1.372L1868.621 50l-10.338-10.345a.97.97 0 0 1 1.37-1.371l10.338 10.345 10.338-10.345a.968.968 0 1 1 1.37 1.371z"/></defs><g><g transform="translate(-1858 -38)"><use fill="#fff" xlink:href="#w0fka"/></g></g></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="logo-wrapper">
+    <div class="container">
+      <a href="" class="logo-link">
+        <img src="img/main-logo.png" alt="" title="">
+      </a>
+    </div>
+  </div>
+  
+</header>
+
+
+
+<!-- <nav id="rightsidebar_main_block" class="main_navbar ">
   <ul id="language_panel" class="navbar_container "> 
    
       <li class="lang_menu_item"
@@ -65,17 +192,15 @@
 
       data-lang="add" routerLinkActive="active" (click)=" addingNewLan = !addingNewLan">
       +
-      <!-- add_new_lang_to_panel(); -->
     </li>
        <li [attr.data-lang]="lang.prefix" routerLinkActive="active" *ngFor="let lang of lang_items" (click)="changeLanguage(lang.prefix)">{{lang.prefix}}</li>
-      <!-- <li class="lang_menu_item" data-lang="en" routerLinkActive="active"  >eng</li> -->
 
     
     </ul>
    
-</nav>
+</nav> -->
 
-  <div *ngIf="alertAddingLang" class="blockForEditLang" style="position: fixed; top: 90px; right: 0px; background: rgba(245, 73, 73, 0.47); font-size: 20px; color: rgb(255, 255, 255); padding: 12px;">
+  <!-- <div *ngIf="alertAddingLang" class="blockForEditLang" style="position: fixed; top: 90px; right: 0px; background: rgba(245, 73, 73, 0.47); font-size: 20px; color: rgb(255, 255, 255); padding: 12px;">
     <p>Adding {{addingLangBody}} language, dont forget save changes</p>
     <button (click)="alertAddingLang = !alertAddingLang" class="btn btn-primary">OK</button>
   </div>
@@ -95,4 +220,4 @@
     <button (click)="languageAdding()" class="btn btn-info" type="button">OK</button>
     <button (click)='addingNewLan = !addingNewLan' class="btn btn-danger" type="button">Close</button>
   </div>
-</div>
+  </div> -->

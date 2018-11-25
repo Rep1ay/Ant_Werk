@@ -23,9 +23,13 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+              "src/css/style.css"
             ],
-            "scripts": []
+            "scripts": [
+              "src/js/googlemaps.js",
+              "src/js/bootstrap.bundle.min.js"
+            ]
           },
           "configurations": {
             "production": {

@@ -3,6 +3,10 @@ import { NgModule } from '@angular/core';
 // import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
+
+import { AngularFireDatabaseModule } from 'angularfire2/database';
+import { environment } from '../environments/environment';
+
 import { AppComponent } from './app.component';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -19,6 +23,9 @@ import {MaterialModule} from './material';
 import { NewsComponent } from './location/news/news.component';
 import { NewArticleComponent } from './location/new-article/new-article.component';
 import { SingleArticleComponent } from './location/single-article/single-article.component';
+import { LayoutComponent } from './location/layout/layout.component';
+import { AngularFireModule } from 'angularfire2';
+import { AngularFireStorageModule } from 'angularfire2/storage';
 
 @NgModule({
   declarations: [
@@ -33,17 +40,27 @@ import { SingleArticleComponent } from './location/single-article/single-article
     CareerComponent,
     NewsComponent,
     NewArticleComponent,
-    SingleArticleComponent
-  ],
-  
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    HttpClientModule,
-    FormsModule,
-    ReactiveFormsModule,
-    BrowserAnimationsModule,
-    MaterialModule
+      SingleArticleComponent,
+      LayoutComponent
+    ],
+    
+    imports: [
+      BrowserModule,
+      AppRoutingModule,
+      HttpClientModule,
+      FormsModule,
+      ReactiveFormsModule,
+      BrowserAnimationsModule,
+      MaterialModule,
+    //   AngularFireModule.initializeApp({
+    //     apiKey: "AIzaSyD_ZpFTEPlOw0-fK8eH9unQdWLS5fu9WBo",
+    //     authDomain: "antwerk-2a8e5.firebaseapp.com",
+    //     projectId: "antwerk-2a8e5",
+    //     storageBucket: "antwerk-2a8e5.appspot.com",
+    // }),
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFireDatabaseModule, // for database
+    AngularFireStorageModule
     // NgbModule
   ],
   providers: [],

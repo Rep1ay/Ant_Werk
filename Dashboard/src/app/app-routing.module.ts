@@ -10,6 +10,7 @@ import { CareerComponent } from './location/career/career.component';
 import { NewsComponent } from './location/news/news.component';
 import { NewArticleComponent } from './location/new-article/new-article.component';
 import { SingleArticleComponent } from './location/single-article/single-article.component';
+import { LayoutComponent } from './location/layout/layout.component';
 
 let prefix = localStorage.language;
 
@@ -29,6 +30,7 @@ const routes: Routes = [
       { path: `register`, component : RegisterComponent},
       { path: `contacts`, component: ContactsComponent},
       { path: `career`, component: CareerComponent},
+      { path: `layout`, component: LayoutComponent},
       { path: `news` , component: NewsComponent},
       { path: `article/:id` , component: SingleArticleComponent},
       { path: `new-article` , component: NewArticleComponent},
