@@ -14,6 +14,7 @@ import { Observable, Subject, asapScheduler, pipe, of, from,
   import { AngularFireDatabase } from 'angularfire2/database';
   import { AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask } from 'angularfire2/storage';
 import { NewsCollection } from 'src/app/news-collection';
+import { marker } from 'src/app/marker';
 
 // Jquery declaration
 declare let $: any;
@@ -25,6 +26,9 @@ declare let Swiper: any;
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
+
+  latitude = 52.2330653;
+  longitude = 20.9211105;
   
   newsCollection: NewsCollection[] = [];
   itemValue = '';
@@ -66,6 +70,37 @@ export class HomeComponent implements OnInit {
   file;
   uploadPercent: Observable<number>;
   downloadURL: Observable<string>;
+
+  zoom: number = 4;
+  
+  // initial center position for the map
+  lat: number = 51.673858;
+  lng: number = 7.815982;
+
+  markers: marker[] = [
+	  {
+		  lat: 52.2330653,
+		  lng: 20.9211105,
+      label: 'Poland',
+      iconUrl: 'https://firebasestorage.googleapis.com/v0/b/antwerk-2a8e5.appspot.com/o/pin.png?alt=media&token=4500a020-2792-4363-8f3a-1702caaf4bd7',
+		  draggable: false
+	  },
+	  {
+		  lat:52.5069312,
+		  lng: 13.1445495,
+      label: 'Germany',
+      iconUrl: 'https://firebasestorage.googleapis.com/v0/b/antwerk-2a8e5.appspot.com/o/pin.png?alt=media&token=4500a020-2792-4363-8f3a-1702caaf4bd7',
+		  draggable: false
+	  },
+	  {
+		  lat: 48.8589507,
+      lng: 2.2770199,
+      iconUrl: 'https://firebasestorage.googleapis.com/v0/b/antwerk-2a8e5.appspot.com/o/pin.png?alt=media&token=4500a020-2792-4363-8f3a-1702caaf4bd7',
+		  label: 'France',
+		  draggable: false
+	  }
+  ]
+
 
   constructor(private _templatesService: TemplatesService, 
             formBuilder: FormBuilder,
@@ -121,7 +156,16 @@ export class HomeComponent implements OnInit {
  
   // this.getTemplate(title);
   };
-
+  
+  mapClicked(event) {
+    this.markers.push({
+      lat: event.coords.lat,
+      lng: event.coords.lng,
+      iconUrl: '',
+      draggable: true
+    });
+  }
+  
   changeOfRoutes(url){
     let lang = localStorage.language;
     let title = localStorage.location;
@@ -237,9 +281,10 @@ export class HomeComponent implements OnInit {
         let body = document.getElementById('body');
         if(body){
           body.insertAdjacentHTML('beforeend', _self.newTemplate);
-    }
+        }
       }, 100)
       this.renderNews();
+      _self.renderLayout();
       setTimeout(() => {
         this.showPreloader = false;
      }, 1000)
@@ -247,9 +292,14 @@ export class HomeComponent implements OnInit {
   }
 
   renderLayout(){
+    let _self = this;
     $(document).ready(function ($) {
 
-      $('.service-overview').hover(
+      if(_self.loggedIn){
+        $('.service-overview-content').addClass('show-more');
+        $('.type-weight-content').addClass('show-type');
+      }else{
+        $('.service-overview').hover(
           function() {
             $(this).find('.service-overview-content').addClass('show-more');
           }, function() {
@@ -272,6 +322,8 @@ export class HomeComponent implements OnInit {
             $(this).removeClass('hover-style');
           }
         );
+      }
+
       var swiper = new Swiper('.main-slider-container', {
           pagination: {
             el: '.main-slider-progress',

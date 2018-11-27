@@ -27,6 +27,9 @@ import { LayoutComponent } from './location/layout/layout.component';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireStorageModule } from 'angularfire2/storage';
 
+import { AgmCoreModule, GoogleMapsAPIWrapper } from '@agm/core';
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -52,6 +55,9 @@ import { AngularFireStorageModule } from 'angularfire2/storage';
       ReactiveFormsModule,
       BrowserAnimationsModule,
       MaterialModule,
+      AgmCoreModule.forRoot({
+        apiKey: 'AIzaSyCWWL5MNY3ct8daaBxk0MXeY4sTh8IU5aw'
+      }),
     //   AngularFireModule.initializeApp({
     //     apiKey: "AIzaSyD_ZpFTEPlOw0-fK8eH9unQdWLS5fu9WBo",
     //     authDomain: "antwerk-2a8e5.firebaseapp.com",

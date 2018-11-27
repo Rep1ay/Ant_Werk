@@ -35,3 +35,7 @@
 .btnEditBlock{
     position: absolute;
 }
+
+agm-map {
+    height: 100%;
+}

@@ -587,7 +587,32 @@
                   </div>
                 </div>
                 <div class="col-12 col-xl-7 map-block">
-                  <div id="map"></div>
+                  <div id="map">
+					<agm-map 
+					[latitude]="lat"
+					[longitude]="lng"
+					[zoom]="zoom"
+					[disableDefaultUI]="false"
+					[zoomControl]="false"
+					
+					(mapClick)="mapClicked($event)">
+				  
+					<agm-marker 
+						*ngFor="let m of markers; let i = index"
+						(markerClick)="clickedMarker(m.label, i)"
+						[latitude]="m.lat"
+						[longitude]="m.lng"
+						[label]="m.label"
+						[iconUrl]="m.iconUrl"
+						>
+						
+					  <agm-info-window>
+						<strong>{{m.label}}</strong>
+					  </agm-info-window>
+					  
+					</agm-marker>				  
+				  </agm-map>
+				  </div>
                   <div class="big-map-title resp-number">карта</div>
                 </div>
               </div>
