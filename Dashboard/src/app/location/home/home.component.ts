@@ -255,6 +255,8 @@ export class HomeComponent implements OnInit {
             _self.renderLayout();
             setTimeout(() => {
               this.addEditButton();
+              this.editServiceDescription();
+
               // this.changeImage();
               this.renderNews();
             
@@ -268,6 +270,7 @@ export class HomeComponent implements OnInit {
     
         setTimeout(() => {
           this.addEditButton();
+          this.editServiceDescription();
             // this.changeImage();
           this.renderNews();
         }, 100)
@@ -295,10 +298,10 @@ export class HomeComponent implements OnInit {
     let _self = this;
     $(document).ready(function ($) {
 
-      if(_self.loggedIn){
-        $('.service-overview-content').addClass('show-more');
-        $('.type-weight-content').addClass('show-type');
-      }else{
+      // if(_self.loggedIn){
+      //   $('.service-overview-content').addClass('show-more');
+      //   $('.type-weight-content').addClass('show-type');
+      // }else{
         $('.service-overview').hover(
           function() {
             $(this).find('.service-overview-content').addClass('show-more');
@@ -322,7 +325,7 @@ export class HomeComponent implements OnInit {
             $(this).removeClass('hover-style');
           }
         );
-      }
+      
 
       var swiper = new Swiper('.main-slider-container', {
           pagination: {
@@ -397,6 +400,148 @@ export class HomeComponent implements OnInit {
     let lang = localStorage.language;
 
     this._router.navigate([`${lang}/news`])
+  }
+
+  editServiceDescription(){
+    let _self = this;
+    $('.description_list').on('mouseover', function(){
+      // let description_list = $(this).find('.description_list');
+      $('.add_description_list_btn').remove();
+      // let btnExist = $(description).find('.add_description_list_btn')
+
+      let send_body = {
+        // description: description,
+        description_list: $(this)
+      }
+      let btnExist = $(this).parent().find('.add_description_list_btn')
+
+      if(!btnExist.length){
+        _self.addDescriptionList(send_body);
+      }
+      // _self.addDescriptionList(send_body);
+
+    })
+  }
+
+  addDescriptionList(body){
+
+    let _self = this;
+    let description_list;
+    
+      description_list = body.description_list
+  
+    let add_description_list_btn = $("<button/>", {
+      text: 'Edit list',
+      "class": "btn btn-success add_description_list_btn",
+    css: {
+      'margin': '15px'
+    },
+      on:{
+        click: function(){
+          
+          let SaveButton = (context) => {
+            let ui = $.summernote.ui;
+            let button = ui.button({
+              className: 'saveBtn',
+              background: '#337ab7',
+              contents: '<i class="fa fa-child"/> Save',
+              // tooltip: 'Save',
+              click: function () {
+      
+                let send_body = {
+                  elem: $(description_list),
+                }
+      
+            _self.save(send_body);
+              }
+            });
+          
+            return button.render();
+          }
+           // let initialText = $(body.elem).summernote('code');
+      
+          let CancelButton = (context) => {
+            let ui = $.summernote.ui;
+            let button = ui.button({
+              className: 'cancelBtn',
+              backgroundColor: '#337ab7',
+              contents: '<i class="fa fa-child"/> Cancel',
+              // tooltip: 'Save',
+              click: function () {
+      
+                let send_body = {
+                  elem: $(description_list),
+                  initialText: $(description_list).summernote('code')
+                }
+                $(add_description_list_btn).toggle();
+                _self.cancel(send_body);
+              }
+            });
+          
+            return button.render();
+          }
+
+          $(description_list).summernote({
+            // width: editorWidth,
+            popover: {
+              image: [],
+              link: [],
+              air: []
+            },
+            toolbar: [
+              ['font-style', ['bold', 'italic', 'underline', 'strikethrough', 'clear']],
+              ['para', ['ul', 'ol']],
+              ['misc', ['undo', 'redo']],
+              ['savebutton', ['save']],
+              ['cancelbutton', ['cancel']],
+            ],
+            buttons: {
+              save: SaveButton,
+              cancel: CancelButton
+            }
+          });
+
+          $('.cancelBtn').css({'background': '#ff3131','color': '#fff'})
+          $('.saveBtn').css({'background': '#10b510','color': '#fff'})
+
+          $(add_description_list_btn).toggle();
+        }
+      }
+    
+    }); 
+
+    // for only just added vacancy
+
+    if(this.loggedIn){
+      $(add_description_list_btn).appendTo(description_list.parent());
+    }
+
+    // for multi vacancy
+    // $(description_list).appendTo($('.description_list'));
+    // $(add_description_list_btn).appendTo($('.description_list'));
+
+  }
+
+  save(body){
+
+    this.currentElem = body.elem;
+
+    let markup = $(body.elem).summernote('code');
+
+    $(body.elem).summernote('destroy');
+
+    this.saveChanges();
+
+  }
+
+  cancel(body){
+    let markup = $(body.elem).summernote('code');
+    // if(markup === "<p><br></p>"){
+    //   body.elem.context.parentElement.remove();
+    // }
+    $(body.elem).summernote('reset');
+    $(body.elem).summernote('insertCode', body.initialText);
+    $(body.elem).summernote('destroy');
   }
 
   addEditButton(){

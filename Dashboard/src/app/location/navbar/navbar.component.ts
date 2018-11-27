@@ -81,43 +81,9 @@ export class NavbarComponent implements OnInit {
             }
 
   ngOnInit() {
-let _self = this;
-
-    this._templatesService.getLangList().subscribe(
-        (res) => {
-          _self.lang_collection = res;
-          for(let lang in res[0]){
-            
-            let lang_collect = [];
-            if(lang !== '_id'){
-              lang_collect.push(lang);
-           }
-
-           lang_collect.forEach((lang) => {
-            let lang_coll = _self.lang_collection[0];
-             let lang_add = {
-               'short': lang_coll[lang]['639-1'],
-               'long': lang_coll[lang]['639-2'],
-               'name': lang_coll[lang]['name'],
-               'nativeName': lang_coll[lang]['nativeName']
-             }
-
-             _self.lang_list.push(lang_add);
-           })
-          }
-          // this.lang_list = res;
-        //  res.forEach(lang => {
-        //    this.lang_list.push(lang);
-        //    
-          
-        //  })
-
-
-        },
-        (err) => {
-          console.log('Error from get LAng_list ' + err);
-        }
-      )
+    let _self = this;
+    this.getLanguagesList();
+    this.getLanguagePanel();
 
       $(document).ready(function ($) {
 
@@ -192,7 +158,17 @@ let _self = this;
     this.loggedIn = !!localStorage.getItem('token');
     // this.navbarBehavior();
 
-   this._templatesService.get_lang_panel().subscribe(
+    setTimeout(() => {
+      // _self.showPreloader = false;
+  }, 1500)
+  }
+  isLoggedIn(state) {
+    
+    this.loggedIn = state;
+  }
+
+  getLanguagePanel(){
+    this._templatesService.get_lang_panel().subscribe(
       (res) => {
         this.lang_items = res;
         let lang_collect = [];
@@ -211,14 +187,38 @@ let _self = this;
         console.log('Error from language panel' +'</br>'+ err);
       }
     )
-
-    setTimeout(() => {
-      // _self.showPreloader = false;
-  }, 1500)
   }
-  isLoggedIn(state) {
-    
-    this.loggedIn = state;
+
+  getLanguagesList(){
+
+    let _self = this;
+    this._templatesService.getLangList().subscribe(
+      (res) => {
+        _self.lang_collection = res;
+        for(let lang in res[0]){
+          
+          let lang_collect = [];
+          if(lang !== '_id'){
+            lang_collect.push(lang);
+         }
+
+         lang_collect.forEach((lang) => {
+          let lang_coll = _self.lang_collection[0];
+           let lang_add = {
+             'short': lang_coll[lang]['639-1'],
+             'long': lang_coll[lang]['639-2'],
+             'name': lang_coll[lang]['name'],
+             'nativeName': lang_coll[lang]['nativeName']
+           }
+
+           _self.lang_list.push(lang_add);
+         })
+        }
+      },
+      (err) => {
+        console.log('Error from get LAng_list ' + err);
+      }
+    )
   }
 
   changeOfRoutes(url){
@@ -425,9 +425,7 @@ let _self = this;
     if(title === 'news'){
       let title;
         localStorage.location = title = 'news';
-      
-        
-       
+             
         this._templatesService.getNews(lang).subscribe(
           (res) => {
             if(res.length === 0){
@@ -512,158 +510,26 @@ let _self = this;
     }
   }
 
-  addEditButton(){
-    let _self = this;
-      setTimeout(() => {
-        // this.showPreloader = false;
-      }, 1500);
-
-      $('.editNavbar').off('mouseover').on('mouseover', function(event){
-      // let savedContent;
-      let target = event.target;
-      $('.blockForBtnEdit').remove();
-
-      // Edit button
-
-      let btnEdit = document.createElement('button');
-      let textNodeEdit = document.createTextNode('Edit');
-      btnEdit.setAttribute('class', 'btn btn-info btn-large btnEdit');
-      let blockForBtnEdit = document.createElement('div');
-
-      // Save button
-
-      let btnSave = document.createElement('button');
-      let textNodeSave = document.createTextNode('Save');
-      btnSave.setAttribute('class', 'btn btn-success btn-large btnSave');
-      let blockForBtnSave = document.createElement('div');
-      btnSave.appendChild(textNodeSave);
-
-      // Cancel button
-      
-      let btnCancel = document.createElement('button');
-      let textNodeCancel = document.createTextNode('Cancel');
-      btnCancel.setAttribute('class', 'btn btn-danger btn-large btnCancel');
-      let blockForBtnCancel = document.createElement('div');
-      btnCancel.appendChild(textNodeCancel);
-
-      btnCancel.onclick = function(){
-        $('.blockForBtnSave').remove();
-        $('.blockForBtnCancel').remove();
-        // target.innerText = _self.savedContent;
-      }
-
-
-      btnEdit.appendChild(textNodeEdit);
-      blockForBtnEdit.appendChild(btnEdit);
-      $(blockForBtnEdit).insertBefore(event.target)
-
-      let position = $(event.target).position();
-      let marginTop = +$(event.target).css('margin-top').replace('px', '');
-      // if(this.headers.contains(target.tagName)){
-
-      // }
-      let left = position.left;
-      let top =  position.top + marginTop;
-
-      blockForBtnEdit.setAttribute('class', 'blockForBtnEdit');
-      let width = $(target).width()
-      $(blockForBtnEdit).css({'left': `${left - width}px`, 
-                          'top': `${top + 60}px`, 
-                          'position': 'absolute',
-                          'font-size':'16px',
-                          });
-
-      $(btnEdit).off('click').on('click', (event) =>{
-
-
-        $(target).keypress(function(event) {
-          var keycode = (event.keyCode ? event.keyCode : event.which);
-          if (keycode == '13') {
-            
-            event.preventDefault();
-            $(this).focusout();
-            $(this).attr('contenteditable','false');
-            $('.blockForBtnEdit').remove();
-            $('.blockForBtnSave').remove();
-            $('.blockForBtnCancel').remove();
-            // event.preventDefault();
-          }
-      });
-
-        this.savedContent = target.innerText;
-        target.setAttribute('contenteditable', 'true');
-        target.focus();
-        $(btnEdit).remove();
-
-        $('.blockForBtnSave').remove();
-        $('.blockForBtnCancel').remove();
-
-        blockForBtnSave.appendChild(btnSave);
-
-
-        btnSave.onclick = function(){
-          $('.blockForBtnEdit').remove();
-          $('.blockForBtnSave').remove();
-          $('.blockForBtnCancel').remove();
-
-//========================   Save Method ======================
-
-          // _self.saveChanges();
-        }
-
-        $(blockForBtnSave).insertBefore(target)
-        $(blockForBtnSave).css({'left': `${left}px`, 
-                          'top': `${top + 60}px`, 
-                          'position': 'absolute',
-                          'font-size':'16px',
-                          'z-index': '1000'
-                          });
-        blockForBtnSave.setAttribute('class', 'blockForBtnSave');
-
-        // cancel button
-
-        blockForBtnCancel.appendChild(btnCancel);
-        $(blockForBtnCancel).insertBefore(target)
-        $(blockForBtnCancel).css({'left': `${left + 70}px`, 
-                          'top': `${top + 60}px`, 
-                          'position': 'absolute',
-                          'font-size':'16px',
-                          'z-index': '1000'
-                          });
-        blockForBtnCancel.setAttribute('class', 'blockForBtnCancel');
-       
-
-      });
-
-      $(event.target).off('blur').on('blur', (event) => {
-        
-        target.setAttribute('contenteditable', 'false');
-        setTimeout(() =>{
-          $('.blockForBtnSave').remove();
-          $('.blockForBtnCancel').remove();
-        }, 100)
-
-        if(event.relatedTarget){
-          if(event.relatedTarget.classList.contains('btnCancel')){
-            target.innerText = this.savedContent;
-          }
-        }
-      })
-    });
-  }
-
   chooseLanguage(event){
     let lang = event.currentTarget.value
     this.addingLangBody = lang
-    this.addingLang = {
-      prefix: lang
-    }
+    this.addingLang = lang;
   }
 
   languageAdding(){
+    let _self = this;
     this.acceptAddingNewLang = !this.acceptAddingNewLang;
     this.addingNewLan = !this.addingNewLan;
-    this.lang_items.push(this.addingLang);
+    // this.lang_items.push(this.addingLang);
+    this._templatesService.add_new_lang_panel(this.addingLang)
+    .subscribe(
+      (res) => {
+        _self.getLanguagePanel();
+      },
+      (err) => {
+        console.log('Error language adding to panel' + err);
+      }
+    )
   }
 
   acceptLangBlock(){
@@ -671,6 +537,7 @@ let _self = this;
     let _self = this;
     this.alertAddingLang = !this.alertAddingLang;
     this.acceptAddingNewLang = false;
+    // this.lang_items.push(this.addingLang);
     // this.showPreloader = true;
     setTimeout(() => {
       this.alertAddingLang = false;
