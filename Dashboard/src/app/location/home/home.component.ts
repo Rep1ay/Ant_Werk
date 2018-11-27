@@ -5,27 +5,37 @@ import { AuthService } from '../../auth.service';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { ActivatedRoute, Router, UrlTree, UrlSegmentGroup, UrlSegment, NavigationEnd } from '@angular/router';
 import { Location } from '@angular/common';
+// import Swiper from '
 // import { filter } from 'rxjs/operators';
 import { Observable, Subject, asapScheduler, pipe, of, from,
   interval, merge, fromEvent } from 'rxjs';
-  import { map, filter, scan } from 'rxjs/operators';
+  import { map, filter, scan, finalize } from 'rxjs/operators';
+
+  import { AngularFireDatabase } from 'angularfire2/database';
+  import { AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask } from 'angularfire2/storage';
 import { NewsCollection } from 'src/app/news-collection';
+
 // Jquery declaration
 declare let $: any;
+declare let Swiper: any;
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-
 export class HomeComponent implements OnInit {
   
+  newsCollection: NewsCollection[] = [];
+  itemValue = '';
+  items: Observable<any[]>;
+  blockElement:any;
   loggedIn: boolean;
   lastTarget: any;
   title: string;
   prefix: string;
   template: any;
+  newTemplate: string;
   templateSending = false;
   postText: string = "";
   errorMessage: string;
@@ -36,7 +46,6 @@ export class HomeComponent implements OnInit {
   savePostForm: FormGroup;
   saveBtnPublic: any;
   event: any;
-  newsCollection: NewsCollection[];
   savedContent: string;
   showPreloader = true;
   winOrigin:string;
@@ -51,14 +60,28 @@ export class HomeComponent implements OnInit {
   permalinkURL: string;
   currentLocation = 'home';
   counterEnter = false;
+  rendered = false;
+
+  profileUrl: string;
+  file;
+  uploadPercent: Observable<number>;
+  downloadURL: Observable<string>;
 
   constructor(private _templatesService: TemplatesService, 
             formBuilder: FormBuilder,
             private _auth: AuthService,
             private _activeRoute: ActivatedRoute,
             public _router: Router,
-            private _location: Location
+            private _location: Location,
+            public db: AngularFireDatabase,
+            private afStorage: AngularFireStorage,
+            private storage: AngularFireStorage,
             ) { 
+
+
+              
+              this.items = db.list('items').valueChanges();
+
               this.winOrigin = window.location.origin;
               this.winPathname = window.location.pathname;
 
@@ -72,7 +95,6 @@ export class HomeComponent implements OnInit {
                   if(!this.counterEnter){
                       this.changeOfRoutes(routeData.url);
                       this.counterEnter = true;
-                      this.showPreloader = true;
                     }
                   }
 
@@ -88,27 +110,27 @@ export class HomeComponent implements OnInit {
     let title = localStorage.location;
 
     this.loggedIn = this._auth.loggedIn();
-    this.showPreloader = true;
+
     this._templatesService._event.subscribe(
       event => {
         this.editInner(event)
       }
     )
   let _self = this;
+  this.showPreloader = true;
  
-
-
   // this.getTemplate(title);
   };
 
   changeOfRoutes(url){
     let lang = localStorage.language;
     let title = localStorage.location;
-
     this.routeUrl = url;
     this.showPreloader = true;
+
     this.getTemplate(title);
     this.getLastNews(lang);
+
   }
 
  getTemplate(title){
@@ -121,10 +143,10 @@ export class HomeComponent implements OnInit {
       (res) => {
         let template;
         
-        if(res){
-          template =  res['data']['template'];         
+        if(!res['data']['template']){
+          template = false;
         }else{
-          template = null;
+          template = res['data']['template'];
         }
 
         _self.permalink = `/${localStorage.permalink}`;
@@ -136,21 +158,6 @@ export class HomeComponent implements OnInit {
     );
   }
 
-  getLastNews(lang){
-    let _self = this;
-    this._templatesService.get_3_articles(lang)
-    .subscribe(
-      (res) => {
-        if(res.length > 0){
-          _self.newsCollection = res;
-        }else{
-          _self.newsCollection = [];
-        }
-      },
-    (err) => {
-      console.log('Error from get 3 articles' + err);
-    })
-  }
 
   editPermalink(inputURL: NgForm){
     
@@ -184,42 +191,153 @@ export class HomeComponent implements OnInit {
   }
 
   renderTemplate(template){
+    let _self = this;
+    this.newTemplate = template;
     this.template = template;
+   
     this.counterEnter = false;
+
     if(this.loggedIn) {
+      
       setTimeout(() => {
         this.showPreloader = false;
+        if(_self.template){
+
+          setTimeout(() => {
+            let body = document.getElementById('body');
+            if(body){
+              body.insertAdjacentHTML('beforeend', _self.newTemplate);
+            }
+            _self.renderLayout();
+            setTimeout(() => {
+              this.addEditButton();
+              // this.changeImage();
+              this.renderNews();
+            
+            }, 100)
+
+          }, 100)
+
+        }else{
+          _self.renderLayout();
+          _self.template = false;
     
         setTimeout(() => {
           this.addEditButton();
+            // this.changeImage();
           this.renderNews();
         }, 100)
+        }
+
      }, 1000)
+
+    }else{
+
+      setTimeout(() => {
+        let body = document.getElementById('body');
+        if(body){
+          body.insertAdjacentHTML('beforeend', _self.newTemplate);
     }
-    else{
+      }, 100)
+      this.renderNews();
       setTimeout(() => {
         this.showPreloader = false;
      }, 1000)
     }
   }
 
+  renderLayout(){
+    $(document).ready(function ($) {
+
+      $('.service-overview').hover(
+          function() {
+            $(this).find('.service-overview-content').addClass('show-more');
+          }, function() {
+            $(this).find('.service-overview-content').removeClass('show-more');
+          }
+        );
+    
+      $('.type-weight-service-img').hover(
+          function() {
+            $(this).find('.type-weight-content').addClass('show-type');
+          }, function() {
+            $(this).find('.type-weight-content').removeClass('show-type');
+          }
+        );
+    
+      $('.solution-overview').hover(
+          function() {
+            $(this).addClass('hover-style');
+          }, function() {
+            $(this).removeClass('hover-style');
+          }
+        );
+      var swiper = new Swiper('.main-slider-container', {
+          pagination: {
+            el: '.main-slider-progress',
+            type: 'progressbar',
+          },
+          navigation: {
+            nextEl: '.main-slider-next-btn',
+            prevEl: '.main-slider-prev-btn',
+          },
+        });
+    
+      $('.slider-count').text(swiper.slides.length);
+      swiper.on('slideChange', function () {
+        $('.slider-current').text(swiper.activeIndex + 1);
+      });
+    
+    });
+    
+  }
+
+  getLastNews(lang){
+    let _self = this;
+    this._templatesService.get_3_articles(lang)
+    .subscribe(
+      (res) => {
+        if(res.length > 0){
+          for(let i = 0; i < 3; i++ ){
+            _self.newsCollection.push(res[i])
+          }
+        }
+      },
+    (err) => {
+      console.log('Error from get 3 articles' + err);
+    })
+  }
+
   renderNews(){
     let _self = this;
-    $('.article').remove();
-    let newsBlock = $('.newsBlock');
-
+    $('.aticle').remove();
+    let newsBlock = $('.news-overview-wrapper');
+    this.currentLang = localStorage.language;
     this.newsCollection.forEach(article => {
+      if(article){
       let articleDescription = article.description.slice(0, 150)
     $('<div/>', {
       'class': 'col-md-4 article',
-      append: `<img style="width: 100%;" alt="Media Preview" src="http://www.aviwebsolutions.co.uk/new-images/news-feed-img.jpg"><h6>${article.title}</h6></br><p>${articleDescription}...</p>`,
+          append: `
+                    <div class="news-overview">
+                      <a href="${_self.currentLang}/article/${article.id}" class="news-img full">
+                        <img class="" src="${article.image}" alt="" title="">
+                      </a>
+                      <div class="news-description">
+                        <span class="news-time">${article.date}</span>
+                        <a href="${_self.currentLang}/article/${article.id}" class="title-like-link">${article.title}</a>
+                        <p>${articleDescription}...</p>
+                      </div>
+                    </div>`,
       appendTo: newsBlock
     })
 
+        // `<img style="width: 100%;" alt="Media Preview" src="http://www.aviwebsolutions.co.uk/new-images/news-feed-img.jpg"><h6>${article.title}</h6></br><p>${articleDescription}...</p>`,
+    
     $('.newsLink').off('click').on('click', function(event) {
       _self.routeToNews();
     })
-
+      }
     });
   }
 
@@ -228,7 +346,6 @@ export class HomeComponent implements OnInit {
 
     this._router.navigate([`${lang}/news`])
   }
-
 
   addEditButton(){
     let _self = this;
@@ -289,6 +406,7 @@ export class HomeComponent implements OnInit {
                           'top': `${top - 75}px`, 
                           'position': 'absolute',
                           'font-size':'16px',
+                          'z-index': '10'
                           });
 
       $(btnEdit).off('click').on('click', (event) =>{
@@ -377,24 +495,32 @@ export class HomeComponent implements OnInit {
     let pageTitle = localStorage.location;
     let lang  = localStorage.language;
 
-    if(this.template){
-      body= document.querySelector('#body');
-    }else{
-      body= document.querySelector('#default');
-    }
-    let permalink = localStorage.permalink
+    let s = new XMLSerializer();
+    // let str = s.serializeToString(body);
 
+    if(this.template){
+      let doc = document.querySelector('#body');
+      body = s.serializeToString(doc);
+    }else{
+      let doc = document.querySelector('#default');
+      body = s.serializeToString(doc);
+    }
+
+    let permalink = localStorage.permalink
      $('.blockForBtnEdit').remove();
-    this._templatesService.sendTemplate(body.innerHTML, pageTitle, lang, permalink).subscribe((error) => {
+     $('.imageInput').remove();
+    this._templatesService.sendTemplate(body, pageTitle, lang, permalink).subscribe((error) => {
       console.log(error)
       localStorage.removeItem('addNewLang');
     });
 
-    this._templatesService.send_permalink(pageTitle, permalink).subscribe(res => {  localStorage.permalink = res['permalink']});
-
+    this._templatesService.send_permalink(pageTitle, permalink)
+      .subscribe(res => 
+        {
+          localStorage.permalink = res['permalink']
+        }
+      );
   }
-
-
 
   editInner(event){
 
