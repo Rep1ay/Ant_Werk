@@ -100,7 +100,6 @@ export class NewArticleComponent implements OnInit {
     this._router.routerState
     
     let snapshotURL = this._activeRoute.snapshot.url;
-    // localStorage.location = this.title = snapshotURL[0].path;
     let title = localStorage.location;
 
     this.loggedIn = this._auth.loggedIn();
@@ -124,26 +123,6 @@ export class NewArticleComponent implements OnInit {
     this.renderTemplate();
     // this.getTemplate(title);
   }
-
-//  getTemplate(title){
-   
-//     let _self = this;
-//     let prefix = localStorage.language;
-   
-//     this._templatesService.getTemplate(title, prefix)
-//     .subscribe(
-//       (res) => {
-//         if(res){
-//           let template =  res['data']['template'];         
-//           _self.permalink = `/${localStorage.permalink}`;
-//           _self.renderTemplate();
-//         }
-//       },
-//       (err) => {
-//         console.log(err);
-//       }
-//     );
-//   }
 
   editCategory(){
   

@@ -34,13 +34,13 @@
         <li><a href="">tur</a></li>
         <li><a href="">esp</a></li> -->
         
-        <li class="lang_menu_item"
+        <li *ngIf="allowAddingLang" class="lang_menu_item"
         style="
           color: #fff;
           font-size: 30px;
           border: 1px solid #2ec52e;
           background: #10b510;
-          padding:2px 15px;" 
+          padding:0px 15px 5px 15px;" 
   
         data-lang="add" routerLinkActive="active" (click)=" addingNewLan = !addingNewLan">
         +

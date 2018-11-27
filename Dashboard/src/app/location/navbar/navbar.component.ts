@@ -55,6 +55,7 @@ export class NavbarComponent implements OnInit {
   templateRendered = false;
   title: string;
   tryDefaultEng = false;
+  allowAddingLang = true;
 
   constructor(
 
@@ -233,10 +234,12 @@ let _self = this;
       this.currentTitle = url.split('/')[2];
 
       if(!this.templateRendered && this.currentTitle !== 'article'){
+        // this.allowAddingLang = true;
         this.getTemplate(this.currentTitle, this.currentPrefix);
         this.templateRendered = false;
 
       }else if(this.currentTitle === 'news'){
+        // this.allowAddingLang = false;
         let title;
         localStorage.location = title = 'news';
       
@@ -280,6 +283,8 @@ let _self = this;
             console.log('Error from news page' + error)
           }
         )
+      }else{
+          // this.allowAddingLang = true;
       }
       // else if(this.currentTitle === 'new-article'){
       //   let lang = localStorage.language;
@@ -305,6 +310,7 @@ let _self = this;
     // let prefix = localStorage.language;
     this.title = title;
     if(title !== 'news' && title !== 'new-article'){
+      // this.allowAddingLang = true;
       this.currentLang = lang;
       this._templatesService.getTemplate(title, lang)
       .subscribe(
@@ -392,6 +398,9 @@ let _self = this;
           console.log(err);
         }
       );
+    }
+    else{
+      // this.allowAddingLang = false;
     }
   }
 

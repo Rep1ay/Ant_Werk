@@ -124,15 +124,11 @@ export class LayoutComponent implements OnInit {
   changeOfRoutes(url){
     let lang = localStorage.language;
     let title = localStorage.location;
-
     this.routeUrl = url;
     this.showPreloader = true;
-    // let _self = this;
-    // let prefix = localStorage.language;
 
-    //   // title = window.location.pathname.split('/')[2];
-      this.getTemplate(title);
-      this.getLastNews(lang);
+    this.getTemplate(title);
+    this.getLastNews(lang);
 
   }
 
@@ -140,28 +136,25 @@ export class LayoutComponent implements OnInit {
    
     let _self = this;
     let prefix = localStorage.language;
-    // if(!this.rendered){
-    //   this.rendered = true;
-      this._templatesService.getTemplate(title, prefix)
-      .subscribe(
-        (res) => {
-          let template;
-          
-          if(!res['data']['template']){
-            template = false;
-          }else{
-            template = res['data']['template'];
-          }
-  
-          _self.permalink = `/${localStorage.permalink}`;
-          _self.renderTemplate(template);
-        },
-        (err) => {
-          console.log(err);
-        }
-      );
-    // }
 
+    this._templatesService.getTemplate(title, prefix)
+    .subscribe(
+      (res) => {
+        let template;
+        
+        if(!res['data']['template']){
+          template = false;
+        }else{
+          template = res['data']['template'];
+        }
+
+        _self.permalink = `/${localStorage.permalink}`;
+        _self.renderTemplate(template);
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
   }
   
 
@@ -200,10 +193,6 @@ export class LayoutComponent implements OnInit {
     let _self = this;
     this.newTemplate = template;
     this.template = template;
-    // let find = "\"/";
-    // let regex = new RegExp(find, "g");
-
-    // alert(template.replace(regex, "'"));
    
     this.counterEnter = false;
 
