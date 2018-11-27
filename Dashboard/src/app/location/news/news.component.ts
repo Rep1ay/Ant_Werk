@@ -96,7 +96,7 @@ export class NewsComponent implements OnInit {
 
     let _self = this;
     let lang  = localStorage.language;
-    debugger
+    
    
     if(!url.split('/').includes('article') && !url.split('/').includes('new-article') ){     
       this.getAllNews();
@@ -176,7 +176,7 @@ export class NewsComponent implements OnInit {
   }
 
   createNewArticle(){
-    debugger
+    
     let lang = localStorage.language;
     localStorage.location = 'new-article';
 
@@ -188,7 +188,7 @@ export class NewsComponent implements OnInit {
     }
 
     saveCategory(inputValue: NgForm){
-      debugger
+      
       let _self = this;
       let category = inputValue.value.category;
       let lang = localStorage.language;
@@ -199,7 +199,7 @@ export class NewsComponent implements OnInit {
             this._templatesService.getNewsCategory(lang)
             .subscribe(
               (res) => {
-                debugger
+                
                 _self.news_categories = res
               },
               (err) =>{
@@ -248,7 +248,7 @@ export class NewsComponent implements OnInit {
       this._templatesService.getNewsByCategory(category, lang)
       .subscribe(
         (res) => {
-          debugger
+          
           setTimeout(() => {
             _self.showPreloader = false;
           }, 500)

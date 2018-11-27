@@ -14,7 +14,7 @@ jQuery(document).ready(function ($) {
 
   $('.menu-list > li').hover(
     function(){
-      debugger
+      
       $(this).addClass('current-li');
       $(this).find('.submenu').fadeIn();
       $('.menu-list > li').addClass('font-opacity')

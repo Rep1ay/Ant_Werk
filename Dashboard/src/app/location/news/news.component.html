@@ -69,12 +69,12 @@
 					<button  class="btn btn-info mr-2" type="submit">OK</button>
 					<button (click)='creatingCategory = false' class="btn btn-danger" type="button">Close</button>
 				</form>
-				<div class="col-md-9">
+				<div class="col-md-8">
 					<div class="row">
 						<div class="col-md-4" *ngFor="let article of newsCollection">
 							<div class="media">
 								<h5>{{article.category}}</h5>
-								<img alt="Bootstrap Media Preview" src="http://www.aviwebsolutions.co.uk/new-images/news-feed-img.jpg" />
+								<img style="height: 200px;width: 270px;" alt="Bootstrap Media Preview" src={{article.image}} />
 								<div class="media-body">
 									<h5>{{article.date}}</h5>
 									<h5 (click)="onSelect(article.id)" style="cursor:pointer" class="mt-0">

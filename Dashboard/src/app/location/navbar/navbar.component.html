@@ -2,7 +2,7 @@
 
 <app-preloader *ngIf="showPreloader"></app-preloader>
 
-<nav class="main_navbar">
+<!-- <nav class="main_navbar">
   <ul class="navbar_container">
 
     <button class="navbar-toggler" type="button" 
@@ -15,18 +15,10 @@
         <a class="nav-link" href=""><span class="sr-only">awhuifha</span></a>
     </li>
    
-    <li routerLinkActive="active" class="editNavbar" (click)="followLink('home')">{{home}}</li>
-    <li routerLinkActive="active" class="editNavbar" (click)="followLink('contacts')">{{contacts}}</li>
-    <li routerLinkActive="active" class="editNavbar" (click)="followLink('career')" >{{career}}</li>
-    <li routerLinkActive="active" class="editNavbar" (click)="followLink('news')" >{{news}}</li>
-
-
-    <li *ngIf='!loggedIn' class="editNavbar" routerLinkActive="active"  (click)="followLink('login')">Login</li>
-       
-    <li (click)="logoutUser()" class="editNavbar" *ngIf='loggedIn' routerLinkActive="active">Logout</li>
+   
 
   </ul>
-</nav>
+</nav> -->
 
 <header>
   <div class="side-fixed-block">
@@ -93,7 +85,16 @@
           <div class="row justify-content-between">
             <div class="col-lg-9 menu-list-wrapper">
               <ul class="menu-list p-0">
-                <li><a href="">О нас</a></li>
+                <li><a routerLinkActive="active" (click)="followLink('home')">{{home}}</a></li>
+                <li><a routerLinkActive="active" (click)="followLink('contacts')">{{contacts}}</a></li>
+                <li><a routerLinkActive="active" (click)="followLink('career')">{{career}}</a></li>
+                <li><a routerLinkActive="active" (click)="followLink('news')">{{news}}</a></li>
+                <li><a routerLinkActive="active" (click)="followLink('layout')">{{layout}}</a></li>
+
+                <li *ngIf='!loggedIn' routerLinkActive="active"  (click)="followLink('login')">Login</li>
+                   
+                <li (click)="logoutUser()" *ngIf='loggedIn' routerLinkActive="active">Logout</li>
+
                 <li class="li-has-child"><a href="">Сервисы</a>
                   <ul class="submenu p-0">
                     <li><a href="">Транспортные грузоперевозки</a></li>
@@ -103,12 +104,12 @@
                     <li><a href="">Дополниельные услуги</a></li>
                   </ul>
                 </li>
-                <li><a href="">Отраслевые решения</a></li>
+                <!-- <li><a href="">Отраслевые решения</a></li>
                 <li><a href="">Комплескные решения</a></li>
                 <li><a href="">Карьера</a></li>
                 <li><a href="">Связаться с нами</a></li>
                 <li><a href="">Контакты</a></li>
-                <li><a href="">Новости</a></li>
+                <li><a href="">Новости</a></li> -->
               </ul>
             </div>
             <div class="col-lg-3 contacts-header-wrapper">

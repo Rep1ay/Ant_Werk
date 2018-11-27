@@ -121,7 +121,7 @@ export class ContactsComponent implements OnInit {
   //   .subscribe(
   //     (res) => {
   //       if(res){
-  //         debugger
+  //         
   //         let template =  res['data']['template'].replace(/"/g, "'");
   //         _self.permalink = `/${localStorage.permalink}`;
   //         _self.renderTemplate(template);
@@ -199,7 +199,7 @@ export class ContactsComponent implements OnInit {
     this.template = template;
     // let find = "\"/";
     // let regex = new RegExp(find, "g");
-    debugger
+    
     // alert(template.replace(regex, "'"));
    
     this.counterEnter = false;
@@ -406,7 +406,7 @@ export class ContactsComponent implements OnInit {
     }
 
     let permalink = localStorage.permalink
-debugger
+
      $('.blockForBtnEdit').remove();
     this._templatesService.sendTemplate(body, pageTitle, lang, permalink).subscribe((error) => {
       console.log(error)

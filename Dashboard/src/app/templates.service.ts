@@ -174,7 +174,7 @@ private _newsByCategoryURL = 'http://localhost:3000/api/news_by_category'
   }
 
   saveNewsCategory(category, prefix){
-    debugger
+    
     let  templateBody: Category = {
       body: {
         'prefix': prefix,

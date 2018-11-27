@@ -223,6 +223,13 @@ export class HomeComponent implements OnInit {
     });
   }
 
+  routeToNews(){
+    let lang = localStorage.language;
+
+    this._router.navigate([`${lang}/news`])
+  }
+
+
   addEditButton(){
     let _self = this;
       setTimeout(() => {
@@ -388,11 +395,6 @@ export class HomeComponent implements OnInit {
   }
 
 
-  routeToNews(){
-    let lang = localStorage.language;
-
-    this._router.navigate([`${lang}/news`])
-  }
 
   editInner(event){
 

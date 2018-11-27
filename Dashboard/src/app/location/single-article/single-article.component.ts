@@ -8,8 +8,11 @@ import { Location } from '@angular/common';
 // import { filter } from 'rxjs/operators';
 import { Observable, Subject, asapScheduler, pipe, of, from,
   interval, merge, fromEvent } from 'rxjs';
-  import { map, filter, scan } from 'rxjs/operators';
+  import { map, filter, scan, finalize } from 'rxjs/operators';
 import { NewsCategories } from 'src/app/news_category';
+
+import { AngularFireDatabase } from 'angularfire2/database';
+import { AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask } from 'angularfire2/storage';
 // Jquery declaration
 declare let $: any;
 
@@ -53,13 +56,21 @@ export class SingleArticleComponent implements OnInit {
   category: string;
   editingCategory = false;
   news_categories: NewsCategories[];
+
+  profileUrl: string;
+  file;
+  uploadPercent: Observable<number>;
+  downloadURL: Observable<string>;
+  blockElement:any;
   
   constructor(private _templatesService: TemplatesService, 
             formBuilder: FormBuilder,
             private _auth: AuthService,
             private _activeRoute: ActivatedRoute,
             public _router: Router,
-            private _location: Location
+            private _location: Location,
+            private afStorage: AngularFireStorage,
+            private storage: AngularFireStorage,
             ) { 
               this.winOrigin = window.location.origin;
               this.winPathname = window.location.pathname;
@@ -125,7 +136,7 @@ export class SingleArticleComponent implements OnInit {
     .subscribe(
       (res) => {
         if(res){
-          debugger
+          
           _self.category = res['category'];
           let template = res['template'];
           // _self.permalink = `/${localStorage.permalink}`;
@@ -159,7 +170,7 @@ export class SingleArticleComponent implements OnInit {
 
   saveCategory (category: NgForm){
     let _self = this;
-  debugger
+  
     this.category = category.value.input;
 
   }
@@ -183,7 +194,7 @@ export class SingleArticleComponent implements OnInit {
         this._templatesService.getNewsCategory(lang)
         .subscribe(
           (res) => {
-            debugger
+            
             _self.news_categories = res
           },
           (err) =>{
@@ -193,10 +204,13 @@ export class SingleArticleComponent implements OnInit {
 
         setTimeout(() => {
           this.addEditButton();
+          this.activateStyles();
+          this.changeImage();
         }, 100)
      }, 1000)
     }
     else{
+      this.activateStyles();
       setTimeout(() => {
         this.showPreloader = false;
      }, 1000)
@@ -344,6 +358,103 @@ export class SingleArticleComponent implements OnInit {
      
   }
   
+
+  getFile(event, mainBlock) {
+    this.file = event.target.files[0];
+    this.uploadFile(mainBlock);
+  }
+
+  uploadFile(mainBlock) {
+    let _self = this;
+    this.blockElement = mainBlock;
+    if (this.file) {
+      // this.showPreloader = true;
+      const filePath = Math.random().toString(13).substring(2) + this.file.name;
+      const fileRef = this.storage.ref(filePath);
+      const task = this.storage.upload(filePath, this.file);
+
+      // observe percentage changes
+      this.uploadPercent = task.percentageChanges();
+      // get notified when the download URL is available
+      task.snapshotChanges()
+        .pipe(
+          finalize(() => {
+            this.downloadURL = fileRef.getDownloadURL(); // {{ downloadURL | async }}
+            this.downloadURL.subscribe(url => {
+              this.profileUrl = url; // {{ profileUrl }}
+              console.log(this.profileUrl);
+              _self.showPreloader = false;
+
+              setTimeout(() =>{
+              _self.blockElement.find('img')[0]['src'] = _self.profileUrl;
+              _self.saveChanges();
+              },100)
+
+            });
+          })
+        )
+        .subscribe();
+    } else {
+      console.log('Ooppsss');
+    }
+  }
+
+  changeImage(){
+    
+    let _self = this;
+    // let actualEvent = event;
+
+    $('.editableImage').on('mouseenter', function(){
+      $('.imageInput').remove();
+      let mainBlock =  $(this);
+      let leftPosition = ($(this).width())/2;
+      let topPosition = ($(this).height())/2;
+
+      let fileInput = $("<input/>", {
+        'class': 'imageInput',
+        css: {
+          display:'block',
+          left: `20px`,
+          top: `0px`,
+          position: 'absolute',
+          'z-index': '9999',
+        },
+        type: 'file',
+        on: {
+          change: function(event){
+            _self.getFile(event, mainBlock);
+          },
+          
+          mouseleave: function(){
+            $('.imageInput').remove();
+          },
+        }
+      })
+      
+      $(this).append(fileInput);
+
+    })
+
+    $('.editableImage').on('mouseleave', function(){
+      $('.imageInput').remove();
+    });
+
+  }
+
+  activateStyles(){
+    $(function(){
+
+    $('head').append(`<style>
+
+      img{
+      width: 100%;
+      }
+      
+      </style>`);
+
+  });
+}
+
   saveChanges(){
     let _self = this;
     let body;
@@ -364,8 +475,11 @@ export class SingleArticleComponent implements OnInit {
     let title = document.querySelector('.articleTitle')['innerText'];
     let permalink = localStorage.permalink
     
-     $('.blockForBtnEdit').remove();
-    let image = '';
+    $('.blockForBtnEdit').remove();
+    $('.imageInput').remove();
+
+
+    let image = _self.profileUrl;
     let category = this.category;
 
     let date = new Date().toISOString().slice(0, 10);

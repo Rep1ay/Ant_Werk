@@ -22,6 +22,7 @@ declare var $: any;
 export class NavbarComponent implements OnInit {
   productCollection: any;
   // faUser  = faUser;
+  layout = 'Layout';
   home = 'Home';
   contacts = 'Contacts';
   career = 'Career';
@@ -117,12 +118,78 @@ let _self = this;
         }
       )
 
+      $(document).ready(function ($) {
+
+      $('#menu-open').on('click', function(){
+        $('.main-menu-wrapper').fadeIn();
+      });
+      $('#menu-close').on('click', function(){
+        $('.main-menu-wrapper').fadeOut();
+      });
+
+      //Button switch (should place buttons in one place)
+
+      $(window).scroll(function(){
+        if($(this).scrollTop() >= 500){
+          $('.back').css('display','block');
+          $('.next').css('display','none');
+        } else {
+          $('.back').css('display','none');
+          $('.next').css('display','block');
+        } 
+      });
+
+      function appendLang(){
+        if($(window).width() < 769){
+          $('.lang-switch').appendTo('.contacts-header-wrapper .social-bar-footer');
+        }
+        else
+        if($(window).width() > 769){
+          $('.lang-switch').appendTo('.side-fixed-block');
+        }
+      }
+      appendLang();
+      $(window).resize(function(){appendLang();});
+    
+      $('.menu-list > li').hover(
+        function(){
+          $(this).addClass('current-li');
+          $(this).find('.submenu').fadeIn();
+          $('.menu-list > li').addClass('font-opacity')
+        }, function(){
+          $(this).find('.submenu').fadeOut();
+          $(this).removeClass('current-li');
+          $('.menu-list > li').removeClass('font-opacity')
+        });
+    
+      //Scroll to anchor(section)
+    
+      $('.next').on('click',function(event){
+        event.preventDefault();
+        var full_url = this.href;
+        var parts = full_url.split("#");
+        var trgt = parts[1];
+        var target_offset = $("#"+trgt).offset();
+        var target_top = target_offset.top;
+        $('html, body').animate({scrollTop:target_top}, 500);
+      })
+    
+      //Scroll to top
+    
+      $('.back').on('click',function(event){
+        event.preventDefault();
+        $("html, body").animate({ scrollTop: 0 }, 500);
+      })
+
+    });
+
+
     this._authService._state.subscribe(
       state => {this.isLoggedIn(state)});
 
     this.loggedIn = this._authService.loggedIn();
     this.loggedIn = !!localStorage.getItem('token');
-    this.navbarBehavior();
+    // this.navbarBehavior();
 
    this._templatesService.get_lang_panel().subscribe(
       (res) => {
@@ -165,7 +232,7 @@ let _self = this;
       this.langChanging = false;
       this.currentTitle = url.split('/')[2];
 
-      if(!this.templateRendered){
+      if(!this.templateRendered && this.currentTitle !== 'article'){
         this.getTemplate(this.currentTitle, this.currentPrefix);
         this.templateRendered = false;
 
@@ -173,7 +240,7 @@ let _self = this;
         let title;
         localStorage.location = title = 'news';
       
-        debugger
+        
         let lang = localStorage.language;
         this._templatesService.getNews(lang).subscribe(
           (res) => {
@@ -183,13 +250,13 @@ let _self = this;
             _self._templatesService.getPermalink(title)
             .subscribe(
               (res) => {
-                debugger
+                
                 let permalink;
                 let pageTitle = localStorage.location;
   
                 localStorage.permalink = permalink = res['permalink'];
                 _self._router.config[0].path = lang;
-                _self._router.config[1].redirectTo = `${lang}/home`;
+                // _self._router.config[1].redirectTo = `${lang}/home`;
   
                 let origin = window.location.origin;
                 _self.permalinkURL = `${origin}/${lang}/${permalink}`
@@ -281,7 +348,7 @@ let _self = this;
               })
 
             _self._router.config[0].path = lang;
-            _self._router.config[1].redirectTo = `/${lang}/home`
+            // _self._router.config[1].redirectTo = `/${lang}/home`
 
             localStorage.permalink = permalink;
             _self.permalink = `/${permalink}`;
@@ -312,7 +379,7 @@ let _self = this;
                 }
                 // else{
                 //   _self.tryDefaultEng = false;
-                //   debugger
+                //   
                 //   let path = res['gotObj']['pageTitle']
 
                 //   // _self.template = null
@@ -350,7 +417,7 @@ let _self = this;
       let title;
         localStorage.location = title = 'news';
       
-        debugger
+        
        
         this._templatesService.getNews(lang).subscribe(
           (res) => {
@@ -360,12 +427,12 @@ let _self = this;
             _self._templatesService.getPermalink(title)
               .subscribe(
                 (res) => {
-                  debugger
+                  
                   localStorage.language = lang;
                   let permalink;
                   localStorage.permalink = permalink = res['permalink'];
                   _self._router.config[0].path = lang;
-                  _self._router.config[1].redirectTo = `${lang}/home`;
+                  // _self._router.config[1].redirectTo = `${lang}/home`;
 
                   _self._location.go(`${lang}/${permalink}`);
                   _self._router.navigate([`${lang}/${permalink}`]);
@@ -381,7 +448,7 @@ let _self = this;
         )
     }
     else if(title === 'new-article'){
-      debugger
+      
     }
     else{
       this.getTemplate(title, lang);
@@ -391,6 +458,8 @@ let _self = this;
 
   followLink(path){
     this.langChanging = false;
+
+     $('.main-menu-wrapper').fadeOut();
 
       let lang = localStorage.language;
       let snapshot = this._activatedRoute.snapshot;
@@ -403,7 +472,7 @@ let _self = this;
       let title;
       localStorage.location = title = 'news';
     
-      debugger
+      
       let lang = localStorage.language;
       this._templatesService.getNews(lang).subscribe(
         (res) => {
@@ -413,11 +482,11 @@ let _self = this;
           _self._templatesService.getPermalink(title)
             .subscribe(
               (res) => {
-                debugger
+                
                 let permalink;
                 localStorage.permalink = permalink = res['permalink'];
                 _self._router.config[0].path = lang;
-                _self._router.config[1].redirectTo = `${lang}/home`;
+                // _self._router.config[1].redirectTo = `${lang}/home`;
 
                 _self._location.go(`${lang}/${permalink}`);
                 _self._router.navigate([`${lang}/${permalink}`]);
@@ -608,12 +677,12 @@ let _self = this;
         localStorage.language = lang;
         this._router.config[0].path = lang;
 
-        debugger
+        
         _self._location.go(`${lang}/${permalink}`);
 
         if(localStorage.location === 'news'){
            _self._router.config[0].path = lang;
-                _self._router.config[1].redirectTo = `${lang}/home`;
+                // _self._router.config[1].redirectTo = `${lang}/home`;
                 let pageTitle  = localStorage.location;
 
                 let origin = window.location.origin;
@@ -676,37 +745,37 @@ let _self = this;
 
   
 
-  navbarBehavior() {
-    window.addEventListener('scroll', function(e) {
+  // navbarBehavior() {
+  //   window.addEventListener('scroll', function(e) {
 
-      const scrollY = window.scrollY;
-      const navbar = document.querySelector('.navbar_container');
+  //     const scrollY = window.scrollY;
+  //     const navbar = document.querySelector('.navbar_container');
 
-      class NavbarBehavior {
-        constructor() {}
-        fade(elem) {
-          elem.setAttribute('style', 'padding: 0px');
-          elem.classList.add('fixed_to_top');
-        }
-        show(elem) {
-          elem.setAttribute('style', 'padding: 10px 0px');
-          elem.classList.remove('fixed_to_top');
-        }
-        toggle(elem, addClass, deleteClass) {
-          elem.classList.add(addClass);
-          elem.classList.remove(deleteClass);
-        }
-      }
+  //     class NavbarBehavior {
+  //       constructor() {}
+  //       fade(elem) {
+  //         elem.setAttribute('style', 'padding: 0px');
+  //         elem.classList.add('fixed_to_top');
+  //       }
+  //       show(elem) {
+  //         elem.setAttribute('style', 'padding: 10px 0px');
+  //         elem.classList.remove('fixed_to_top');
+  //       }
+  //       toggle(elem, addClass, deleteClass) {
+  //         elem.classList.add(addClass);
+  //         elem.classList.remove(deleteClass);
+  //       }
+  //     }
 
-      const navbarBehavior = new NavbarBehavior();
+  //     const navbarBehavior = new NavbarBehavior();
 
-      if ( scrollY > 50 ) {
-        navbarBehavior.fade(navbar);
-      } else {
-        navbarBehavior.show(navbar);
-      }
-  });
-  }
+  //     if ( scrollY > 50 ) {
+  //       navbarBehavior.fade(navbar);
+  //     } else {
+  //       navbarBehavior.show(navbar);
+  //     }
+  // });
+  // }
 
   logoutUser() {
     setTimeout(() => {

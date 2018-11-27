@@ -924,7 +924,9 @@ export class CareerComponent implements OnInit {
       
       .slider.round:before {
         border-radius: 50%;
-      }</style>`);
+      }
+      
+      </style>`);
 
     });
   }

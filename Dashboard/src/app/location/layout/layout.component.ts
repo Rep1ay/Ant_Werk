@@ -13,7 +13,7 @@ import { Observable, Subject, asapScheduler, pipe, of, from,
 
   import { AngularFireDatabase } from 'angularfire2/database';
   import { AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask } from 'angularfire2/storage';
-
+  import { NewsCollection } from 'src/app/news-collection';
 
 // Jquery declaration
 declare let $: any;
@@ -25,7 +25,7 @@ declare let Swiper: any;
   styleUrls: ['./layout.component.css']
 })
 export class LayoutComponent implements OnInit {
-
+  newsCollection: NewsCollection[] = [];
   itemValue = '';
   items: Observable<any[]>;
   blockElement:any;
@@ -121,96 +121,8 @@ export class LayoutComponent implements OnInit {
   // this.getTemplate(title);
   };
 
-  getFile(event, mainBlock) {
-    this.file = event.target.files[0];
-    this.uploadFile(mainBlock);
-  }
-
-  uploadFile(mainBlock) {
-    let _self = this;
-    this.blockElement = mainBlock;
-    if (this.file) {
-      const filePath = Math.random().toString(13).substring(2) + this.file.name;
-      const fileRef = this.storage.ref(filePath);
-      const task = this.storage.upload(filePath, this.file);
-
-      // observe percentage changes
-      this.uploadPercent = task.percentageChanges();
-      // get notified when the download URL is available
-      task.snapshotChanges()
-        .pipe(
-          finalize(() => {
-            this.downloadURL = fileRef.getDownloadURL(); // {{ downloadURL | async }}
-            this.downloadURL.subscribe(url => {
-              this.profileUrl = url; // {{ profileUrl }}
-              console.log(this.profileUrl);
-              _self.blockElement.find('img')[0]['src'] = _self.profileUrl;
-            });
-          })
-        )
-        .subscribe();
-    } else {
-      console.log('Ooppsss');
-    }
-  }
-
-  changeImage(){
-    
-    let _self = this;
-    // let actualEvent = event;
-
-    $('.full').on('mouseenter', function(){
-      $('.imageInput').remove();
-      let mainBlock =  $(this);
-      let leftPosition = ($(this).width())/2;
-      let topPosition = ($(this).height())/2;
-
-      let fileInput = $("<input/>", {
-        'class': 'imageInput',
-        css: {
-          display:'block',
-          left: `20px`,
-          top: `0px`,
-          position: 'absolute',
-          'z-index': '9999',
-        },
-        type: 'file',
-        on: {
-          change: function(event){
-            _self.getFile(event, mainBlock);
-          },
-          // click: function(){
-          //   let submitButton = $('<button/>', {
-          //     text: "submit",
-          //     'class': 'submitImgBtn',
-          //     css: {
-          //       display:'block',
-          //       left: `${leftPosition}px`,
-          //       top: `30px`,
-          //       position: 'relative',
-          //       'z-index': '9999',
-          //     },
-          //     type: 'button',
-          //     on: {
-          //       click: function(){
-          //         _self.uploadFile(mainBlock)
-          //       }
-          //     }
-          //   })
-
-          //   mainBlock.append(submitButton);
-          // },
-        }
-      })
-      
-      $(this).append(fileInput);
-     
-
-    })
-  }
-
   changeOfRoutes(url){
-
+    let lang = localStorage.language;
     let title = localStorage.location;
 
     this.routeUrl = url;
@@ -220,6 +132,7 @@ export class LayoutComponent implements OnInit {
 
     //   // title = window.location.pathname.split('/')[2];
       this.getTemplate(title);
+      this.getLastNews(lang);
 
   }
 
@@ -308,7 +221,9 @@ export class LayoutComponent implements OnInit {
             _self.renderLayout();
             setTimeout(() => {
               this.addEditButton();
-              this.changeImage();
+              // this.changeImage();
+              this.renderNews();
+            
             }, 100)
 
           }, 100)
@@ -319,7 +234,8 @@ export class LayoutComponent implements OnInit {
 
           setTimeout(() => {
             this.addEditButton();
-            this.changeImage();
+            // this.changeImage();
+            this.renderNews();
           }, 100)
         }
 
@@ -333,7 +249,7 @@ export class LayoutComponent implements OnInit {
           body.insertAdjacentHTML('beforeend', _self.newTemplate);
         }
       }, 100)
-
+      this.renderNews();
       setTimeout(() => {
         this.showPreloader = false;
       }, 1000)
@@ -343,36 +259,6 @@ export class LayoutComponent implements OnInit {
   renderLayout(){
     $(document).ready(function ($) {
 
-      function appendLang(){
-        if($(window).width() < 769){
-          $('.lang-switch').appendTo('.contacts-header-wrapper .social-bar-footer');
-        }
-        else
-        if($(window).width() > 769){
-          $('.lang-switch').appendTo('.side-fixed-block');
-        }
-      }
-      appendLang();
-      $(window).resize(function(){appendLang();});
-    
-      $('.menu-list > li').hover(
-        function(){
-          $(this).addClass('current-li');
-          $(this).find('.submenu').fadeIn();
-          $('.menu-list > li').addClass('font-opacity')
-        }, function(){
-          $(this).find('.submenu').fadeOut();
-          $(this).removeClass('current-li');
-          $('.menu-list > li').removeClass('font-opacity')
-        });
-    
-      $('#menu-open').on('click', function(){
-        $('.main-menu-wrapper').fadeIn();
-      });
-      $('#menu-close').on('click', function(){
-        $('.main-menu-wrapper').fadeOut();
-      });
-    
       $('.service-overview').hover(
           function() {
             $(this).find('.service-overview-content').addClass('show-more');
@@ -412,39 +298,63 @@ export class LayoutComponent implements OnInit {
         $('.slider-current').text(swiper.activeIndex + 1);
       });
     
-      //Button switch (should place buttons in one place)
-    
-      $(window).scroll(function(){
-        if($(this).scrollTop() >= 500){
-          $('.back').css('display','block');
-          $('.next').css('display','none');
-        } else {
-          $('.back').css('display','none');
-          $('.next').css('display','block');
-        } 
-      });
-    
-      //Scroll to anchor(section)
-    
-      $('.next').on('click',function(event){
-        event.preventDefault();
-        var full_url = this.href;
-        var parts = full_url.split("#");
-        var trgt = parts[1];
-        var target_offset = $("#"+trgt).offset();
-        var target_top = target_offset.top;
-        $('html, body').animate({scrollTop:target_top}, 500);
-      })
-    
-      //Scroll to top
-    
-      $('.back').on('click',function(event){
-        event.preventDefault();
-        $("html, body").animate({ scrollTop: 0 }, 500);
-      })
-    
     });
     
+  }
+
+  getLastNews(lang){
+    let _self = this;
+    this._templatesService.get_3_articles(lang)
+    .subscribe(
+      (res) => {
+        if(res.length > 0){
+          for(let i = 0; i < 3; i++ ){
+            _self.newsCollection.push(res[i])
+          }
+        }
+      },
+    (err) => {
+      console.log('Error from get 3 articles' + err);
+    })
+  }
+
+  renderNews(){
+    let _self = this;
+    $('.aticle').remove();
+    let newsBlock = $('.news-overview-wrapper');
+    this.currentLang = localStorage.language;
+    this.newsCollection.forEach(article => {
+      if(article){
+        let articleDescription = article.description.slice(0, 150)
+        $('<div/>', {
+          'class': 'col-md-4 article',
+          append: `
+                    <div class="news-overview">
+                      <a href="${_self.currentLang}/article/${article.id}" class="news-img full">
+                        <img class="" src="${article.image}" alt="" title="">
+                      </a>
+                      <div class="news-description">
+                        <span class="news-time">${article.date}</span>
+                        <a href="${_self.currentLang}/article/${article.id}" class="title-like-link">${article.title}</a>
+                        <p>${articleDescription}...</p>
+                      </div>
+                    </div>`,
+          appendTo: newsBlock
+        })
+    
+        // `<img style="width: 100%;" alt="Media Preview" src="http://www.aviwebsolutions.co.uk/new-images/news-feed-img.jpg"><h6>${article.title}</h6></br><p>${articleDescription}...</p>`,
+    
+        $('.newsLink').off('click').on('click', function(event) {
+          _self.routeToNews();
+        })
+      }
+    });
+  }
+
+  routeToNews(){
+    let lang = localStorage.language;
+
+    this._router.navigate([`${lang}/news`])
   }
 
   addEditButton(){
@@ -506,6 +416,7 @@ export class LayoutComponent implements OnInit {
                           'top': `${top - 75}px`, 
                           'position': 'absolute',
                           'font-size':'16px',
+                          'z-index': '10'
                           });
 
       $(btnEdit).off('click').on('click', (event) =>{
