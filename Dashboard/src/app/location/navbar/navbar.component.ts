@@ -222,9 +222,6 @@ export class NavbarComponent implements OnInit {
   }
 
   changeOfRoutes(url){
- 
-    
-
 
     this.routeUrl = url;
     // this.showPreloader = false;
@@ -241,7 +238,7 @@ export class NavbarComponent implements OnInit {
       }else{
         this.allowAddingLang = true;
       }
-      
+
       if(!this.templateRendered && this.currentTitle !== 'article'){
         // this.allowAddingLang = true;
         this.getTemplate(this.currentTitle, this.currentPrefix);
