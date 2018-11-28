@@ -222,7 +222,10 @@ export class NavbarComponent implements OnInit {
   }
 
   changeOfRoutes(url){
-    this.allowAddingLang = true;
+ 
+    
+
+
     this.routeUrl = url;
     // this.showPreloader = false;
     this.tryDefaultEng = false;
@@ -233,6 +236,12 @@ export class NavbarComponent implements OnInit {
       this.langChanging = false;
       this.currentTitle = url.split('/')[2];
 
+      if(this.currentTitle === 'article'){
+        this.allowAddingLang = false;
+      }else{
+        this.allowAddingLang = true;
+      }
+      
       if(!this.templateRendered && this.currentTitle !== 'article'){
         // this.allowAddingLang = true;
         this.getTemplate(this.currentTitle, this.currentPrefix);
@@ -284,7 +293,7 @@ export class NavbarComponent implements OnInit {
           }
         )
       }else{
-          this.allowAddingLang = false;
+          
       }
       // else if(this.currentTitle === 'new-article'){
       //   let lang = localStorage.language;
