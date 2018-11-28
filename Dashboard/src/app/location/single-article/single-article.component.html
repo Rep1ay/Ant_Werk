@@ -1,12 +1,62 @@
 
 <app-preloader *ngIf="showPreloader"></app-preloader>
 
+<!-- ============ permalink block start ======================  -->
+
+
+<div *ngIf="!showPreloader && loggedIn" style="height: 100px;" class="container-fluid">
+	<div style="height: 100px;" class="row">
+		<div class="permalinkForm">
+			<form *ngIf="loggedIn"  #inputURL='ngForm' class="form-inline">
+				<label class="permalink" class="permalink" for="input">Permalink: </label>
+        <a *ngIf="!editionPermalink" style="margin-left: 5px" href='{{winOrigin}}/{{currentLang}}/article/{{articleId}}'> {{winOrigin}}/article/{{articleId}}</a>
+        <a *ngIf="editionPermalink" style="margin-left: 5px" href='{{winOrigin}}/{{currentLang}}/article/{{articleId}}'> {{winOrigin}}/article/</a>
+				<input *ngIf="editionPermalink" #input="ngModel" [(ngModel)]='permalinkEdit' name="input" ngModel class="form-control col-md-3">
+				
+				<button *ngIf="!editionPermalink" style="margin: 10px" 
+				(click)='editPermalink(inputURL); editionPermalink = !editionPermalink' 
+				class="btn btn-primary btn-large" 
+				type="submit">
+				Edit
+				</button>
+				
+				<button *ngIf="editionPermalink" style="margin: 10px 5px;" (click)='savePermalink(inputURL); editionPermalink = !editionPermalink' 
+				class="btn btn-success btn-large">
+				Save
+				</button>
+	
+				<button *ngIf="editionPermalink" style="margin: 10px 2px;" (click)='cancelPermalink(); editionPermalink = !editionPermalink' 
+				class="btn btn-danger btn-large">
+				Cancel
+				</button>
+		  	</form>
+		</div>
+
+		<div *ngIf="newLanguageAdded" class="col-md-3">
+			<p>added new language {{localhost.language}} to this page</p>
+		</div>
+	</div>
+	
+</div>
+
+<!-- ============ permalink block end ======================  -->
+
+
 <!-- ============ category block start ======================  -->
 
 
-<div *ngIf="!showPreloader && loggedIn" style="height: 80px;" class="container-fluid">
+
+<div *ngIf="!showPreloader && loggedIn" style="height: 100px;" class="container-fluid">
+
+  <div style="position: relative;opacity: 0"  class="progressBlock container">
+    <div  class="progress">
+      <div class="progress-bar progress-bar-striped bg-success" role="progressbar" [style.width]="(uploadPercent | async) + '%'" [attr.aria-valuenow]="(uploadPercent | async)" aria-valuemin="0" aria-valuemax="100">
+      </div>
+    </div>
+  </div>
+
 	<div style="height: 100px;" class="row">
-		<div class="permalinkForm">
+		<div class="category">
 			<form *ngIf="loggedIn"  #inputValue='ngForm' class="form-inline">
 				<label for="input">Category: </label>
 		    <h5 style="margin:2px 10px;" *ngIf="!edition">{{category}}</h5>

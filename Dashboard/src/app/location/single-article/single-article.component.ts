@@ -56,6 +56,10 @@ export class SingleArticleComponent implements OnInit {
   category: string;
   editingCategory = false;
   news_categories: NewsCategories[];
+  uploadingImg = false;
+  savingPermalink = false;
+  editionPermalink = false;
+  edition = false; 
 
   profileUrl: string;
   file;
@@ -131,7 +135,7 @@ export class SingleArticleComponent implements OnInit {
    
     let _self = this;
     let prefix = localStorage.language;
-   
+    this.currentLang = prefix;
     this._templatesService.getArticleTemplate(id, prefix)
     .subscribe(
       (res) => {
@@ -164,6 +168,31 @@ export class SingleArticleComponent implements OnInit {
         console.log(err);
       }
     );
+  }
+
+  editPermalink(inputURL: NgForm){
+    
+    this.permalinkEdit = `${localStorage.permalink}`;
+    console.log(inputURL.value);
+  }
+
+  savePermalink(permalink: NgForm){
+    debugger
+    let _self = this;
+    let permalinkToSend = permalink.value.input;
+    this.articleId = `${permalink.value.input}`;
+    localStorage.permalink = permalink.value.input;
+    // this.articleId = '';
+    this.savingPermalink = true;
+    this.saveChanges();
+
+  }
+
+
+
+  cancelPermalink(){
+    this.permalink = `/${localStorage.permalink}`
+    this.permalinkEdit = '';
   }
 
   editCategory(inputValue: NgForm){
@@ -369,6 +398,14 @@ export class SingleArticleComponent implements OnInit {
     this.uploadFile(mainBlock);
   }
 
+  showUploadProgress(mainBlock){
+    this.uploadingImg = true;
+    let top = mainBlock.position().top + 80;
+    $('.progressBlock')[0].style.top = top + 'px';
+    $('.progressBlock')[0].style.opacity = 1;
+    // $('.progress').
+  }
+
   uploadFile(mainBlock) {
     let _self = this;
     this.blockElement = mainBlock;
@@ -380,6 +417,7 @@ export class SingleArticleComponent implements OnInit {
 
       // observe percentage changes
       this.uploadPercent = task.percentageChanges();
+      this.showUploadProgress(mainBlock);
       // get notified when the download URL is available
       task.snapshotChanges()
         .pipe(
@@ -388,10 +426,11 @@ export class SingleArticleComponent implements OnInit {
             this.downloadURL.subscribe(url => {
               this.profileUrl = url; // {{ profileUrl }}
               console.log(this.profileUrl);
-              _self.showPreloader = false;
+              $('.progressBlock')[0].style.opacity = 0;
 
               setTimeout(() =>{
               _self.blockElement.find('img')[0]['src'] = _self.profileUrl;
+              _self.uploadingImg = false;
               _self.saveChanges();
               },100)
 
@@ -504,10 +543,24 @@ export class SingleArticleComponent implements OnInit {
       'template': body
     }
 
-    this._templatesService.sendArticle(body_send).subscribe((error) => {
-      console.log(error)
-      localStorage.removeItem('addNewLang');
-    });
+    this._templatesService.sendArticle(body_send).subscribe(
+      (res) => {
+        // _self._router.navigate([`${localStorage.language}/${res['permalink']}`]);
+        console.log(res);
+        localStorage.removeItem('addNewLang');
+
+        if(_self.savingPermalink){
+          setTimeout(() =>{
+            _self.savingPermalink = false;
+            _self._location.go(`${localStorage.language}/article/${_self.articleId}`)
+            window.location.reload();
+          },100)
+        }
+      },
+      (err) => {
+        console.log('Error from permalink send from navbar' + '</br>' + err);
+      }
+    )
 
     // this._templatesService.send_permalink(pageTitle, permalink).subscribe(res => {  localStorage.permalink = res['permalink']});
 

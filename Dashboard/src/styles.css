@@ -5,6 +5,22 @@
     position: absolute;
     display: flex;
     justify-content: center;
-    background: #eee;
+    background: linear-gradient(to right, #f7844a 2%, #ffad2f 74%);
     padding: 10px 50px;
+    width: 100%;
+    height: 101px;
+}
+.category{
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    background: linear-gradient(to right, #f7844a -56%, #ffad2f 44%);
+    padding: 10px 50px;
+    color: #fff;
+    /* height: 101px; */
+}
+
+label.permalink{
+    color: #fff;
+    font-size: 18px;
 }

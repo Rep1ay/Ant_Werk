@@ -170,8 +170,28 @@ export class NewsComponent implements OnInit {
     )
   }
 
+  filterByCategory(category){
+    let _self = this;
+    this.showPreloader = true;
+    let lang = localStorage.language;
+    this._templatesService.getNewsByCategory(category, lang)
+    .subscribe(
+      (res) => {
+        
+        setTimeout(() => {
+          _self.showPreloader = false;
+        }, 500)
+        _self.newsCollection = res
+      },
+      (err) =>{
+        console.log('Error from get news category' + err);
+      }
+    )
+  }
+
   onSelect(id){
     let lang =localStorage.language;
+    localStorage.permalink = id;
     this._router.navigate([`/${lang}/article/${id}`])
   }
 
@@ -180,7 +200,7 @@ export class NewsComponent implements OnInit {
     let lang = localStorage.language;
     // localStorage.location = 'new-article';
     let id = new Date().toISOString().replace(/[^0-9]/g, '');
-
+    localStorage.permalink = id;
     this._router.config[0].path = lang;
     this._router.config[1].redirectTo = `${lang}/home`;
 
@@ -188,6 +208,7 @@ export class NewsComponent implements OnInit {
     this._router.navigate([`/${lang}/article/${id}`])
 
     }
+    
 
     saveCategory(inputValue: NgForm){
       
@@ -243,24 +264,7 @@ export class NewsComponent implements OnInit {
       this.permalinkEdit = '';
     }
 
-    filterByCategory(category){
-      let _self = this;
-      this.showPreloader = true;
-      let lang = localStorage.language;
-      this._templatesService.getNewsByCategory(category, lang)
-      .subscribe(
-        (res) => {
-          
-          setTimeout(() => {
-            _self.showPreloader = false;
-          }, 500)
-          _self.newsCollection = res
-        },
-        (err) =>{
-          console.log('Error from get news category' + err);
-        }
-      )
-    }
+
   
     cancelPermalink(){
       this.permalink = `/${localStorage.permalink}`
