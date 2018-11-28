@@ -410,7 +410,11 @@ export class NewArticleComponent implements OnInit {
     let title = document.querySelector('.articleTitle')['innerText'];
     let permalink = localStorage.permalink;
 
-    let image = '';
+    let image = _self.profileUrl;
+    if(!image){
+      image = $('img.previewImage')[0]['src']
+    }
+
     let category = this.category;
    
     let date = new Date().toISOString().slice(0, 10);

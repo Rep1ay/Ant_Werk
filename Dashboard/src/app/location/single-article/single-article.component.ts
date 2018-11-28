@@ -143,16 +143,19 @@ export class SingleArticleComponent implements OnInit {
           _self.renderTemplate(template);
         }else{
           if(this.loggedIn) {
+            _self.category = 'other';
             setTimeout(() => {
               this.showPreloader = false;
-              setTimeout(() => {
-                this.addEditButton();
-              }, 100)
+              let template = null;
+              _self.renderTemplate(template);
            }, 1000)
           }
           else{
             setTimeout(() => {
               this.showPreloader = false;
+              setTimeout(() => {
+                this.activateStyles();
+              }, 100)
            }, 1000)
           }
         }
@@ -185,7 +188,9 @@ export class SingleArticleComponent implements OnInit {
   renderTemplate(template){
   let lang = localStorage.language;
    let _self = this;
-    this.template = template;
+   if(template){
+      this.template = template;
+   }
     this.counterEnter = false;
     if(this.loggedIn) {
       setTimeout(() => {
@@ -480,6 +485,10 @@ export class SingleArticleComponent implements OnInit {
 
 
     let image = _self.profileUrl;
+    if(!image){
+      image = $('img.previewImage')[0]['src']
+    }
+
     let category = this.category;
 
     let date = new Date().toISOString().slice(0, 10);

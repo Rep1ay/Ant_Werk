@@ -178,13 +178,15 @@ export class NewsComponent implements OnInit {
   createNewArticle(){
     
     let lang = localStorage.language;
-    localStorage.location = 'new-article';
+    // localStorage.location = 'new-article';
+    let id = new Date().toISOString().replace(/[^0-9]/g, '');
 
     this._router.config[0].path = lang;
     this._router.config[1].redirectTo = `${lang}/home`;
 
-    this._location.go(`${lang}/new-article`);
-    this._router.navigate([`${lang}/new-article`]);
+    this._location.go(`${lang}/article/${id}`);
+    this._router.navigate([`/${lang}/article/${id}`])
+
     }
 
     saveCategory(inputValue: NgForm){
