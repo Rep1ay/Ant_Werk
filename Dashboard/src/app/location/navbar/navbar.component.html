@@ -93,7 +93,8 @@
 
                 <li *ngIf='!loggedIn' routerLinkActive="active"  (click)="followLink('login')">Login</li>
                    
-                <li (click)="logoutUser()" *ngIf='loggedIn' routerLinkActive="active">Logout</li>
+                <li *ngIf='loggedIn' (click)="logoutUser()" routerLinkActive="active">Logout</li>
+                <li *ngIf='loggedIn' (click)="followLink('register')" routerLinkActive="active">{{register}}</li>
 
                 <li class="li-has-child"><a href="">Сервисы</a>
                   <ul class="submenu p-0">

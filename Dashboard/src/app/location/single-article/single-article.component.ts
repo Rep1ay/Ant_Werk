@@ -126,6 +126,7 @@ export class SingleArticleComponent implements OnInit {
 
     let title = localStorage.location;
     let id = this.articleId = this._activeRoute.snapshot.params['id'];
+    localStorage.permalink = id;
     this.routeUrl = url;
     this.showPreloader = true;
     this.getTemplate(id);

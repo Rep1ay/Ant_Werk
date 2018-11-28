@@ -205,7 +205,7 @@
 
 #addNewLangToPanel {
     position: fixed;
-    right: 60px;
+    right: 86px;
     z-index: 100;
     top: 228px;
     max-width: 410px;

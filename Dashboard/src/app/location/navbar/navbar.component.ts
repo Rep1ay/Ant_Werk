@@ -27,6 +27,7 @@ export class NavbarComponent implements OnInit {
   contacts = 'Contacts';
   career = 'Career';
   news = 'News';
+  register = 'Registration';
   lang_items: LangPanel[] = [];
   template: any;
   formInput: string;

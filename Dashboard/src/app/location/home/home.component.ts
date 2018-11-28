@@ -181,7 +181,11 @@ export class HomeComponent implements OnInit {
    
     let _self = this;
     let prefix = localStorage.language;
-   
+    if(!prefix || prefix === ''){
+      // if(prefix = window.location.pathname.split('/')[1] !== ''){
+        prefix ='en'
+      // }
+    }
     this._templatesService.getTemplate(title, prefix)
     .subscribe(
       (res) => {
