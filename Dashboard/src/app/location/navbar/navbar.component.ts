@@ -228,7 +228,7 @@ export class NavbarComponent implements OnInit {
     // this.showPreloader = false;
     this.tryDefaultEng = false;
     let _self = this;
-    this.currentPrefix = localStorage.language =  url.split('/')[1];
+    this.currentPrefix = url.split('/')[1];
     // let title = localStorage.location;
     // if(title){
       this.langChanging = false;
@@ -390,14 +390,10 @@ export class NavbarComponent implements OnInit {
               
                 _self.getTemplate(title, langDefault);  
                 }
-                // else{
-                //   _self.tryDefaultEng = false;
-                //   
-                //   let path = res['gotObj']['pageTitle']
-
-                //   // _self.template = null
-                // }
-                
+                else{
+                  localStorage.location = 'home';
+                  _self._router.navigate([`${localStorage.language}/home`])
+                }
                 }
             }
       },
