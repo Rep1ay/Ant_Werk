@@ -23,11 +23,13 @@ export class NavbarComponent implements OnInit {
   productCollection: any;
   // faUser  = faUser;
   layout = 'Layout';
+  logout = 'Logout';
   home = 'Home';
   contacts = 'Contacts';
   career = 'Career';
   news = 'News';
   register = 'Registration';
+  login = 'Login';
   lang_items: LangPanel[] = [];
   template: any;
   formInput: string;

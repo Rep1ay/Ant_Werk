@@ -85,16 +85,16 @@
           <div class="row justify-content-between">
             <div class="col-lg-9 menu-list-wrapper">
               <ul class="menu-list p-0">
-                <li><a routerLinkActive="active" (click)="followLink('home')">{{home}}</a></li>
-                <li><a routerLinkActive="active" (click)="followLink('contacts')">{{contacts}}</a></li>
-                <li><a routerLinkActive="active" (click)="followLink('career')">{{career}}</a></li>
-                <li><a routerLinkActive="active" (click)="followLink('news')">{{news}}</a></li>
-                <li><a routerLinkActive="active" (click)="followLink('layout')">{{layout}}</a></li>
+                <li routerLinkActive="active" (click)="followLink('home')"><a>{{home}}</a></li>
+                <li  routerLinkActive="active" (click)="followLink('contacts')"><a>{{contacts}}</a></li>
+                <li routerLinkActive="active" (click)="followLink('career')"><a>{{career}}</a></li>
+                <li routerLinkActive="active" (click)="followLink('news')"><a>{{news}}</a></li>
+                <li routerLinkActive="active" (click)="followLink('layout')"><a>{{layout}}</a></li>
 
-                <li *ngIf='!loggedIn' routerLinkActive="active"  (click)="followLink('login')">Login</li>
+                <li *ngIf='!loggedIn' routerLinkActive="active"  (click)="followLink('login')"><a>{{login}}</a></li>
                    
-                <li *ngIf='loggedIn' (click)="logoutUser()" routerLinkActive="active">Logout</li>
-                <li *ngIf='loggedIn' (click)="followLink('register')" routerLinkActive="active">{{register}}</li>
+                <li *ngIf='loggedIn' (click)="logoutUser()" routerLinkActive="active"><a>{{logout}}</a></li>
+                <li *ngIf='loggedIn' (click)="followLink('register')" routerLinkActive="active"><a>{{register}}</a></li>
 
                 <li class="li-has-child"><a href="">Сервисы</a>
                   <ul class="submenu p-0">
