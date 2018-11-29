@@ -28,6 +28,8 @@ import { AngularFireModule } from 'angularfire2';
 import { AngularFireStorageModule } from 'angularfire2/storage';
 
 import { AgmCoreModule, GoogleMapsAPIWrapper } from '@agm/core';
+import { AuthGuard } from './auth.guard';
+import { AuthService } from './auth.service';
 
 
 @NgModule({
@@ -69,7 +71,7 @@ import { AgmCoreModule, GoogleMapsAPIWrapper } from '@agm/core';
     AngularFireStorageModule
     // NgbModule
   ],
-  providers: [],
+  providers: [AuthService, AuthGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

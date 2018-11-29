@@ -11,6 +11,7 @@ import { NewsComponent } from './location/news/news.component';
 import { NewArticleComponent } from './location/new-article/new-article.component';
 import { SingleArticleComponent } from './location/single-article/single-article.component';
 import { LayoutComponent } from './location/layout/layout.component';
+import { AuthGuard } from './auth.guard';
 
 let prefix = localStorage.language;
 
@@ -27,7 +28,7 @@ const routes: Routes = [
 
       { path: `home`, component: HomeComponent},
       { path: `login`, component : LoginComponent},
-      { path: `register`, component : RegisterComponent},
+      { path: `register`, component : RegisterComponent, canActivate: [AuthGuard]},
       { path: `contacts`, component: ContactsComponent},
       { path: `career`, component: CareerComponent},
       { path: `layout`, component: LayoutComponent},
