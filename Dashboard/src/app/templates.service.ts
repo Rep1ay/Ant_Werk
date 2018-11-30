@@ -25,12 +25,12 @@ private _lang_panelURL = 'http://localhost:3000/api/lang_panel'
 private _permalinkUrl = 'http://localhost:3000/api/permalink'
 private _pageTitleUrl = 'http://localhost:3000/api/pageTitle'
 private _langListURL = 'http://localhost:3000/api/lang_list'
-private _navbarURL = 'http://localhost:3000/api/navbar'
 private _newsURL = 'http://localhost:3000/api/news'
 private _articleURL = 'http://localhost:3000/api/article'
 private _3_articlesURL = 'http://localhost:3000/api/3_articles'
 private _newsCategoryURL = 'http://localhost:3000/api/news_category'
 private _newsByCategoryURL = 'http://localhost:3000/api/news_by_category'
+private _navBarItemsURL = 'http://localhost:3000/api/navbar_items'
 
 
 
@@ -45,7 +45,12 @@ private _newsByCategoryURL = 'http://localhost:3000/api/news_by_category'
   //   this.persons = res;
   // });
 
-  get_navbar(lang){
+  send_navbar_items(body){
+    return this._http.put<any>(this._navBarItemsURL, body);  
+  }
+
+
+  get_navbar_items(lang){
     let headerJson = {
       'Content-Type': 'application/json',
       'Accept' : 'application/json',
@@ -54,7 +59,7 @@ private _newsByCategoryURL = 'http://localhost:3000/api/news_by_category'
 
     const headers = new HttpHeaders(headerJson);
 
-    return this._http.get(this._navbarURL, {headers}).pipe(map((responce:any) => responce));
+    return this._http.get(this._navBarItemsURL, {headers}).pipe(map((responce:any) => responce));
   }
 
   editInner(event: Event){

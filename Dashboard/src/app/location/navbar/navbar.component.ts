@@ -12,6 +12,7 @@ import { Observable, Subject, asapScheduler, pipe, of, from,
   interval, merge, fromEvent } from 'rxjs';
   import { map, filter, scan } from 'rxjs/operators';
 import { LangList } from 'src/app/lang-list';
+import { Navbar } from 'src/app/navbar';
 declare var $: any;
 
 @Component({
@@ -22,14 +23,52 @@ declare var $: any;
 export class NavbarComponent implements OnInit {
   productCollection: any;
   // faUser  = faUser;
-  layout = 'Layout';
+
+  // layout: string;
+  // logout: string;
+  // home: string;
+  // contacts: string;
+  // career: string;
+  // news: string;
+  // register: string;
+  // login: string;
+
+  // telephone: string;
+  // adress: string;
+  // social: string;
+
+  editionHome = false;
+  editionContacts = false;
+  editionCareer = false;
+  editionNews = false;
+  editionRegister = false;
+  editionLogin = false;
+  editionLogout = false;
+  // edition = false;
+  editionInfo = false;
+  editionSocial = false;
+  edition = false;
+
+  editionMail = false;
+  editionTelephone = false;
+  editionСontact = false;
+
+
+  layout = 'Вид';
   logout = 'Logout';
-  home = 'Home';
-  contacts = 'Contacts';
-  career = 'Career';
-  news = 'News';
-  register = 'Registration';
+  home = 'Главная';
+  contacts = 'Контакты';
+  career = 'Карьера';
+  news = 'Новости';
+  register = 'Регистрация';
   login = 'Login';
+
+  contactInfo = 'Контакты'
+  telephone = 'Телефон: 1-800-123-1234';
+  location = 'Россия, Москва д. 327, оф. 57';
+  email = 'example@logistic.com';
+  social = 'Мы в соцсетях';
+
   lang_items: LangPanel[] = [];
   template: any;
   formInput: string;
@@ -59,6 +98,7 @@ export class NavbarComponent implements OnInit {
   title: string;
   tryDefaultEng = false;
   allowAddingLang = true;
+  activeNavbarItem: any;
 
   constructor(
 
@@ -84,11 +124,113 @@ export class NavbarComponent implements OnInit {
             }
 
   ngOnInit() {
+
+    let lang = localStorage.langauge;
     let _self = this;
     this.getLanguagesList();
     this.getLanguagePanel();
 
-      $(document).ready(function ($) {
+    this.activateMenu();
+    this.getNavbarItems(lang);
+
+    this._authService._state.subscribe(
+      state => {this.isLoggedIn(state)});
+
+    this.loggedIn = this._authService.loggedIn();
+    this.loggedIn = !!localStorage.getItem('token');
+    // this.navbarBehavior();
+
+    setTimeout(() => {
+      // _self.showPreloader = false;
+  }, 1500)
+  }
+  isLoggedIn(state) {
+    
+    this.loggedIn = state;
+  }
+
+  getNavbarItems(lang){
+    if(!lang){
+      lang = localStorage.language;
+    }
+    let _self = this;
+    this._templatesService.get_navbar_items(lang).subscribe(
+      (res) => {
+        // debugger
+        res.forEach((item) => {
+          _self[item.navBarItem] = item.navBarItemLabel
+        })
+      },
+       (err) => {
+         console.log('Error ffrom get navbar items' + err);
+       }
+    )
+    // this.addEditButton();
+
+  }
+
+  editContent(event){
+    // debugger
+    // event.target.setAttribute('contenteditable', 'true');
+    $(event.target).parent().find('.click2edit_nav')[0].setAttribute('contenteditable', 'true');
+    $(event.target).parent().find('.click2edit_nav')[0].focus();
+
+  }
+
+  cancelEditing(event){
+    this.editionHome = false;
+    this.editionContacts = false;
+    this.editionCareer = false;
+    this.editionNews = false;
+    this.editionRegister = false;
+    this.editionLogin = false;
+     this.editionLogout = false;
+    $('.click2edit_nav').attr('contenteditable', false);
+
+  }
+
+  cancelEditingInfo(event){
+
+  }
+
+  sendNavbarItems(event){
+
+    // this.activeNavbarItem.innerText
+    let navItemLabel = $(event.target).parent().parent().find('.click2edit_nav')[0].innerText
+    let lang = localStorage.language;
+    let navItem = $(event.target).parent().parent().data('page')
+    $('.click2edit_nav').attr('contenteditable', false);
+
+    let send_body = {
+      navBarItem: navItem,
+      navBarItemLabel: navItemLabel,
+      prefix: lang
+      // layout: this.layout,
+      // logout: this.logout,
+      // home: this.home,
+      // contacts: this.contacts,
+      // career: this.career,
+      // news: this.news,
+      // register: this.register,
+      // login: this.login,
+    
+      // telephone: this.telephone,
+      // adress: this.adress,
+      // social: this.social
+    }
+    this._templatesService.send_navbar_items(send_body)
+    .subscribe(
+      (res) => {
+        // debugger
+      },
+      (err) => {
+        console.log('Error from send navbar items' + err);
+      }
+    );
+  }
+
+  activateMenu(){
+    $(document).ready(function ($) {
 
       $('#menu-open').on('click', function(){
         $('.main-menu-wrapper').fadeIn();
@@ -152,22 +294,6 @@ export class NavbarComponent implements OnInit {
       })
 
     });
-
-
-    this._authService._state.subscribe(
-      state => {this.isLoggedIn(state)});
-
-    this.loggedIn = this._authService.loggedIn();
-    this.loggedIn = !!localStorage.getItem('token');
-    // this.navbarBehavior();
-
-    setTimeout(() => {
-      // _self.showPreloader = false;
-  }, 1500)
-  }
-  isLoggedIn(state) {
-    
-    this.loggedIn = state;
   }
 
   getLanguagePanel(){
@@ -225,7 +351,7 @@ export class NavbarComponent implements OnInit {
   }
 
   changeOfRoutes(url){
-
+  
     this.routeUrl = url;
     // this.showPreloader = false;
     this.tryDefaultEng = false;
@@ -314,7 +440,7 @@ export class NavbarComponent implements OnInit {
   }
 
  getTemplate(title, lang){
-   
+  this.getNavbarItems(lang);
     let _self = this;
     // let prefix = localStorage.language;
     this.title = title;
@@ -400,7 +526,7 @@ export class NavbarComponent implements OnInit {
             }
       },
         (err) => {
-          console.log(err);
+          console.log('Error from get template' + err);
         }
       );
     }
@@ -408,10 +534,10 @@ export class NavbarComponent implements OnInit {
       // this.allowAddingLang = false;
     }
   }
-
 // 
 
   changeLanguage(lang){
+    this.getNavbarItems(lang);
     let title = localStorage.location;
     
     if(!title){
@@ -466,6 +592,8 @@ export class NavbarComponent implements OnInit {
   }
 
   followLink(path){
+    if(!this.edition){
+
     this.langChanging = false;
 
      $('.main-menu-wrapper').fadeOut();
@@ -474,7 +602,7 @@ export class NavbarComponent implements OnInit {
       let snapshot = this._activatedRoute.snapshot;
       let _self = this;
     if(path !== 'news'){
-      this._location.go(`${lang}/${path}`);
+      // this._location.go(`${lang}/${path}`);
       this.getTemplate(path, this.currentPrefix);
     }
     else{
@@ -509,6 +637,7 @@ export class NavbarComponent implements OnInit {
           console.log('Error from news page' + error)
         }
       )
+      }
     }
   }
 

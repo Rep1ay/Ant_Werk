@@ -24,3 +24,8 @@ label.permalink{
     color: #fff;
     font-size: 18px;
 }
+
+.controlBtnsBlock {
+    position: absolute;
+    left: 185px;
+}
