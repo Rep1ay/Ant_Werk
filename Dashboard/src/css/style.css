@@ -183,7 +183,7 @@
     .menu-list > li:last-of-type > a{
       margin-bottom: 0;
     }
-    .contacts-header-wrapper .contacts-list a{
+    .contacts-header-wrapper .contacts-list a, .contacts-header-wrapper .contacts-list p{
       color: #fff;
     }
     .contacts-header-block{
@@ -1082,15 +1082,14 @@
     .contacts-list a{
       /* margin-bottom: 15px; */
       display: block;
-      padding-top: 10px;
-      padding-left: 31px;
+      padding: 10px 0px 10px 30px;
       position: relative;
     }
     .contacts-list a:hover{
       color: #fff;
     }
     .contacts-list a:before{
-      margin-top: 6px;
+      margin-top: 1px;
       width: 17px;
       height: 12px;
       top: 50%;

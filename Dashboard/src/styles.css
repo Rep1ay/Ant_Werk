@@ -25,7 +25,12 @@ label.permalink{
     font-size: 18px;
 }
 
-.controlBtnsBlock {
+.menu-list .controlBtnsBlock {
     position: absolute;
     left: 185px;
+}
+
+.contacts-header-wrapper .controlBtnsBlock {
+    position: absolute;
+    right: 15px;
 }

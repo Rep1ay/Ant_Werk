@@ -44,15 +44,17 @@ export class NavbarComponent implements OnInit {
   editionRegister = false;
   editionLogin = false;
   editionLogout = false;
-  // edition = false;
+
   editionInfo = false;
   editionSocial = false;
-  edition = false;
-
   editionMail = false;
+  editionLocation = false;
+  editionLocation_attachment = false;
   editionTelephone = false;
   editionСontact = false;
+  editionContactInfo = false;
 
+  edition = false;
 
   layout = 'Вид';
   logout = 'Logout';
@@ -65,7 +67,8 @@ export class NavbarComponent implements OnInit {
 
   contactInfo = 'Контакты'
   telephone = 'Телефон: 1-800-123-1234';
-  location = 'Россия, Москва д. 327, оф. 57';
+  location = 'Россия, Москва';
+  location_attachment = 'Ул. Строителей 327, оф. 57';
   email = 'example@logistic.com';
   social = 'Мы в соцсетях';
 
@@ -100,6 +103,8 @@ export class NavbarComponent implements OnInit {
   allowAddingLang = true;
   activeNavbarItem: any;
 
+  lastEditItemLable = ''
+
   constructor(
 
     private _templatesService: TemplatesService,
@@ -131,7 +136,7 @@ export class NavbarComponent implements OnInit {
     this.getLanguagePanel();
 
     this.activateMenu();
-    this.getNavbarItems(lang);
+    // this.getNavbarItems(lang);
 
     this._authService._state.subscribe(
       state => {this.isLoggedIn(state)});
@@ -170,27 +175,85 @@ export class NavbarComponent implements OnInit {
   }
 
   editContent(event){
-    // debugger
-    // event.target.setAttribute('contenteditable', 'true');
-    $(event.target).parent().find('.click2edit_nav')[0].setAttribute('contenteditable', 'true');
-    $(event.target).parent().find('.click2edit_nav')[0].focus();
+    let _self = this;
+    $('head').append(`<style>
+    .click2edit_nav:focus{
+      border: 1px solid #96c7f1;
+      box-shadow: 0px 0 10px 1px #719ECE;
+    }
+    </style>`);
 
+    let target = $(event.target).parent().find('.click2edit_nav')[0];
+    // debugger
+
+    // event.target.setAttribute('contenteditable', 'true');
+    target.setAttribute('contenteditable', 'true');
+    this.lastEditItemLable = target.innerText;
+    target.focus();
+
+    $(target).keypress(function(event) {
+      var keycode = (event.keyCode ? event.keyCode : event.which);
+      if (keycode == '13') {
+        $('head').append(`<style>
+        .click2edit_nav:focus{
+          border: none;
+          box-shadow: none;
+        }
+        </style>`);
+        
+        $('.click2edit_nav').focusout();
+        _self.exitEditing();
+        _self.exitInfoEditing();
+        event.preventDefault();
+      }
+  });
   }
 
-  cancelEditing(event){
+  exitEditing(){
     this.editionHome = false;
     this.editionContacts = false;
     this.editionCareer = false;
     this.editionNews = false;
     this.editionRegister = false;
     this.editionLogin = false;
-     this.editionLogout = false;
+    this.editionLogout = false;
     $('.click2edit_nav').attr('contenteditable', false);
 
   }
 
-  cancelEditingInfo(event){
+  cancelEditing(event){
+    this.exitEditing();
+    let target = $(event.target).parent().parent().find('.click2edit_nav')[0]
 
+    target.innerText = this.lastEditItemLable;
+
+  }
+
+
+
+  exitInfoEditing(){
+    this.editionSocial = false;
+    this.editionMail = false;
+    this.editionLocation = false;
+    this.editionLocation_attachment = false;
+    this.editionTelephone = false;
+    this.editionСontact = false;
+    this.editionContactInfo = false;
+    $('.click2edit_nav').attr('contenteditable', false);
+    $('head').append(`<style>
+    .click2edit_nav:focus{
+      border: none;
+      box-shadow: none;
+    }
+    </style>`);
+  }
+
+  cancelEditingInfo(event){
+    this.exitInfoEditing();
+
+    let target = $(event.target).parent().parent().find('.click2edit_nav')[0]
+
+    target.innerText = this.lastEditItemLable;
   }
 
   sendNavbarItems(event){

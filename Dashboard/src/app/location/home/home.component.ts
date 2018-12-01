@@ -189,16 +189,23 @@ export class HomeComponent implements OnInit {
     this._templatesService.getTemplate(title, prefix)
     .subscribe(
       (res) => {
-        let template;
+        if(res){
+          let template;
         
-        if(!res['data']['template']){
-          template = false;
+          if(!res['data']['template']){
+            template = false;
+          }else{
+            template = res['data']['template'];
+          }
+  
+          _self.permalink = `/${localStorage.permalink}`;
+          _self.renderTemplate(template);
         }else{
-          template = res['data']['template'];
+          // added to test loading witout layout in DB
+          let template = null;
+          _self.renderTemplate(template)
         }
 
-        _self.permalink = `/${localStorage.permalink}`;
-        _self.renderTemplate(template);
       },
       (err) => {
         console.log(err);
