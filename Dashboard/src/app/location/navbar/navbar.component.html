@@ -34,7 +34,7 @@
         <li><a href="">tur</a></li>
         <li><a href="">esp</a></li> -->
         
-        <li *ngIf="allowAddingLang" class="lang_menu_item"
+      <li *ngIf="allowAddingLang" class="lang_menu_item"
         style="
           color: #fff;
           font-size: 30px;
@@ -45,16 +45,23 @@
         attr.data-lang="add" routerLinkActive="active" (click)=" addingNewLan = !addingNewLan">
         +
       </li>
-         <li [attr.attr.data-lang]="lang.prefix" routerLinkActive="active" *ngFor="let lang of lang_items" (click)="changeLanguage(lang.prefix)">{{lang.prefix}}</li>
-  
+         <li [attr.attr.data-lang]="lang.prefix" 
+            [ngClass]='{"current-language": currentLang === lang.prefix}'
+            routerLinkActive="active" class="language" 
+            *ngFor="let lang of lang_items" 
+            (click)="changeLanguage(lang.prefix)">
+          {{lang.prefix}}</li>
+
     </ul>
     
-    <div *ngIf="alertAddingLang" class="blockForEditLang" style="position: fixed; top: 90px; right: 0px; background: rgba(245, 73, 73, 0.47); font-size: 20px; color: rgb(255, 255, 255); padding: 12px;">
+    <div *ngIf="alertAddingLang" class="blockForEditLang" 
+      style="position: fixed; top: 90px; right: 0px; background: rgba(245, 73, 73, 0.47); font-size: 20px; color: rgb(255, 255, 255); padding: 12px;">
       <p>Adding {{addingLangBody}} language, dont forget save changes</p>
       <button (click)="alertAddingLang = !alertAddingLang" class="btn btn-primary">OK</button>
     </div>
   
-    <div *ngIf="acceptAddingNewLang" style="position: fixed; top: 300px; right: 101px; background: yellowgreen; font-size: 20px; color: rgb(255, 255, 255); padding: 12px;z-index:8000">
+    <div *ngIf="acceptAddingNewLang" 
+      style="position: fixed; top: 300px; right: 101px; background: yellowgreen; font-size: 20px; color: rgb(255, 255, 255); padding: 12px;z-index:8000">
       <p>Add {{addingLangBody}} language for this page?</p>
       <button (click)="acceptLangBlock()" class="btn btn-warning">Accept</button>
       <button (click)="cancelLangBlock()" class="btn btn-danger" style="margin-left: 10px;">Cancel</button>
