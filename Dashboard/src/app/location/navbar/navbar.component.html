@@ -111,77 +111,150 @@
                     Cancel</button>  
                   </div>
 
-                  <button *ngIf="edition" (click)="editContent($event); editionHome = !editionHome" class="btn btn-info btn-large editNavbar">Edit</button>
+                  <button *ngIf="edition" 
+                    (click)="editContent($event); editionHome = !editionHome" 
+                    class="btn btn-info btn-large editNavbar">
+                  Edit</button>
 
                 </li>
 
-                <li  routerLinkActive="active" data-page="contacts" ><a (click)="followLink('contacts')" class="click2edit_nav">{{contacts}}</a> 
+                <li  routerLinkActive="active" data-page="contacts" >
+                  <a (click)="followLink('contacts')" class="click2edit_nav">{{contacts}}</a> 
                   <div class="controlBtnsBlock">
-                    <button *ngIf="editionContacts" (click)="sendNavbarItems($event); editionContacts = !editionContacts" class="btn btn-success btn-large editNavbar">Save</button>
-                    <button *ngIf="editionContacts" (click)="cancelEditing($event); editionContacts = false" class="btn btn-danger btn-large editNavbar">Cancel</button>  
+                    <button *ngIf="editionContacts" 
+                      (click)="sendNavbarItems($event); editionContacts = !editionContacts" 
+                      class="btn btn-success btn-large editNavbar">
+                    Save</button>
+                    <button *ngIf="editionContacts" 
+                      (click)="cancelEditing($event); editionContacts = false" 
+                      class="btn btn-danger btn-large editNavbar">
+                    Cancel</button>  
                   </div>
 
-                  <button *ngIf="edition" (click)="editContent($event); editionContacts = !editionContacts" class="btn btn-info btn-large editNavbar">Edit</button>
+                  <button *ngIf="edition" 
+                    (click)="editContent($event); editionContacts = !editionContacts" 
+                    class="btn btn-info btn-large editNavbar">
+                  Edit</button>
 
                 </li>
 
-                <li  routerLinkActive="active" data-page="career" ><a (click)="followLink('career')" class="click2edit_nav">{{career}}</a> 
+                <li  routerLinkActive="active" data-page="career" >
+                  <a (click)="followLink('career')" class="click2edit_nav">{{career}}</a> 
                   <div class="controlBtnsBlock">
-                    <button *ngIf="editionCareer" (click)="sendNavbarItems($event); editionCareer = !editionCareer" class="btn btn-success btn-large editNavbar">Save</button>
-                    <button *ngIf="editionCareer" (click)="cancelEditing($event); editionCareer = false" class="btn btn-danger btn-large editNavbar">Cancel</button>  
+                    <button *ngIf="editionCareer" 
+                      (click)="sendNavbarItems($event); editionCareer = !editionCareer" 
+                      class="btn btn-success btn-large editNavbar">
+                    Save</button>
+                    <button *ngIf="editionCareer" 
+                      (click)="cancelEditing($event); editionCareer = false" 
+                      class="btn btn-danger btn-large editNavbar">
+                    Cancel</button>  
                   </div>
 
-                  <button *ngIf="edition" (click)="editContent($event); editionCareer = !editionCareer" class="btn btn-info btn-large editNavbar">Edit</button>
+                  <button *ngIf="edition" 
+                    (click)="editContent($event); editionCareer = !editionCareer" 
+                    class="btn btn-info btn-large editNavbar">
+                  Edit</button>
 
                 </li>
 
-                <li  routerLinkActive="active" data-page="news" ><a (click)="followLink('news')" class="click2edit_nav">{{news}}</a> 
+                <li  routerLinkActive="active" data-page="news" >
+                  <a (click)="followLink('news')" class="click2edit_nav">{{news}}</a> 
                   <div class="controlBtnsBlock">
-                    <button *ngIf="editionNews" (click)="sendNavbarItems($event); editionNews = !editionNews" class="btn btn-success btn-large editNavbar">Save</button>
-                    <button *ngIf="editionNews" (click)="cancelEditing($event); editionNews = false" class="btn btn-danger btn-large editNavbar">Cancel</button>  
+                    <button *ngIf="editionNews" 
+                      (click)="sendNavbarItems($event); editionNews = !editionNews" 
+                      class="btn btn-success btn-large editNavbar">
+                    Save</button>
+                    <button *ngIf="editionNews" 
+                      (click)="cancelEditing($event); editionNews = false" 
+                      class="btn btn-danger btn-large editNavbar">
+                    Cancel</button>  
                   </div>
 
-                  <button *ngIf="edition" (click)="editContent($event); editionNews = !editionNews" class="btn btn-info btn-large editNavbar">Edit</button>
+                  <button *ngIf="edition" 
+                    (click)="editContent($event); editionNews = !editionNews" 
+                    class="btn btn-info btn-large editNavbar">
+                  Edit</button>
 
                 </li>
 
-                <li  routerLinkActive="active" data-page="layout" ><a (click)="followLink('layout')" class="click2edit_nav">{{layout}}</a> 
+                <li  routerLinkActive="active" data-page="layout" >
+                  <a (click)="followLink('layout')" class="click2edit_nav">{{layout}}</a> 
                   <div class="controlBtnsBlock">
-                    <button *ngIf="editionLayout" (click)="sendNavbarItems($event); editionLayout = !editionLayout" class="btn btn-success btn-large editNavbar">Save</button>
-                    <button *ngIf="editionLayout" (click)="cancelEditing($event); editionLayout = false" class="btn btn-danger btn-large editNavbar">Cancel</button>  
+                    <button *ngIf="editionLayout" 
+                      (click)="sendNavbarItems($event); editionLayout = !editionLayout" 
+                      class="btn btn-success btn-large editNavbar">
+                    Save</button>
+                    <button *ngIf="editionLayout" 
+                      (click)="cancelEditing($event); editionLayout = false" 
+                      class="btn btn-danger btn-large editNavbar">
+                    Cancel</button>  
                   </div>
 
-                  <button *ngIf="edition" (click)="editContent($event); editionLayout = !editionLayout" class="btn btn-info btn-large editNavbar">Edit</button>
+                  <button *ngIf="edition" 
+                    (click)="editContent($event); editionLayout = !editionLayout" 
+                    class="btn btn-info btn-large editNavbar">
+                  Edit</button>
 
                 </li>
 
-                <li *ngIf='!loggedIn' routerLinkActive="active" data-page="login" ><a (click)="followLink('login')" class="click2edit_nav">{{login}}</a> 
+                <li *ngIf='!loggedIn' routerLinkActive="active" data-page="login" >
+                  <a (click)="followLink('login')" class="click2edit_nav">{{login}}</a> 
                   <div class="controlBtnsBlock">
-                    <button *ngIf="editionLogin" (click)="sendNavbarItems($event); editionLogin = !editionLogin" class="btn btn-success btn-large editNavbar">Save</button>
-                    <button *ngIf="editionLogin" (click)="cancelEditing($event); editionLogin = false" class="btn btn-danger btn-large editNavbar">Cancel</button>  
+                    <button *ngIf="editionLogin" 
+                      (click)="sendNavbarItems($event); editionLogin = !editionLogin" 
+                      class="btn btn-success btn-large editNavbar">
+                    Save</button>
+                    <button *ngIf="editionLogin" 
+                      (click)="cancelEditing($event); editionLogin = false" 
+                      class="btn btn-danger btn-large editNavbar">
+                    Cancel</button>  
                   </div>
 
-                  <button *ngIf="edition" (click)="editContent($event); editionLogin = !editionLogin" class="btn btn-info btn-large editNavbar">Edit</button>
+                  <button *ngIf="edition" 
+                    (click)="editContent($event); editionLogin = !editionLogin" 
+                    class="btn btn-info btn-large editNavbar">
+                  Edit</button>
 
                 </li>
 
-                <li *ngIf='loggedIn' routerLinkActive="active" data-page="logout" ><a (click)="logoutUser()" class="click2edit_nav">{{logout}}</a> 
+                <li *ngIf='loggedIn' routerLinkActive="active" data-page="logout" >
+                  <a (click)="logoutUser()" class="click2edit_nav">{{logout}}</a> 
                   <div class="controlBtnsBlock">
-                    <button *ngIf="editionLogout" (click)="sendNavbarItems($event); editionLogout = !editionLogout" class="btn btn-success btn-large editNavbar">Save</button>
-                    <button *ngIf="editionLogout" (click)="cancelEditing($event); editionLogout = false" class="btn btn-danger btn-large editNavbar">Cancel</button>  
+                    <button *ngIf="editionLogout" 
+                      (click)="sendNavbarItems($event); editionLogout = !editionLogout" 
+                      class="btn btn-success btn-large editNavbar">
+                    Save</button>
+                    <button *ngIf="editionLogout" 
+                      (click)="cancelEditing($event); editionLogout = false"
+                      class="btn btn-danger btn-large editNavbar">
+                     Cancel</button>  
                   </div>
 
-                  <button *ngIf="edition" (click)="editContent($event); editionLogout = !editionLogout" class="btn btn-info btn-large editNavbar">Edit</button>
+                  <button *ngIf="edition" 
+                    (click)="editContent($event); editionLogout = !editionLogout" 
+                    class="btn btn-info btn-large editNavbar">
+                  Edit</button>
 
                 </li>
 
-                <li *ngIf='loggedIn' routerLinkActive="active" data-page="register" ><a (click)="followLink('register')" class="click2edit_nav">{{register}}</a> 
+                <li *ngIf='loggedIn' routerLinkActive="active" data-page="register" >
+                  <a (click)="followLink('register')" class="click2edit_nav">{{register}}</a> 
                   <div class="controlBtnsBlock">
-                    <button *ngIf="editionRegister" (click)="sendNavbarItems($event); editionRegister = !editionRegister" class="btn btn-success btn-large editNavbar">Save</button>
-                    <button *ngIf="editionRegister" (click)="cancelEditing($event); editionRegister = false" class="btn btn-danger btn-large editNavbar">Cancel</button>  
+                    <button *ngIf="editionRegister" 
+                      (click)="sendNavbarItems($event); editionRegister = !editionRegister" 
+                      class="btn btn-success btn-large editNavbar">
+                    Save</button>
+                    <button *ngIf="editionRegister" 
+                      (click)="cancelEditing($event); editionRegister = false" 
+                      class="btn btn-danger btn-large editNavbar">
+                    Cancel</button>  
                   </div>
 
-                  <button *ngIf="edition" (click)="editContent($event); editionRegister = !editionRegister" class="btn btn-info btn-large editNavbar">Edit</button>
+                  <button *ngIf="edition" 
+                    (click)="editContent($event); editionRegister = !editionRegister" 
+                    class="btn btn-info btn-large editNavbar">
+                  Edit</button>
 
                 </li>
 
@@ -196,7 +269,8 @@
                 </li>
                 <!-- <li><a href="">Отраслевые решения</a></li>
                 <li><a href="">Комплескные решения</a></li>
-                <li><a href="">Карьера</a></li>
+                <li><a href="">
+                  Карьера</a></li>
                 <li><a href="">Связаться с нами</a></li>
                 <li><a href="">Контакты</a></li>
                 <li><a href="">Новости</a></li> -->
@@ -258,22 +332,40 @@
                      
                         <li routerLinkActive="active" data-page="telephone" ><a href="tel:18001231234" class="tel-link click2edit_nav">{{telephone}}</a>
                           <div class="controlBtnsBlock">
-                            <button *ngIf="editionTelephone" (click)="sendNavbarItems($event); editionTelephone = !editionTelephone" class="btn btn-success btn-large editNavbar">Save</button>
-                            <button *ngIf="editionTelephone" (click)="cancelEditingInfo($event); editionTelephone = false" class="btn btn-danger btn-large editNavbar">Cancel</button>  
+                            <button *ngIf="editionTelephone" 
+                              (click)="sendNavbarItems($event); editionTelephone = !editionTelephone" 
+                              class="btn btn-success btn-large editNavbar">
+                            Save</button>
+                            <button *ngIf="editionTelephone" 
+                              (click)="cancelEditingInfo($event); editionTelephone = false" 
+                              class="btn btn-danger btn-large editNavbar">
+                            Cancel</button>  
                           </div>
         
-                          <button *ngIf="editionInfo" (click)="editContent($event); editionTelephone = !editionTelephone" class="btn btn-info btn-large editNavbar">Edit</button>
+                          <button *ngIf="editionInfo" 
+                            (click)="editContent($event); editionTelephone = !editionTelephone" 
+                            class="btn btn-info btn-large editNavbar">
+                          Edit</button>
         
                         </li>
 
                         <li routerLinkActive="active" data-page="location" > 
                           <a href="" (click)="$event.preventDefault()" class="location-link click2edit_nav">{{location}}</a>
                           <div class="controlBtnsBlock">
-                            <button *ngIf="editionLocation" (click)="sendNavbarItems($event); editionLocation = !editionLocation" class="btn btn-success btn-large editNavbar">Save</button>
-                            <button *ngIf="editionLocation" (click)="cancelEditingInfo($event); editionLocation = false" class="btn btn-danger btn-large editNavbar">Cancel</button>  
+                            <button *ngIf="editionLocation" 
+                              (click)="sendNavbarItems($event); editionLocation = !editionLocation" 
+                              class="btn btn-success btn-large editNavbar">
+                            Save</button>
+                            <button *ngIf="editionLocation" 
+                              (click)="cancelEditingInfo($event); editionLocation = false" 
+                              class="btn btn-danger btn-large editNavbar">
+                            Cancel</button>  
                           </div>
         
-                          <button *ngIf="editionInfo" (click)="editContent($event); editionLocation = !editionLocation" class="btn btn-info btn-large editNavbar">Edit</button>
+                          <button *ngIf="editionInfo" 
+                            (click)="editContent($event); editionLocation = !editionLocation" 
+                            class="btn btn-info btn-large editNavbar">
+                          Edit</button>
         
                         </li>
                         

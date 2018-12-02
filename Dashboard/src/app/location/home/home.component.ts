@@ -191,14 +191,20 @@ export class HomeComponent implements OnInit {
       (res) => {
         if(res){
           let template;
-        
+          let permalink;
+          let lang = localStorage.language;
+
           if(!res['data']['template']){
             template = false;
           }else{
             template = res['data']['template'];
           }
-  
-          _self.permalink = `/${localStorage.permalink}`;
+          
+          _self.permalink = permalink = `/${localStorage.permalink}`;
+          let origin = window.location.origin;
+
+          _self.permalinkURL = `${origin}/${lang}${permalink}`
+
           _self.renderTemplate(template);
         }else{
           // added to test loading witout layout in DB
