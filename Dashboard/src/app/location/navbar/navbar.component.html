@@ -28,12 +28,7 @@
       </div>
     </div>
     <ul class="lang-switch p-0 m-0">
-        <!-- <li><a href="">ned</a></li>
-        <li><a href="">eng</a></li>
-        <li><a href="" class="current-language">рус</a></li>
-        <li><a href="">tur</a></li>
-        <li><a href="">esp</a></li> -->
-        
+       
       <li *ngIf="allowAddingLang" class="lang_menu_item"
         style="
           color: #fff;
@@ -92,8 +87,8 @@
           <div class="row justify-content-between">
             <div class="col-lg-8 menu-list-wrapper">
               <ul class="menu-list p-0">
-                  <li routerLinkActive="active">
 
+                  <li routerLinkActive="active">
                     <button *ngIf="edition" 
                         (click)="cancelEditing($event); edition = false" 
                         class="btn btn-danger btn-large editNavbar">
@@ -102,7 +97,6 @@
                       (click)="edition = !edition" 
                       class="btn btn-info btn-large editNavbar">
                     Edit</button>
-  
                   </li>
 
                 <li  routerLinkActive="active" data-page="home" >
@@ -122,7 +116,6 @@
                     (click)="editContent($event); editionHome = !editionHome" 
                     class="btn btn-info btn-large editNavbar">
                   Edit</button>
-
                 </li>
 
                 <li  routerLinkActive="active" data-page="contacts" >
@@ -142,7 +135,6 @@
                     (click)="editContent($event); editionContacts = !editionContacts" 
                     class="btn btn-info btn-large editNavbar">
                   Edit</button>
-
                 </li>
 
                 <li  routerLinkActive="active" data-page="career" >
@@ -162,7 +154,6 @@
                     (click)="editContent($event); editionCareer = !editionCareer" 
                     class="btn btn-info btn-large editNavbar">
                   Edit</button>
-
                 </li>
 
                 <li  routerLinkActive="active" data-page="news" >
@@ -182,7 +173,6 @@
                     (click)="editContent($event); editionNews = !editionNews" 
                     class="btn btn-info btn-large editNavbar">
                   Edit</button>
-
                 </li>
 
                 <li  routerLinkActive="active" data-page="layout" >
@@ -202,7 +192,6 @@
                     (click)="editContent($event); editionLayout = !editionLayout" 
                     class="btn btn-info btn-large editNavbar">
                   Edit</button>
-
                 </li>
 
                 <li *ngIf='!loggedIn' routerLinkActive="active" data-page="login" >
@@ -222,7 +211,6 @@
                     (click)="editContent($event); editionLogin = !editionLogin" 
                     class="btn btn-info btn-large editNavbar">
                   Edit</button>
-
                 </li>
 
                 <li *ngIf='loggedIn' routerLinkActive="active" data-page="logout" >
@@ -242,7 +230,6 @@
                     (click)="editContent($event); editionLogout = !editionLogout" 
                     class="btn btn-info btn-large editNavbar">
                   Edit</button>
-
                 </li>
 
                 <li *ngIf='loggedIn' routerLinkActive="active" data-page="register" >
@@ -262,7 +249,6 @@
                     (click)="editContent($event); editionRegister = !editionRegister" 
                     class="btn btn-info btn-large editNavbar">
                   Edit</button>
-
                 </li>
 
                 <li class="li-has-child"><a href="">Сервисы</a>
@@ -274,13 +260,6 @@
                     <li><a href="">Дополниельные услуги</a></li>
                   </ul>
                 </li>
-                <!-- <li><a href="">Отраслевые решения</a></li>
-                <li><a href="">Комплескные решения</a></li>
-                <li><a href="">
-                  Карьера</a></li>
-                <li><a href="">Связаться с нами</a></li>
-                <li><a href="">Контакты</a></li>
-                <li><a href="">Новости</a></li> -->
               </ul>
             </div>
             <div class="col-md-4 contacts-header-wrapper">
@@ -297,7 +276,6 @@
               </div>
               <div class="row">
                 <div class="col-6 col-lg-12 footer-item contacts-header-block">
-                  <!-- <p style="margin:0px;">Контакты</p> -->
                   <div class="contacts-list">
                     
                     <li class="socialLi" routerLinkActive="active" data-page="contactInfo" >
@@ -317,87 +295,80 @@
                           (click)="editContent($event); editionContactInfo = !editionContactInfo" 
                             class="btn btn-info btn-large editNavbar">
                         Edit</button>
-      
                       </li>
                   
-                 
-                    <!-- <ul> -->
-                        <li routerLinkActive="active" data-page="email" >
-                          <a href="mailto:example@logistic.com" class="mail-link click2edit_nav">{{email}}</a>
-                          <div class="controlBtnsBlock">
-                            <button *ngIf="editionMail" 
-                              (click)="sendNavbarItems($event); editionMail = false" 
-                              class="btn btn-success btn-large editNavbar">Save</button>
-                            <button *ngIf="editionMail" 
-                              (click)="cancelEditingInfo($event); editionMail = false" 
-                              class="btn btn-danger btn-large editNavbar">Cancel</button>  
-                          </div>
-        
-                          <button *ngIf="editionInfo" (click)="editContent($event); editionMail = !editionMail" class="btn btn-info btn-large editNavbar">Edit</button>
-        
-                        </li>
-                     
-                        <li routerLinkActive="active" data-page="telephone" ><a href="tel:18001231234" class="tel-link click2edit_nav">{{telephone}}</a>
-                          <div class="controlBtnsBlock">
-                            <button *ngIf="editionTelephone" 
-                              (click)="sendNavbarItems($event); editionTelephone = !editionTelephone" 
-                              class="btn btn-success btn-large editNavbar">
-                            Save</button>
-                            <button *ngIf="editionTelephone" 
-                              (click)="cancelEditingInfo($event); editionTelephone = false" 
-                              class="btn btn-danger btn-large editNavbar">
-                            Cancel</button>  
-                          </div>
-        
-                          <button *ngIf="editionInfo" 
-                            (click)="editContent($event); editionTelephone = !editionTelephone" 
-                            class="btn btn-info btn-large editNavbar">
-                          Edit</button>
-        
-                        </li>
-
-                        <li routerLinkActive="active" data-page="location" > 
-                          <a href="" (click)="$event.preventDefault()" class="location-link click2edit_nav">{{location}}</a>
-                          <div class="controlBtnsBlock">
-                            <button *ngIf="editionLocation" 
-                              (click)="sendNavbarItems($event); editionLocation = !editionLocation" 
-                              class="btn btn-success btn-large editNavbar">
-                            Save</button>
-                            <button *ngIf="editionLocation" 
-                              (click)="cancelEditingInfo($event); editionLocation = false" 
-                              class="btn btn-danger btn-large editNavbar">
-                            Cancel</button>  
-                          </div>
-        
-                          <button *ngIf="editionInfo" 
-                            (click)="editContent($event); editionLocation = !editionLocation" 
-                            class="btn btn-info btn-large editNavbar">
-                          Edit</button>
-        
-                        </li>
-                        
-                        <li routerLinkActive="active" data-page="location_attachment" > 
-                          <a href="" (click)="$event.preventDefault()" class="location-link click2edit_nav">{{location_attachment}}</a>
+                      <li routerLinkActive="active" data-page="email" >
+                        <a href="mailto:example@logistic.com" class="mail-link click2edit_nav">{{email}}</a>
                         <div class="controlBtnsBlock">
-                          <button *ngIf="editionLocation_attachment" 
-                            (click)="sendNavbarItems($event); editionLocation_attachment = !editionLocation_attachment" 
+                          <button *ngIf="editionMail" 
+                            (click)="sendNavbarItems($event); editionMail = false" 
+                            class="btn btn-success btn-large editNavbar">Save</button>
+                          <button *ngIf="editionMail" 
+                            (click)="cancelEditingInfo($event); editionMail = false" 
+                            class="btn btn-danger btn-large editNavbar">Cancel</button>  
+                        </div>
+      
+                        <button *ngIf="editionInfo" 
+                          (click)="editContent($event); editionMail = !editionMail"
+                          class="btn btn-info btn-large editNavbar">
+                         Edit</button>
+                      </li>
+                    
+                      <li routerLinkActive="active" data-page="telephone" ><a href="tel:18001231234" class="tel-link click2edit_nav">{{telephone}}</a>
+                        <div class="controlBtnsBlock">
+                          <button *ngIf="editionTelephone" 
+                            (click)="sendNavbarItems($event); editionTelephone = !editionTelephone" 
                             class="btn btn-success btn-large editNavbar">
                           Save</button>
-                          <button *ngIf="editionLocation_attachment" 
-                            (click)="cancelEditingInfo($event); editionLocation_attachment = false" 
+                          <button *ngIf="editionTelephone" 
+                            (click)="cancelEditingInfo($event); editionTelephone = false" 
                             class="btn btn-danger btn-large editNavbar">
                           Cancel</button>  
                         </div>
-        
+      
                         <button *ngIf="editionInfo" 
-                          (click)="editContent($event); editionLocation_attachment = !editionLocation_attachment" 
+                          (click)="editContent($event); editionTelephone = !editionTelephone" 
                           class="btn btn-info btn-large editNavbar">
                         Edit</button>
-        
                       </li>
-                      <!-- <a href="tel:18001231234" class="tel-link"></a> -->
-                     
-                    <!-- </ul> -->
+
+                      <li routerLinkActive="active" data-page="location" > 
+                        <a href="" (click)="$event.preventDefault()" class="location-link click2edit_nav">{{location}}</a>
+                        <div class="controlBtnsBlock">
+                          <button *ngIf="editionLocation" 
+                            (click)="sendNavbarItems($event); editionLocation = !editionLocation" 
+                            class="btn btn-success btn-large editNavbar">
+                          Save</button>
+                          <button *ngIf="editionLocation" 
+                            (click)="cancelEditingInfo($event); editionLocation = false" 
+                            class="btn btn-danger btn-large editNavbar">
+                          Cancel</button>  
+                        </div>
+      
+                        <button *ngIf="editionInfo" 
+                          (click)="editContent($event); editionLocation = !editionLocation" 
+                          class="btn btn-info btn-large editNavbar">
+                        Edit</button>
+                      </li>
+                      
+                      <li routerLinkActive="active" data-page="location_attachment" > 
+                        <a href="" (click)="$event.preventDefault()" class="location-link click2edit_nav">{{location_attachment}}</a>
+                      <div class="controlBtnsBlock">
+                        <button *ngIf="editionLocation_attachment" 
+                          (click)="sendNavbarItems($event); editionLocation_attachment = !editionLocation_attachment" 
+                          class="btn btn-success btn-large editNavbar">
+                        Save</button>
+                        <button *ngIf="editionLocation_attachment" 
+                          (click)="cancelEditingInfo($event); editionLocation_attachment = false" 
+                          class="btn btn-danger btn-large editNavbar">
+                        Cancel</button>  
+                      </div>
+      
+                      <button *ngIf="editionInfo" 
+                        (click)="editContent($event); editionLocation_attachment = !editionLocation_attachment" 
+                        class="btn btn-info btn-large editNavbar">
+                      Edit</button>
+                    </li>
                    
                   </div>
                 </div>
@@ -419,7 +390,6 @@
                         (click)="editContent($event); editionSocial = !editionSocial" 
                           class="btn btn-info btn-large editNavbar">
                       Edit</button>
-    
                     </li>
                   <ul class="social-icon-list d-flex p-0">
                     <li>

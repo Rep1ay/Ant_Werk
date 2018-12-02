@@ -527,29 +527,27 @@ export class NavbarComponent implements OnInit {
             }
             let pageTitle;
               
-              // _self.currentLang = localStorage.language = 'en';
-              // _self.template = res['data']['template'];
-              localStorage.location = pageTitle = res['data']['pageTitle'];
-              _self.currentLocation = pageTitle;
-              let permalink;
-              if(res['permalink']){
-                permalink = res['permalink'];
-              }else if(res['data']['permalink']){
-                permalink = res['data']['permalink'];
-              }else{
-                 permalink = res['data']['pageTitle'];
-              }
-              
-              let lang = localStorage.language;
+            localStorage.location = pageTitle = res['data']['pageTitle'];
+            _self.currentLocation = pageTitle;
+            let permalink;
+            if(res['permalink']){
+              permalink = res['permalink'];
+            }else if(res['data']['permalink']){
+              permalink = res['data']['permalink'];
+            }else{
+                permalink = res['data']['pageTitle'];
+            }
+            
+            let lang = localStorage.language;
 
-              let origin = window.location.origin;
-              _self.permalinkURL = `${origin}/${lang}/${permalink}`
-              _self._router.config[0].children.forEach((route) => {
-                if(route.path === pageTitle){
-                  // route.path = `${localStorage.language}/${res['permalink']}`;
-                  route.path = permalink;
-                }
-              })
+            let origin = window.location.origin;
+            _self.permalinkURL = `${origin}/${lang}/${permalink}`
+            _self._router.config[0].children.forEach((route) => {
+              if(route.path === pageTitle){
+                // route.path = `${localStorage.language}/${res['permalink']}`;
+                route.path = permalink;
+              }
+            })
 
             _self._router.config[0].path = lang;
             // _self._router.config[1].redirectTo = `/${lang}/home`
@@ -558,13 +556,9 @@ export class NavbarComponent implements OnInit {
             _self.permalink = `/${permalink}`;
             _self.templateRendered = true;
             _self._router.navigate([`${localStorage.language}/${localStorage.permalink}`])
-            // _self._router.navigate([`${lang}/${permalink}`]);
-            // _self._location.go(`${lang}/${permalink}`);
             
             }else{
               if(_self.langChanging){
-                // let langDefault = localStorage.language;
-                // _self.getTemplate( title, langDefault);
                 let lang = localStorage.language;
 
                 if(title === 'news'){
@@ -594,10 +588,9 @@ export class NavbarComponent implements OnInit {
       );
     }
     else{
-      // this.allowAddingLang = false;
     }
   }
-// 
+
 
   changeLanguage(lang){
     this.getNavbarItems(lang);
@@ -610,12 +603,7 @@ export class NavbarComponent implements OnInit {
     let _self = this;
     this.langChanging = true;
     this.addingLangBody = lang;
-    // this.showPreloader = true;
-        // let lang = event.target.dataset.lang;
-       
-    // if(title !== 'news'){
-    //   this.getTemplate(title, lang);
-    // }else
+
     if(title === 'news'){
       let title;
         localStorage.location = title = 'news';
@@ -731,8 +719,7 @@ export class NavbarComponent implements OnInit {
     let _self = this;
     this.alertAddingLang = !this.alertAddingLang;
     this.acceptAddingNewLang = false;
-    // this.lang_items.push(this.addingLang);
-    // this.showPreloader = true;
+
     setTimeout(() => {
       this.alertAddingLang = false;
     }, 10000)
@@ -752,14 +739,12 @@ export class NavbarComponent implements OnInit {
 
         if(localStorage.location === 'news'){
            _self._router.config[0].path = lang;
-                // _self._router.config[1].redirectTo = `${lang}/home`;
                 let pageTitle  = localStorage.location;
 
                 let origin = window.location.origin;
                 _self.permalinkURL = `${origin}/${lang}/${permalink}`
                 _self._router.config[0].children.forEach((route) => {
                   if(route.path === pageTitle){
-                    // route.path = `${localStorage.language}/${res['permalink']}`;
                     route.path = permalink;
                   }
                 })
@@ -769,7 +754,6 @@ export class NavbarComponent implements OnInit {
       
 
         setTimeout(() => {
-          // _self.showPreloader = false;
         }, 1500)
       },
       (err) => {
