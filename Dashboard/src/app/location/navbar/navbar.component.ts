@@ -200,7 +200,7 @@ export class NavbarComponent implements OnInit {
           box-shadow: none;
         }
         </style>`);
-        
+
         $('.click2edit_nav').focusout();
         _self.exitEditing();
         _self.exitInfoEditing();
@@ -854,8 +854,6 @@ export class NavbarComponent implements OnInit {
     
     this._authService.logoutUser();
     window.location.reload();
-    // this.loggedIn = this._authService.loggedIn();
-    // this.loggedIn = localStorage.getItem('token');
   }
 
 

@@ -1,4 +1,18 @@
 
+<app-preloader *ngIf="showPreloader"></app-preloader>
+
+<div style="height: 100px" class="container">
+  <div *ngIf="invalidAuth" style="justify-content: center;
+              font-size: 25px;
+              color: white;
+              background: #ff7c7c8a;
+              border-radius: 8px;
+              box-shadow: 2px 4px 14px 4px #eaacac61;" 
+              class="row">
+      <p style="padding: 20px;margin:0px" >{{errorMessage}}</p>
+    </div>
+</div>
+
 <div class="container">
   <div class="row pt-5">
     <div class="col-md-6 mx-auto">

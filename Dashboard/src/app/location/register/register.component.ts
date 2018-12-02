@@ -10,14 +10,21 @@ import { NgForm } from '@angular/forms';
 export class RegisterComponent implements OnInit {
 
   // registerUserData: any;
+  showPreloader = true;
+  invalidAuth = false;
+  errorMessage: string;
   constructor( private _auth: AuthService,
               private router: Router) { }
 
   ngOnInit() {
+    setTimeout(() => {
+      this.showPreloader = false;
+    },2000)
   }
 
   registerUser(form: NgForm) {
     // this.registerUserData
+    let _self = this;
     
     this._auth.registerNewUser(form.value).subscribe(
       (res) => {
@@ -27,7 +34,12 @@ export class RegisterComponent implements OnInit {
         
         window.location.reload();
       },
-      (error) => console.error(error)
+      (error) => {
+        setTimeout(() => {
+          this.invalidAuth = true;
+      }, 500);
+      _self.errorMessage = error.error.message;
+      console.error(error)}
     );
   }
 }

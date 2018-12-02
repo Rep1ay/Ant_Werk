@@ -165,7 +165,7 @@
 
                 </li>
 
-                <li *ngIf='loggedIn' routerLinkActive="active" data-page="logout" ><a (click)="followLink('logout')" class="click2edit_nav">{{logout}}</a> 
+                <li *ngIf='loggedIn' routerLinkActive="active" data-page="logout" ><a (click)="logoutUser()" class="click2edit_nav">{{logout}}</a> 
                   <div class="controlBtnsBlock">
                     <button *ngIf="editionLogout" (click)="sendNavbarItems($event); editionLogout = !editionLogout" class="btn btn-success btn-large editNavbar">Save</button>
                     <button *ngIf="editionLogout" (click)="cancelEditing($event); editionLogout = false" class="btn btn-danger btn-large editNavbar">Cancel</button>  
