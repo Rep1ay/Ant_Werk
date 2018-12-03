@@ -88,7 +88,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="row newArticleBlock mt-5">
+					<div  *ngIf="loggedIn" class="row newArticleBlock mt-5">
 						<div class="addNewArticle">
 							<p (click)="createNewArticle()">+</p>
 						</div>

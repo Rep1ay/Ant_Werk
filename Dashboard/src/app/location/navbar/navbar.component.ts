@@ -588,6 +588,7 @@ export class NavbarComponent implements OnInit {
       );
     }
     else{
+      _self.currentLang = localStorage.language;
     }
   }
 

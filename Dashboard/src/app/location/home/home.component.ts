@@ -269,11 +269,10 @@ export class HomeComponent implements OnInit {
             if(body){
               body.insertAdjacentHTML('beforeend', _self.newTemplate);
             }
-            _self.renderLayout();
             setTimeout(() => {
               this.addEditButton();
               this.editServiceDescription();
-
+              _self.renderLayout();
               // this.changeImage();
               this.renderNews();
             
@@ -282,13 +281,13 @@ export class HomeComponent implements OnInit {
           }, 100)
 
         }else{
-          _self.renderLayout();
           _self.template = false;
     
         setTimeout(() => {
           this.addEditButton();
           this.editServiceDescription();
             // this.changeImage();
+          this.renderLayout();
           this.renderNews();
         }, 100)
         }
@@ -296,18 +295,22 @@ export class HomeComponent implements OnInit {
      }, 1000)
 
     }else{
-
       setTimeout(() => {
         let body = document.getElementById('body');
         if(body){
           body.insertAdjacentHTML('beforeend', _self.newTemplate);
         }
       }, 100)
-      this.renderNews();
-      _self.renderLayout();
+      
+      
       setTimeout(() => {
         this.showPreloader = false;
-     }, 1000)
+
+        setTimeout(() => {
+          this.renderLayout();
+          this.renderNews();
+        }, 100)
+      }, 1000)
     }
   }
 
@@ -365,6 +368,7 @@ export class HomeComponent implements OnInit {
   }
 
   getLastNews(lang){
+    this.newsCollection = []; 
     let _self = this;
     this._templatesService.get_3_articles(lang)
     .subscribe(
@@ -382,35 +386,36 @@ export class HomeComponent implements OnInit {
 
   renderNews(){
     let _self = this;
-    $('.aticle').remove();
-    let newsBlock = $('.news-overview-wrapper');
-    this.currentLang = localStorage.language;
-    this.newsCollection.forEach(article => {
-      if(article){
-      let articleDescription = article.description.slice(0, 150)
-    $('<div/>', {
-      'class': 'col-md-4 article',
-          append: `
-                    <div class="news-overview">
-                      <a href="${_self.currentLang}/article/${article.id}" class="news-img full">
-                        <img class="" src="${article.image}" alt="" title="">
-                      </a>
-                      <div class="news-description">
-                        <span class="news-time">${article.date}</span>
-                        <a href="${_self.currentLang}/article/${article.id}" class="title-like-link">${article.title}</a>
-                        <p>${articleDescription}...</p>
-                      </div>
-                    </div>`,
-      appendTo: newsBlock
-    })
-
-        // `<img style="width: 100%;" alt="Media Preview" src="http://www.aviwebsolutions.co.uk/new-images/news-feed-img.jpg"><h6>${article.title}</h6></br><p>${articleDescription}...</p>`,
-    
-    $('.newsLink').off('click').on('click', function(event) {
-      _self.routeToNews();
-    })
-      }
-    });
+    setTimeout(()=>{
+      $('.aticle').remove();
+      let newsBlock = $('.news-overview-wrapper');
+      this.currentLang = localStorage.language;
+      this.newsCollection.forEach(article => {
+        if(article){
+        let articleDescription = article.description.slice(0, 150)
+      $('<div/>', {
+        'class': 'col-md-4 article',
+            append: `
+              <div class="news-overview">
+                <a href="${_self.currentLang}/article/${article.id}" class="news-img full">
+                  <img class="" src="${article.image}" alt="" title="">
+                </a>
+                <div class="news-description">
+                  <span class="news-time">${article.date}</span>
+                  <a href="${_self.currentLang}/article/${article.id}" class="title-like-link">${article.title}</a>
+                  <p>${articleDescription}...</p>
+                </div>
+              </div>`,
+        appendTo: newsBlock
+      })
+       
+      $('.newsLink').off('click').on('click', function(event) {
+        _self.routeToNews();
+      })
+        }
+      });
+    }, 1000)
+   
   }
 
   routeToNews(){

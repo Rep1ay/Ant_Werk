@@ -29,7 +29,7 @@
     </div>
     <ul class="lang-switch p-0 m-0">
        
-      <li *ngIf="allowAddingLang" class="lang_menu_item"
+      <li *ngIf="allowAddingLang && loggedIn" class="lang_menu_item"
         style="
           color: #fff;
           font-size: 30px;
@@ -49,13 +49,13 @@
 
     </ul>
     
-    <div *ngIf="alertAddingLang" class="blockForEditLang" 
+    <div *ngIf="alertAddingLang && loggedIn" class="blockForEditLang" 
       style="position: fixed; top: 90px; right: 0px; background: rgba(245, 73, 73, 0.47); font-size: 20px; color: rgb(255, 255, 255); padding: 12px;">
       <p>Adding {{addingLangBody}} language, dont forget save changes</p>
       <button (click)="alertAddingLang = !alertAddingLang" class="btn btn-primary">OK</button>
     </div>
   
-    <div *ngIf="acceptAddingNewLang" 
+    <div *ngIf="acceptAddingNewLang && loggedIn" 
       style="position: fixed; top: 300px; right: 101px; background: yellowgreen; font-size: 20px; color: rgb(255, 255, 255); padding: 12px;z-index:8000">
       <p>Add {{addingLangBody}} language for this page?</p>
       <button (click)="acceptLangBlock()" class="btn btn-warning">Accept</button>
@@ -93,7 +93,7 @@
                         (click)="cancelEditing($event); edition = false" 
                         class="btn btn-danger btn-large editNavbar">
                     Exit</button>
-                    <button *ngIf="!edition" 
+                    <button *ngIf="!edition && loggedIn" 
                       (click)="edition = !edition" 
                       class="btn btn-info btn-large editNavbar">
                     Edit</button>
@@ -268,7 +268,7 @@
                   (click)="exitInfoEditing(); editionInfo = false" 
                   class="btn btn-danger btn-large editNavbar">
                 Exit</button>
-                <button *ngIf="!editionInfo" 
+                <button *ngIf="!editionInfo && loggedIn" 
                   (click)="editionInfo = !editionInfo" 
                   class="btn btn-info btn-large editNavbar">
                 Edit</button>
