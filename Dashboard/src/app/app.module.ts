@@ -27,6 +27,8 @@ import { LayoutComponent } from './location/layout/layout.component';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireStorageModule } from 'angularfire2/storage';
 
+import { InputTrimModule } from 'ng2-trim-directive';
+
 import { AgmCoreModule, GoogleMapsAPIWrapper } from '@agm/core';
 import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
@@ -57,6 +59,7 @@ import { AuthService } from './auth.service';
       ReactiveFormsModule,
       BrowserAnimationsModule,
       MaterialModule,
+      InputTrimModule,
       AgmCoreModule.forRoot({
         apiKey: 'AIzaSyCWWL5MNY3ct8daaBxk0MXeY4sTh8IU5aw'
       }),

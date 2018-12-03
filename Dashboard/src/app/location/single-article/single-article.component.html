@@ -11,7 +11,7 @@
 				<label class="permalink" class="permalink" for="input">Permalink: </label>
         <a *ngIf="!editionPermalink" style="margin-left: 5px" href='{{winOrigin}}/{{currentLang}}/article/{{articleId}}'> {{winOrigin}}/article/{{articleId}}</a>
         <a *ngIf="editionPermalink" style="margin-left: 5px" href='{{winOrigin}}/{{currentLang}}/article/{{articleId}}'> {{winOrigin}}/article/</a>
-				<input *ngIf="editionPermalink" #input="ngModel" [(ngModel)]='permalinkEdit' name="input" ngModel class="form-control col-md-3">
+				<input *ngIf="editionPermalink" #input="ngModel" [(ngModel)]='permalinkEdit' trim name="input" ngModel class="form-control col-md-3">
 				
 				<button *ngIf="!editionPermalink" style="margin: 10px" 
 				(click)='editPermalink(inputURL); editionPermalink = !editionPermalink' 
