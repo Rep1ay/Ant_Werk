@@ -192,6 +192,13 @@ export class CareerComponent implements OnInit {
 
         setTimeout(() => {
           $('.preloader').remove();
+          // on paste event
+          $('body').on('paste', '.click2edit', function (e) {
+            setTimeout(() =>{
+              $(e.currentTarget)[0].innerHTML = $(e.currentTarget)[0].innerText
+            },0);
+          });
+
         }, 500)
      }, 1500)
     }

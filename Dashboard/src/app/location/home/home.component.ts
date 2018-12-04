@@ -362,9 +362,16 @@ export class HomeComponent implements OnInit {
       swiper.on('slideChange', function () {
         $('.slider-current').text(swiper.activeIndex + 1);
       });
-    
+
+
+      // on paste event
+      $('body').on('paste', '.click2edit', function (e) {
+        setTimeout(() =>{
+          $(e.currentTarget)[0].innerHTML = $(e.currentTarget)[0].innerText
+        },0);
+      });
+
     });
-    
   }
 
   getLastNews(lang){

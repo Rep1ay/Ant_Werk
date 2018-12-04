@@ -241,6 +241,14 @@ export class SingleArticleComponent implements OnInit {
           this.addEditButton();
           this.activateStyles();
           this.changeImage();
+
+        // on paste event
+        $('body').on('paste', '.click2edit', function (e) {
+          setTimeout(() =>{
+            $(e.currentTarget)[0].innerHTML = $(e.currentTarget)[0].innerText
+          },0);
+        });
+        
         }, 100)
      }, 1000)
     }
