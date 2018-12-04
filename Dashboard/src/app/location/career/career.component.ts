@@ -354,6 +354,10 @@ export class CareerComponent implements OnInit {
           $('.blockForBtnCancel').remove();
         }, 100)
 
+        if(target.textContent === ''){
+          target.textContent = this.savedContent;
+        }
+        
         if(event.relatedTarget){
           if(event.relatedTarget.classList.contains('btnCancel')){
             target.innerText = this.savedContent;

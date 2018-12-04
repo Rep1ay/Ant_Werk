@@ -698,12 +698,16 @@ export class HomeComponent implements OnInit {
       });
 
       $(event.target).off('blur').on('blur', (event) => {
-        
+        debugger
         target.setAttribute('contenteditable', 'false');
         setTimeout(() =>{
           $('.blockForBtnSave').remove();
           $('.blockForBtnCancel').remove();
         }, 100)
+
+        if(target.textContent === ''){
+          target.textContent = this.savedContent;
+        }
 
         if(event.relatedTarget){
           if(event.relatedTarget.classList.contains('btnCancel')){
