@@ -53,7 +53,6 @@ export class AppRoutingModule {
 
   winPathname: any;
 constructor( private _activeRoute: ActivatedRoute, _router: Router, _location:Location){
-  localStorage.enteredToNavbar = 'false';
   this.winPathname = window.location.pathname.split('/');
   
   if(this.winPathname.length <= 2){

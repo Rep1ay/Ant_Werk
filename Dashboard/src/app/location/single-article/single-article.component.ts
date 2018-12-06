@@ -44,6 +44,7 @@ export class SingleArticleComponent implements OnInit {
   winPathname:string;
   permalink: string;
   permalinkEdit: string;
+  oldId: string;
   newLanguageAdded = false;
   routeUrl: string;
   showBeforeLogin:any = true;
@@ -172,13 +173,10 @@ export class SingleArticleComponent implements OnInit {
   }
 
   editPermalink(inputURL: NgForm){
-    
-    this.permalinkEdit = `${localStorage.permalink}`;
-    console.log(inputURL.value);
+    this.permalinkEdit = this.oldId = `${localStorage.permalink}`;
   }
 
   savePermalink(permalink: NgForm){
-    debugger
     let _self = this;
     let permalinkToSend = permalink.value.input;
     this.articleId = `${permalink.value.input}`;
@@ -403,6 +401,12 @@ export class SingleArticleComponent implements OnInit {
   
 
   getFile(event, mainBlock) {
+    let imageToDelete = $(mainBlock).find('img')[0]['src'];
+
+   if(!imageToDelete.includes('single_article')){
+      this.storage.storage.refFromURL(imageToDelete).delete();
+   }
+
     this.file = event.target.files[0];
     this.uploadFile(mainBlock);
   }
@@ -418,6 +422,7 @@ export class SingleArticleComponent implements OnInit {
   uploadFile(mainBlock) {
     let _self = this;
     this.blockElement = mainBlock;
+
     if (this.file) {
       // this.showPreloader = true;
       const filePath = Math.random().toString(13).substring(2) + this.file.name;
@@ -435,6 +440,7 @@ export class SingleArticleComponent implements OnInit {
             this.downloadURL.subscribe(url => {
               this.profileUrl = url; // {{ profileUrl }}
               console.log(this.profileUrl);
+              
               $('.progressBlock')[0].style.opacity = 0;
 
               setTimeout(() =>{
@@ -542,7 +548,8 @@ export class SingleArticleComponent implements OnInit {
     let date = new Date().toISOString().slice(0, 10);
 
      let body_send = {
-      'id': id,
+      'newId': id,
+      'oldId': this.oldId,
       'image': image,
       'prefix': lang,
       'category': category,

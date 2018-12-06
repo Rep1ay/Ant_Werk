@@ -121,9 +121,13 @@ private _navBarItemsURL = 'http://localhost:3000/api/navbar_items'
   }
 
   sendArticle(body){
+    if(body.oldId === '' || !body.oldId){
+      body.oldId = body.newId;
+    }
     let  templateBody: Article = {
       body: {
-        'id': body.id,
+        'newId': body.newId,
+        'oldId': body.oldId,
         'image': body.image,
         'prefix': body.prefix,
         'category': body.category,

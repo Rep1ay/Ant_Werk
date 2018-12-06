@@ -1,6 +1,7 @@
 export interface Article {
     body: {
-        id: String,
+        newId: String,
+        oldId: String,
         image: String,
         prefix: String,
         category: String,
