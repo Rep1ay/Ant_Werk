@@ -358,10 +358,13 @@ export class HomeComponent implements OnInit {
           },
         });
     
-      $('.slider-count').text(swiper.slides.length);
-      swiper.on('slideChange', function () {
-        $('.slider-current').text(swiper.activeIndex + 1);
-      });
+      if(swiper.slides){
+        $('.slider-count').text(swiper.slides.length);
+          swiper.on('slideChange', function () {
+          $('.slider-current').text(swiper.activeIndex + 1);
+        });
+      }
+
 
 
       // on paste event
