@@ -102,6 +102,7 @@ export class NavbarComponent implements OnInit {
   tryDefaultEng = false;
   allowAddingLang = true;
   activeNavbarItem: any;
+  navbarItemsRendered = false;
 
   lastEditItemLable = ''
 
@@ -129,14 +130,14 @@ export class NavbarComponent implements OnInit {
             }
 
   ngOnInit() {
-
+    this.navbarItemsRendered = false;
     let lang = localStorage.langauge;
     let _self = this;
     this.getLanguagesList();
     this.getLanguagePanel();
 
     this.activateMenu();
-    // this.getNavbarItems(lang);
+    this.getNavbarItems(lang);
 
     this._authService._state.subscribe(
       state => {this.isLoggedIn(state)});
@@ -155,21 +156,27 @@ export class NavbarComponent implements OnInit {
   }
 
   getNavbarItems(lang){
+
     if(!lang){
       lang = localStorage.language;
     }
     let _self = this;
-    this._templatesService.get_navbar_items(lang).subscribe(
-      (res) => {
-        // debugger
-        res.forEach((item) => {
-          _self[item.navBarItem] = item.navBarItemLabel
-        })
-      },
-       (err) => {
-         console.log('Error ffrom get navbar items' + err);
-       }
-    )
+    if(!this.navbarItemsRendered){
+      this._templatesService.get_navbar_items(lang).subscribe(
+        (res) => {
+          // debugger
+          res.forEach((item) => {
+            _self[item.navBarItem] = item.navBarItemLabel
+          })
+          _self.navbarItemsRendered = true;
+        },
+         (err) => {
+          _self.navbarItemsRendered = false;
+           console.log('Error ffrom get navbar items' + err);
+         }
+      )
+    }
+
     // this.addEditButton();
 
   }
@@ -418,6 +425,7 @@ export class NavbarComponent implements OnInit {
     this.routeUrl = url;
     // this.showPreloader = false;
     this.tryDefaultEng = false;
+    this.navbarItemsRendered = false;
     let _self = this;
     this.currentPrefix = url.split('/')[1];
     // let title = localStorage.location;

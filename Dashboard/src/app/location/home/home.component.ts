@@ -403,27 +403,27 @@ export class HomeComponent implements OnInit {
       this.newsCollection.forEach(article => {
         if(article){
         let articleDescription = article.description.slice(0, 150)
-      $('<div/>', {
-        'class': 'col-md-4 article',
-            append: `
-              <div class="news-overview">
-                <a href="${_self.currentLang}/article/${article.id}" class="news-img full">
-                  <img class="" src="${article.image}" alt="" title="">
-                </a>
-                <div class="news-description">
-                  <span class="news-time">${article.date}</span>
-                  <a href="${_self.currentLang}/article/${article.id}" class="title-like-link">${article.title}</a>
-                  <p>${articleDescription}...</p>
-                </div>
-              </div>`,
-        appendTo: newsBlock
-      })
+          $('<div/>', {
+            'class': 'col-md-4 article',
+                append: `
+                  <div class="news-overview">
+                    <a href="${_self.currentLang}/article/${article.id}" class="news-img full">
+                      <img class="" src="${article.image}" alt="" title="">
+                    </a>
+                    <div class="news-description">
+                      <span class="news-time">${article.date}</span>
+                      <a href="${_self.currentLang}/article/${article.id}" class="title-like-link">${article.title}</a>
+                      <p>${articleDescription}...</p>
+                    </div>
+                  </div>`,
+            appendTo: newsBlock
+          })
        
-      $('.newsLink').off('click').on('click', function(event) {
-        _self.routeToNews();
-      })
-        }
-      });
+        $('.newsLink').off('click').on('click', function(event) {
+          _self.routeToNews();
+        })
+          }
+        });
     }, 1000)
    
   }
@@ -701,7 +701,6 @@ export class HomeComponent implements OnInit {
       });
 
       $(event.target).off('blur').on('blur', (event) => {
-        debugger
         target.setAttribute('contenteditable', 'false');
         setTimeout(() =>{
           $('.blockForBtnSave').remove();
