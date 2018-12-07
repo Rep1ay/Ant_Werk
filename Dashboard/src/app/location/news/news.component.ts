@@ -50,6 +50,7 @@ export class NewsComponent implements OnInit {
   permalinkURL: string;
   currentLocation = 'news';
   counterEnter = false;
+  allNewsRendered = false;
   newsCollection: NewsCollection[];
   creatingCategory = false;
   news_categories: NewsCategories[];
@@ -82,24 +83,28 @@ export class NewsComponent implements OnInit {
   }
 
   ngOnInit() {
-  
+  debugger
   // setTimeout(() => {
   //   this.showPreloader = false;
   // }, 1500)
+  if(!this.allNewsRendered){
+    this.allNewsRendered = true;
+    this.getAllNews();
+  }
+ 
     this.loggedIn = this._auth.loggedIn();
-
 
   }
 
   changeOfRoutes(url){
-
-
     let _self = this;
     let lang  = localStorage.language;
-    
    
     if(!url.split('/').includes('article') && !url.split('/').includes('new-article') ){     
-      this.getAllNews();
+      if(!this.allNewsRendered){
+        this.allNewsRendered = true;
+        this.getAllNews();
+      }
     }
   }
   
