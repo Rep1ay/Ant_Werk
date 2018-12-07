@@ -87,10 +87,10 @@ export class NewsComponent implements OnInit {
   // setTimeout(() => {
   //   this.showPreloader = false;
   // }, 1500)
-  if(!this.allNewsRendered){
-    this.allNewsRendered = true;
+  // if(!this.allNewsRendered){
+  //   this.allNewsRendered = true;
     this.getAllNews();
-  }
+  // }
  
     this.loggedIn = this._auth.loggedIn();
 
@@ -101,10 +101,10 @@ export class NewsComponent implements OnInit {
     let lang  = localStorage.language;
    
     if(!url.split('/').includes('article') && !url.split('/').includes('new-article') ){     
-      if(!this.allNewsRendered){
-        this.allNewsRendered = true;
+      // if(!this.allNewsRendered){
+      //   this.allNewsRendered = true;
         this.getAllNews();
-      }
+      // }
     }
   }
   
