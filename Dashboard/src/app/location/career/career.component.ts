@@ -24,6 +24,7 @@ export class CareerComponent implements OnInit {
   title: string;
   prefix: string;
   template: any;
+  newTemplate: string;
   templateSending = false;
   postText: string = "";
   errorMessage: string;
@@ -116,20 +117,28 @@ export class CareerComponent implements OnInit {
    
     let _self = this;
     let prefix = localStorage.language;
-   
-    this._templatesService.getTemplate(title, prefix)
-    .subscribe(
-      (res) => {
-        if(res){
-          let template =  res['data']['template'];
+    // if(!this.rendered){
+    //   this.rendered = true;
+      this._templatesService.getTemplate(title, prefix)
+      .subscribe(
+        (res) => {
+          let template;
+          
+          if(!res['data']['template']){
+            template = false;
+          }else{
+            template = res['data']['template'];
+          }
+  
           _self.permalink = `/${localStorage.permalink}`;
           _self.renderTemplate(template);
+        },
+        (err) => {
+          console.log(err);
         }
-      },
-      (err) => {
-        console.log(err);
-      }
-    );
+      );
+    // }
+
   }
 
 
@@ -165,16 +174,31 @@ export class CareerComponent implements OnInit {
   }
 
   renderTemplate(template){
+    let _self = this;
+    this.newTemplate = template;
     this.template = template;
+    this.counterEnter = false;
+
+
     this.activateStyles();
+
     if(this.loggedIn) {
       setTimeout(() => {
         this.createAccordion();
-        this.showPreloader = false;
+        // this.showPreloader = false;
+        if(_self.template){
+
         setTimeout(() => {
-          this.addEditButton();
-         $('.addNewVacancy').remove();
-             this.createNewVacancy();
+          let body = document.getElementById('body');
+          if(body){
+            body.insertAdjacentHTML('beforeend', _self.newTemplate);
+          }
+
+          setTimeout(() => {
+            this.addEditButton();
+            $('.addNewVacancy').remove();
+            this.createNewVacancy();
+          }, 100)
         }, 100)
 
         let preloader =  $('<div/>', {
@@ -200,6 +224,13 @@ export class CareerComponent implements OnInit {
           });
 
         }, 500)
+      }else{
+        _self.template = false;
+
+        setTimeout(() => {
+          this.addEditButton();
+        }, 100)
+      }
      }, 1500)
     }
     else{
@@ -369,11 +400,12 @@ export class CareerComponent implements OnInit {
   }
 
   createAccordion(){
-    $('.switch ').remove();
+    this.showPreloader = false;
+  
     let _self = this;
     this.counterEnter = false;
     $(function(){
-
+     
       let vacant_position = $(this);
 
       if(!_self.loggedIn){
@@ -453,7 +485,7 @@ export class CareerComponent implements OnInit {
     }
 
     $(function(){
-
+      $('.switch ').remove();
       let preloader =  $('<div/>', {
         'class': 'preloader',
           css: {
@@ -646,7 +678,25 @@ export class CareerComponent implements OnInit {
     },
       on:{
         click: function(){
-          
+          $(function(){
+      
+            $('head').append(`<style>
+      
+            .note-icon-bold::after {
+              position: relative!important;
+            }
+            .note-btn-italic:before, .note-btn:after {
+              position: relative!important;
+            }
+
+            .note-icon-bold:before, .note-icon-italic:before {
+              position: relative!important;
+            }
+
+            </style>`);
+    
+        });
+
           let SaveButton = (context) => {
             let ui = $.summernote.ui;
             let button = ui.button({
@@ -758,25 +808,34 @@ export class CareerComponent implements OnInit {
     let pageTitle = localStorage.location;
     let lang  = localStorage.language;
 
+    let s = new XMLSerializer();
+    // let str = s.serializeToString(body);
+
     if(this.template){
-      body= document.querySelector('#body');
+      let doc = document.querySelector('#body');
+      body = s.serializeToString(doc);
     }else{
-      body= document.querySelector('#default');
+      let doc = document.querySelector('#default');
+      body = s.serializeToString(doc);
     }
+
     let permalink = localStorage.permalink
-    let originBody = body;
-    // if($('.description_list').text())
     $('.switch').remove();
     $('.description_list').find('p').remove()
     $('.add_description_list_btn').remove();
     $('.addNewVacancy').remove();
-     $('.blockForBtnEdit').remove();
-    this._templatesService.sendTemplate(body.innerHTML, pageTitle, lang, permalink).subscribe((error) => {
+    $('.blockForBtnEdit').remove();
+    this._templatesService.sendTemplate(body, pageTitle, lang, permalink).subscribe((error) => {
       console.log(error)
       localStorage.removeItem('addNewLang');
     });
 
-    this._templatesService.send_permalink(pageTitle, permalink).subscribe(res => {  localStorage.permalink = res['permalink']});
+    this._templatesService.send_permalink(pageTitle, permalink)
+    .subscribe(res => 
+      {
+        localStorage.permalink = res['permalink']
+      }
+    );
 
     setTimeout(() => {
       this.createAccordion();
