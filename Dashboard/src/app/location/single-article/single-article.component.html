@@ -9,8 +9,8 @@
 		<div class="permalinkForm">
 			<form *ngIf="loggedIn"  #inputURL='ngForm' class="form-inline">
 				<label class="permalink" class="permalink" for="input">Permalink: </label>
-        <a *ngIf="!editionPermalink" style="margin-left: 5px" href='{{winOrigin}}/{{currentLang}}/article/{{articleId}}'> {{winOrigin}}/article/{{articleId}}</a>
-        <a *ngIf="editionPermalink" style="margin-left: 5px" href='{{winOrigin}}/{{currentLang}}/article/{{articleId}}'> {{winOrigin}}/article/</a>
+        <a *ngIf="!editionPermalink" style="margin-left: 5px" href='{{winOrigin}}/{{currentLang}}/news-article/{{articleId}}'> {{winOrigin}}/news-article/{{articleId}}</a>
+        <a *ngIf="editionPermalink" style="margin-left: 5px" href='{{winOrigin}}/{{currentLang}}/news-article/{{articleId}}'> {{winOrigin}}/news-article/</a>
 				<input *ngIf="editionPermalink" #input="ngModel" [(ngModel)]='permalinkEdit' trim name="input" ngModel class="form-control col-md-3">
 				
 				<button *ngIf="!editionPermalink" style="margin: 10px" 

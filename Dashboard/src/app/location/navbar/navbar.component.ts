@@ -433,19 +433,19 @@ export class NavbarComponent implements OnInit {
       this.langChanging = false;
       this.currentTitle = url.split('/')[2];
 
-      if(this.currentTitle === 'article'){
+      if(this.currentTitle === 'news-article'){
         this.allowAddingLang = false;
       }else{
         this.allowAddingLang = true;
       }
 
-      if(!this.templateRendered && this.currentTitle !== 'article'){
+      if(!this.templateRendered && this.currentTitle !== 'news-article'){
         // this.allowAddingLang = true;
         this.getTemplate(this.currentTitle, this.currentPrefix);
         this.templateRendered = false;
 
       }else if(this.currentTitle === 'news'){
-        // this.allowAddingLang = false;
+        this.allowAddingLang = false;
         let title;
         localStorage.location = title = 'news';
       
@@ -516,7 +516,7 @@ export class NavbarComponent implements OnInit {
     // let prefix = localStorage.language;
     this.title = title;
     if(title !== 'news'){
-      // this.allowAddingLang = true;
+      this.allowAddingLang = true;
       this.currentLang = lang;
       this._templatesService.getTemplate(title, lang)
       .subscribe(
@@ -596,6 +596,7 @@ export class NavbarComponent implements OnInit {
       );
     }
     else{
+      this.allowAddingLang = false;
       _self.currentLang = localStorage.language;
     }
   }
@@ -668,7 +669,7 @@ export class NavbarComponent implements OnInit {
     else{
       let title;
       localStorage.location = title = 'news';
-    
+      this.allowAddingLang = false;
       
       let lang = localStorage.language;
       this._templatesService.getNews(lang).subscribe(

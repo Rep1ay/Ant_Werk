@@ -83,7 +83,6 @@ export class NewsComponent implements OnInit {
   }
 
   ngOnInit() {
-  debugger
   // setTimeout(() => {
   //   this.showPreloader = false;
   // }, 1500)
@@ -100,7 +99,7 @@ export class NewsComponent implements OnInit {
     let _self = this;
     let lang  = localStorage.language;
    
-    if(!url.split('/').includes('article') && !url.split('/').includes('new-article') ){     
+    if(!url.split('/').includes('news-article')){
       // if(!this.allNewsRendered){
       //   this.allNewsRendered = true;
         this.getAllNews();
@@ -179,25 +178,32 @@ export class NewsComponent implements OnInit {
     let _self = this;
     this.showPreloader = true;
     let lang = localStorage.language;
-    this._templatesService.getNewsByCategory(category, lang)
-    .subscribe(
-      (res) => {
+    // 
+    localStorage.location = 'news-category';
+    localStorage.permalink = 'news-category';
+    _self._location.go(`${lang}/news-category/${category}`)
+    _self._router.navigate([`${lang}/news-category`, category]);
+    // this._templatesService.getNewsByCategory(category, lang)
+    // .subscribe(
+    //   (res) => {
         
-        setTimeout(() => {
-          _self.showPreloader = false;
-        }, 500)
-        _self.newsCollection = res
-      },
-      (err) =>{
-        console.log('Error from get news category' + err);
-      }
-    )
+    //     setTimeout(() => {
+    //       _self.showPreloader = false;
+    //     }, 500)
+    //     // _self.newsCollection = res
+       
+    //   },
+    //   (err) =>{
+    //     console.log('Error from get news category' + err);
+    //   }
+    // )
   }
 
   onSelect(id){
     let lang =localStorage.language;
     localStorage.permalink = id;
-    this._router.navigate([`/${lang}/article/${id}`])
+  
+    this._router.navigate([`/${lang}/news-article/${id}`])
   }
 
   createNewArticle(){
@@ -209,8 +215,8 @@ export class NewsComponent implements OnInit {
     this._router.config[0].path = lang;
     this._router.config[1].redirectTo = `${lang}/home`;
 
-    this._location.go(`${lang}/article/${id}`);
-    this._router.navigate([`/${lang}/article/${id}`])
+    this._location.go(`${lang}/news-article/${id}`);
+    this._router.navigate([`/${lang}/news-article/${id}`])
 
     }
     

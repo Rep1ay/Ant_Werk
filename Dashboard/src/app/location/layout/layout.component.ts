@@ -319,12 +319,12 @@ export class LayoutComponent implements OnInit {
           'class': 'col-md-4 article',
           append: `
                     <div class="news-overview">
-                      <a href="${_self.currentLang}/article/${article.id}" class="news-img full">
+                      <a href="${_self.currentLang}/news-article/${article.id}" class="news-img full">
                         <img class="" src="${article.image}" alt="" title="">
                       </a>
                       <div class="news-description">
                         <span class="news-time">${article.date}</span>
-                        <a href="${_self.currentLang}/article/${article.id}" class="title-like-link">${article.title}</a>
+                        <a href="${_self.currentLang}/news-article/${article.id}" class="title-like-link">${article.title}</a>
                         <p>${articleDescription}...</p>
                       </div>
                     </div>`,

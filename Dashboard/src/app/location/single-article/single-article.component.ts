@@ -51,7 +51,7 @@ export class SingleArticleComponent implements OnInit {
   showAfterLogin:any
   currentLang: string;
   permalinkURL: string;
-  currentLocation = 'article';
+  currentLocation = 'news-article';
   counterEnter = false;
   articleId: string;
   category: string;
@@ -568,7 +568,7 @@ export class SingleArticleComponent implements OnInit {
         if(_self.savingPermalink){
           setTimeout(() =>{
             _self.savingPermalink = false;
-            _self._location.go(`${localStorage.language}/article/${_self.articleId}`)
+            _self._location.go(`${localStorage.language}/news-article/${_self.articleId}`)
             window.location.reload();
           },100)
         }
@@ -603,7 +603,7 @@ export class SingleArticleComponent implements OnInit {
         this._templatesService.add_new_lang_panel(send_prefix).subscribe(
           (res) => {
             //
-            alert('added new lang');
+            // alert('added new lang');
           },
           (err) => {
             console.log(err);
