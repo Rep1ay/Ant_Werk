@@ -32,6 +32,7 @@ import { InputTrimModule } from 'ng2-trim-directive';
 import { AgmCoreModule, GoogleMapsAPIWrapper } from '@agm/core';
 import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
+import { CategoriesComponent } from './location/categories/categories.component';
 
 
 @NgModule({
@@ -48,7 +49,8 @@ import { AuthService } from './auth.service';
     NewsComponent,
     NewArticleComponent,
       SingleArticleComponent,
-      LayoutComponent
+      LayoutComponent,
+      CategoriesComponent
     ],
     
     imports: [

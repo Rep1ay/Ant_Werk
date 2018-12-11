@@ -1,0 +1,29 @@
+.media{
+    flex-direction: column;
+}
+
+img {
+    width: 100%;
+}
+
+.newArticleBlock{
+    justify-content: center;
+}
+
+.addNewArticle{
+    font-size: 3em;
+    cursor: pointer;
+    color: #52ff52;
+    font-size: 3em;
+    display: flex;
+    cursor: pointer;
+    border: 2px solid #52ff52;
+    justify-content: center;
+    flex: 0 0 33.333333%;
+    max-width: 33.333333%;
+    /* height: 200px; */
+  }
+
+  .addNewArticle p{
+      padding: 1.2em;
+  }

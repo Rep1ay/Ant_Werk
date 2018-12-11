@@ -12,6 +12,7 @@ import { NewArticleComponent } from './location/new-article/new-article.componen
 import { SingleArticleComponent } from './location/single-article/single-article.component';
 import { LayoutComponent } from './location/layout/layout.component';
 import { AuthGuard } from './auth.guard';
+import { CategoriesComponent } from './location/categories/categories.component';
 
 let prefix = localStorage.language;
 
@@ -33,7 +34,8 @@ const routes: Routes = [
       { path: `career`, component: CareerComponent},
       { path: `layout`, component: LayoutComponent},
       { path: `news` , component: NewsComponent},
-      { path: `article/:id` , component: SingleArticleComponent},
+      { path: `news-article/:id` , component: SingleArticleComponent},
+      { path: `news-category/:category` , component: CategoriesComponent},
       { path: `new-article` , component: NewArticleComponent},
 
     ]},

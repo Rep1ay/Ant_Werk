@@ -1,0 +1,134 @@
+<app-preloader *ngIf="showPreloader"></app-preloader>
+
+<!-- ============ permalink block start ======================  -->
+
+
+<div *ngIf="!showPreloader && loggedIn" style="height: 100px;" class="container-fluid">
+	<div style="height: 100px;" class="row">
+		<div class="permalinkForm">
+			<form *ngIf="loggedIn"  #inputURL='ngForm' class="form-inline">
+				<label class="permalink" for="input">Permalink: </label>
+				<a style="margin-left: 5px" href='{{permalinkURL}}'> {{winOrigin}}{{permalink}}</a>
+				<input *ngIf="edition" #input="ngModel" [(ngModel)]='permalinkEdit' trim name="input" ngModel class="form-control col-md-3">
+				
+				<button *ngIf="!edition" style="margin: 10px" 
+				(click)='editPermalink(inputURL); edition = !edition' 
+				class="btn btn-primary btn-large" 
+				type="submit">
+				Edit
+				</button>
+				
+				<button *ngIf="edition" style="margin: 10px 5px;" (click)='savePermalink(inputURL); edition = !edition' 
+				class="btn btn-success btn-large">
+				Save
+				</button>
+	
+				<button *ngIf="edition" style="margin: 10px 2px;" (click)='cancelPermalink(); edition = !edition' 
+				class="btn btn-danger btn-large">
+				Cancel
+				</button>
+		  	</form>
+		</div>
+
+		<div *ngIf="newLanguageAdded" class="col-md-3">
+			<p>added new language {{localhost.language}} to this page</p>
+		</div>
+	</div>
+	
+</div>
+
+<!-- ============ permalink block end ======================  -->
+
+<div *ngIf="!showPreloader" class="container-fluid">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="row">
+				<div class="col-md-3">
+					<ul class="nav flex-column nav-pills">
+						<li style="cursor:pointer" class="nav-item">
+							<p (click)='creatingCategory = true' class="nav-link active" >+</p>
+						</li>
+						<li style="cursor:pointer" class="nav-item">
+							<p (click)='getAllNews()' class="nav-link active" >All news</p>
+						</li>
+						<li style="cursor:pointer" *ngFor="let item of news_categories" class="nav-item">
+							<p (click)="filterByCategory(item.category)" class="nav-link active">{{item.category}}</p>
+						</li>
+					</ul>
+				</div>
+				<form 	style="position: absolute;top: 40px;left: 10px;"
+						*ngIf="creatingCategory" 
+						class="form-inline"  
+						#categoryInput="ngForm" 
+						(ngSubmit)="saveCategory(categoryInput)" novalidate>
+
+					<label class="sr-only" for="inlineFormInputName2">Name</label>
+					<input style="margin: 8px;" name="category" ngModel required #first="ngModel" type="text" class="form-control mb-2 mr-sm-2 col-md-6" id="inlineFormInputName2" placeholder="New category...">
+					<!-- <button type="submit" class="btn btn-primary mb-2">Save</button>
+					<button type="submit" class="btn btn-primary mb-2">Cancel</button> -->
+					<button  class="btn btn-info mr-2" type="submit">OK</button>
+					<button (click)='creatingCategory = false' class="btn btn-danger" type="button">Close</button>
+				</form>
+				<div class="col-md-8">
+					<div class="row">
+						<div class="col-md-4" *ngFor="let article of newsCollection">
+							<div class="media">
+								<h5>{{article.category}}</h5>
+								<img style="height: 200px;width: 270px;" alt="Bootstrap Media Preview" src={{article.image}} />
+								<div class="media-body">
+									<h5>{{article.date}}</h5>
+									<h5 (click)="onSelect(article.id)" style="cursor:pointer" class="mt-0">
+										{{article.title}}
+									</h5> 
+									<h6>{{article.categoty}}</h6>
+									<p>
+										{{article.description | slice:0:150}}
+									</p> 
+								</div>
+							</div>
+						</div>
+					</div>
+					<div  *ngIf="loggedIn" class="row newArticleBlock mt-5">
+						<div class="addNewArticle">
+							<p (click)="createNewArticle()">+</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="row mt-5">
+				<div class="col-md-4">
+				</div>
+				<div class="col-md-4">
+					<nav>
+						<ul class="pagination">
+							<li class="page-item">
+								<a class="page-link" href="#">Previous</a>
+							</li>
+							<li class="page-item">
+								<a class="page-link" href="#">1</a>
+							</li>
+							<li class="page-item">
+								<a class="page-link" href="#">2</a>
+							</li>
+							<li class="page-item">
+								<a class="page-link" href="#">3</a>
+							</li>
+							<li class="page-item">
+								<a class="page-link" href="#">4</a>
+							</li>
+							<li class="page-item">
+								<a class="page-link" href="#">5</a>
+							</li>
+							<li class="page-item">
+								<a class="page-link" href="#">Next</a>
+							</li>
+						</ul>
+					</nav>
+				</div>
+				<div class="col-md-4">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
