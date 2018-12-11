@@ -142,20 +142,33 @@ export class HomeComponent implements OnInit {
     
     let snapshotURL = this._activeRoute.snapshot.url;
     // localStorage.location = this.title = snapshotURL[0].path;
-    let title = localStorage.location;
-
+    // let title = localStorage.location;
+    let location = window.location.pathname.split('/')[2];
     this.loggedIn = this._auth.loggedIn();
+    let lang = localStorage.language;
 
     this._templatesService._event.subscribe(
       event => {
         this.editInner(event)
       }
     )
-  let _self = this;
-  this.showPreloader = true;
- 
-  // this.getTemplate(title);
-  };
+
+    // if(this.currentLocation !== 'home' && !this.rendered){
+    //   localStorage.location = location;
+    //   this.getTemplate(location);
+    //   this.getLastNews(lang);
+    // }
+    this.showPreloader = true;
+    if(this.currentLocation !== 'home'){
+      localStorage.location = location;
+    }
+    if(!this.rendered){
+      this.getTemplate(location);
+      this.getLastNews(lang);
+    }
+    
+   
+ };
   
   mapClicked(event) {
     this.markers.push({
@@ -172,13 +185,14 @@ export class HomeComponent implements OnInit {
     this.routeUrl = url;
     this.showPreloader = true;
 
-    this.getTemplate(title);
-    this.getLastNews(lang);
-
+    if(!this.rendered){
+      this.getTemplate(title);
+      this.getLastNews(lang);
+    }
   }
 
  getTemplate(title){
-   
+  this.rendered = true;
     let _self = this;
     let prefix = localStorage.language;
     if(!prefix || prefix === ''){
@@ -193,7 +207,7 @@ export class HomeComponent implements OnInit {
           let template;
           let permalink;
           let lang = localStorage.language;
-
+         
           if(!res['data']['template']){
             template = false;
           }else{
@@ -255,7 +269,7 @@ export class HomeComponent implements OnInit {
     let _self = this;
     this.newTemplate = template;
     this.template = template;
-   
+    this.rendered = true;
     this.counterEnter = false;
 
     if(this.loggedIn) {
@@ -282,7 +296,6 @@ export class HomeComponent implements OnInit {
 
         }else{
           _self.template = false;
-    
         setTimeout(() => {
           this.addEditButton();
           this.editServiceDescription();
@@ -407,12 +420,12 @@ export class HomeComponent implements OnInit {
             'class': 'col-md-4 article',
                 append: `
                   <div class="news-overview">
-                    <a href="${_self.currentLang}/article/${article.id}" class="news-img full">
+                    <a href="${_self.currentLang}/news-article/${article.id}" class="news-img full">
                       <img class="" src="${article.image}" alt="" title="">
                     </a>
                     <div class="news-description">
                       <span class="news-time">${article.date}</span>
-                      <a href="${_self.currentLang}/article/${article.id}" class="title-like-link">${article.title}</a>
+                      <a href="${_self.currentLang}/news-article/${article.id}" class="title-like-link">${article.title}</a>
                       <p>${articleDescription}...</p>
                     </div>
                   </div>`,
