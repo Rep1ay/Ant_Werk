@@ -433,13 +433,13 @@ export class NavbarComponent implements OnInit {
       this.langChanging = false;
       this.currentTitle = url.split('/')[2];
 
-      if(this.currentTitle === 'news-article'){
+      if(this.currentTitle === 'news-article' || this.currentTitle === 'news-category'){
         this.allowAddingLang = false;
       }else{
         this.allowAddingLang = true;
       }
 
-      if(!this.templateRendered && this.currentTitle !== 'news-article'){
+      if(!this.templateRendered && this.currentTitle !== 'news-article' && this.currentTitle !== 'news-category'){
         // this.allowAddingLang = true;
         this.getTemplate(this.currentTitle, this.currentPrefix);
         this.templateRendered = false;
