@@ -105,12 +105,8 @@ export class CategoriesComponent implements OnInit {
     let _self = this;
     let lang  = localStorage.language;
    
-    if(!url.split('/').includes('news-article') && !url.split('/').includes('new-article') ){     
-      // if(!this.allNewsRendered){
-      //   this.allNewsRendered = true;
-        // this.getAllNews();
-        this.filterByCategory(this.category);
-      // }
+    if(url.split('/').includes('news-category')){    
+        // this.filterByCategory(this.category);
     }
   }
   
