@@ -445,7 +445,7 @@ export class NavbarComponent implements OnInit {
         this.templateRendered = false;
 
       }else if(this.currentTitle === 'news'){
-        this.allowAddingLang = false;
+        this.allowAddingLang = true;
         let title;
         localStorage.location = title = 'news';
       
@@ -596,7 +596,7 @@ export class NavbarComponent implements OnInit {
       );
     }
     else{
-      this.allowAddingLang = false;
+      this.allowAddingLang = true;
       _self.currentLang = localStorage.language;
     }
   }
@@ -605,7 +605,7 @@ export class NavbarComponent implements OnInit {
   changeLanguage(lang){
     this.getNavbarItems(lang);
     let title = localStorage.location;
-    
+    this.currentLang = lang;
     if(!title){
       title = this._router.config[1].redirectTo.split('/')[2];
     }
@@ -675,7 +675,7 @@ export class NavbarComponent implements OnInit {
     else{
       let title;
       localStorage.location = title = 'news';
-      this.allowAddingLang = false;
+      this.allowAddingLang = true;
       
       let lang = localStorage.language;
       this._templatesService.getNews(lang).subscribe(
