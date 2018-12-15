@@ -614,9 +614,9 @@ export class NavbarComponent implements OnInit {
     this.langChanging = true;
     this.addingLangBody = lang;
 
-    if(title === 'news'){
-      let title;
-        localStorage.location = title = 'news';
+    if(title.includes('news')){
+      // let title;
+        // localStorage.location = title = 'news';
              
         this._templatesService.getNews(lang).subscribe(
           (res) => {
@@ -626,18 +626,24 @@ export class NavbarComponent implements OnInit {
             _self._templatesService.getPermalink(title)
               .subscribe(
                 (res) => {
-                  
-                  localStorage.language = lang;
-                  let permalink;
-                  localStorage.permalink = permalink = res['permalink'];
-                  _self._router.config[0].path = lang;
-                  // _self._router.config[1].redirectTo = `${lang}/home`;
+                  if(res){
+                    localStorage.language = lang;
+                    let permalink;
+                    localStorage.permalink = permalink = res['permalink'];
+                    _self._router.config[0].path = lang;
+                    // _self._router.config[1].redirectTo = `${lang}/home`;
 
-                  _self._location.go(`${lang}/${permalink}`);
-                  _self._router.navigate([`${lang}/${permalink}`]);
+                    _self._location.go(`${lang}/${permalink}`);
+                    _self._router.navigate([`${lang}/${permalink}`]);
+                  }else{
+                    localStorage.location = 'news';
+                    _self._location.go(`${lang}/news`);
+                    _self._router.navigate([`${lang}/news`]);
+                  }
+
                 },
                 (err) => {
-
+                  console.log('Error from get permalink ' + err);
                 }
               )
           },
