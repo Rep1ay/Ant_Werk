@@ -181,6 +181,7 @@ export class CategoriesComponent implements OnInit {
     let _self = this;
     this.showPreloader = true;
     let lang = localStorage.language;
+    this._location.go(`${lang}/news-category/${category}`);
     this._templatesService.getNewsByCategory(category, lang)
     .subscribe(
       (res) => {
