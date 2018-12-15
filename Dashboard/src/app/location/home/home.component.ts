@@ -127,10 +127,10 @@ export class HomeComponent implements OnInit {
                 this.winPathname = window.location.pathname;
 
                 if(this.currentLocation === localStorage.permalink || this.currentLocation === localStorage.location){
-                  if(!this.counterEnter){
+                  // if(!this.counterEnter){
                       this.changeOfRoutes(routeData.url);
                       this.counterEnter = true;
-                    }
+                    // }
                   }
 
               })
@@ -185,10 +185,10 @@ export class HomeComponent implements OnInit {
     this.routeUrl = url;
     this.showPreloader = true;
 
-    if(!this.rendered){
+    // if(!this.rendered){
       this.getTemplate(title);
       this.getLastNews(lang);
-    }
+    // }
   }
 
  getTemplate(title){
