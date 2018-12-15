@@ -272,7 +272,7 @@ export class HomeComponent implements OnInit {
     this.rendered = true;
     this.counterEnter = false;
 
-    if(this.loggedIn) {
+    // if(this.loggedIn) {
       
       setTimeout(() => {
         this.showPreloader = false;
@@ -284,8 +284,10 @@ export class HomeComponent implements OnInit {
               body.insertAdjacentHTML('beforeend', _self.newTemplate);
             }
             setTimeout(() => {
+              if(this.loggedIn) {
               this.addEditButton();
               this.editServiceDescription();
+              }
               _self.renderLayout();
               // this.changeImage();
               this.renderNews();
@@ -297,8 +299,10 @@ export class HomeComponent implements OnInit {
         }else{
           _self.template = false;
         setTimeout(() => {
+          if(this.loggedIn) {
           this.addEditButton();
           this.editServiceDescription();
+          }
             // this.changeImage();
           this.renderLayout();
           this.renderNews();
@@ -307,24 +311,24 @@ export class HomeComponent implements OnInit {
 
      }, 1000)
 
-    }else{
-      setTimeout(() => {
-        let body = document.getElementById('body');
-        if(body){
-          body.insertAdjacentHTML('beforeend', _self.newTemplate);
-        }
-      }, 100)
+    // }else{
+    //   setTimeout(() => {
+    //     let body = document.getElementById('body');
+    //     if(body){
+    //       body.insertAdjacentHTML('beforeend', _self.newTemplate);
+    //     }
+    //   }, 100)
       
       
-      setTimeout(() => {
-        this.showPreloader = false;
+    //   setTimeout(() => {
+    //     this.showPreloader = false;
 
-        setTimeout(() => {
-          this.renderLayout();
-          this.renderNews();
-        }, 100)
-      }, 1000)
-    }
+    //     setTimeout(() => {
+    //       this.renderLayout();
+    //       this.renderNews();
+    //     }, 100)
+    //   }, 1000)
+    // }
   }
 
   renderLayout(){
