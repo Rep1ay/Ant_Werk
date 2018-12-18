@@ -530,7 +530,11 @@ export class NavbarComponent implements OnInit {
             }
             
             if(!res['data']['template']){
-              _self.acceptAddingNewLang = true;
+              if(localStorage.location !== 'news'){
+                 _self.acceptAddingNewLang = true;
+              }else{
+                _self.acceptAddingNewLang = false;
+              }
               _self.addingLangBody = _self.currentLang;
             }
             let pageTitle;
@@ -690,7 +694,7 @@ export class NavbarComponent implements OnInit {
                 let permalink;
                 localStorage.permalink = permalink = res['permalink'];
                 _self._router.config[0].path = lang;
-                // _self._router.config[1].redirectTo = `${lang}/home`;
+                _self._router.config[1].redirectTo = `${lang}/home`;
 
                 _self._location.go(`${lang}/${permalink}`);
                 _self._router.navigate([`${lang}/${permalink}`]);
@@ -716,13 +720,17 @@ export class NavbarComponent implements OnInit {
 
   languageAdding(){
     let _self = this;
-    this.acceptAddingNewLang = !this.acceptAddingNewLang;
-    this.addingNewLan = !this.addingNewLan;
+    // this.acceptAddingNewLang = !this.acceptAddingNewLang;
+    // this.addingNewLan = !this.addingNewLan;
     // this.lang_items.push(this.addingLang);
+    
     this._templatesService.add_new_lang_panel(this.addingLang)
     .subscribe(
       (res) => {
         _self.getLanguagePanel();
+        // if(localStorage.location === 'news'){
+          _self.acceptLangBlock();
+        // }
       },
       (err) => {
         console.log('Error language adding to panel' + err);
@@ -733,7 +741,10 @@ export class NavbarComponent implements OnInit {
   acceptLangBlock(){
     localStorage.language = this.addingLangBody;
     let _self = this;
-    this.alertAddingLang = !this.alertAddingLang;
+    if(localStorage.location !== 'news'){
+      this.alertAddingLang = !this.alertAddingLang;
+    }
+   
     this.acceptAddingNewLang = false;
 
     setTimeout(() => {
@@ -741,6 +752,7 @@ export class NavbarComponent implements OnInit {
     }, 10000)
 
     let lang = this.addingLangBody;
+    this.currentLang = lang;
     this._templatesService.add_new_lang_panel(lang)
     
     .subscribe(
