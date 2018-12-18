@@ -697,7 +697,12 @@ export class NavbarComponent implements OnInit {
                 _self._router.config[1].redirectTo = `${lang}/home`;
 
                 _self._location.go(`${lang}/${permalink}`);
-                _self._router.navigate([`${lang}/${permalink}`]);
+                if(res['pageTitle']){
+                  _self._router.navigate([`${lang}/${res['pageTitle']}`]);
+                }else{
+                  _self._router.navigate([`${lang}/${permalink}`]);
+                }
+               
               },
               (err) => {
 
